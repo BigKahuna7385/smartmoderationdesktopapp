@@ -7,10 +7,9 @@ package SmartModerationDesktopApp;
 import com.google.zxing.WriterException;
 import java.awt.GraphicsDevice;
 import java.awt.GraphicsEnvironment;
-import java.awt.Window;
 import java.awt.image.BufferedImage;
 import java.io.UnsupportedEncodingException;
-import javax.swing.SpringLayout;
+import javax.swing.Icon;
 
 /**
  *
@@ -36,11 +35,14 @@ public class MainWindow extends javax.swing.JFrame {
     private void initComponents() {
 
         jLabel1 = new javax.swing.JLabel();
+        jComboBox1 = new javax.swing.JComboBox<>();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setAlwaysOnTop(true);
 
         jLabel1.setText("Scan QR Code to start Session");
+
+        jComboBox1.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -50,13 +52,19 @@ public class MainWindow extends javax.swing.JFrame {
                 .addContainerGap(117, Short.MAX_VALUE)
                 .addComponent(jLabel1)
                 .addGap(91, 91, 91))
+            .addGroup(layout.createSequentialGroup()
+                .addGap(161, 161, 161)
+                .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addGap(91, 91, 91)
                 .addComponent(jLabel1)
-                .addContainerGap(192, Short.MAX_VALUE))
+                .addGap(66, 66, 66)
+                .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(103, Short.MAX_VALUE))
         );
 
         pack();
@@ -93,31 +101,33 @@ public class MainWindow extends javax.swing.JFrame {
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                GraphicsEnvironment graphics =
-                GraphicsEnvironment.getLocalGraphicsEnvironment();
+                GraphicsEnvironment graphics = GraphicsEnvironment.getLocalGraphicsEnvironment();
                 GraphicsDevice device = graphics.getDefaultScreenDevice();
                 MainWindow mainWindow = new MainWindow();
                 mainWindow.setVisible(true);
                 device.setFullScreenWindow(mainWindow);
+
+                QRCodeGenerator qrCodeGenerator = new QRCodeGenerator();
+
+                String qrString = "Java stinkt";
+
+                try {
+                    mainWindow.i2j(qrCodeGenerator.StringToQRCodeToIcon(qrString));
+                    System.out.println("buffy");
+
+                } catch (UnsupportedEncodingException | WriterException ex) {
+                    ex.printStackTrace();
+                }
             }
         });
-        
-        QRCodeGenerator qrCodeGenerator = new QRCodeGenerator();
-        
-        String qrString = "Java stinkt";
-        
-        BufferedImage buffy;
-        
-        try {
-            buffy = qrCodeGenerator.generateQRcode(qrString);
-            System.out.println("buffy");
-        } catch(UnsupportedEncodingException | WriterException ex){ex.printStackTrace();}
-        
-       
-        
-    }
+    
+}
+   public void i2j(Icon icon){
+       jLabel1.setIcon(icon);
+   }     
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JComboBox<String> jComboBox1;
     private javax.swing.JLabel jLabel1;
     // End of variables declaration//GEN-END:variables
 }
