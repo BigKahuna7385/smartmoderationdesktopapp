@@ -4,9 +4,13 @@
  */
 package SmartModerationDesktopApp;
 
+import com.google.zxing.WriterException;
 import java.awt.GraphicsDevice;
 import java.awt.GraphicsEnvironment;
 import java.awt.Window;
+import java.awt.image.BufferedImage;
+import java.io.UnsupportedEncodingException;
+import javax.swing.SpringLayout;
 
 /**
  *
@@ -97,6 +101,20 @@ public class MainWindow extends javax.swing.JFrame {
                 device.setFullScreenWindow(mainWindow);
             }
         });
+        
+        QRCodeGenerator qrCodeGenerator = new QRCodeGenerator();
+        
+        String qrString = "Java stinkt";
+        
+        BufferedImage buffy;
+        
+        try {
+            buffy = qrCodeGenerator.generateQRcode(qrString);
+            System.out.println("buffy");
+        } catch(UnsupportedEncodingException | WriterException ex){ex.printStackTrace();}
+        
+       
+        
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
