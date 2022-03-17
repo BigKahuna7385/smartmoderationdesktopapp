@@ -7,7 +7,6 @@ package SmartModerationDesktopApp;
 import com.google.zxing.WriterException;
 import java.awt.GraphicsDevice;
 import java.awt.GraphicsEnvironment;
-import java.awt.image.BufferedImage;
 import java.io.UnsupportedEncodingException;
 import javax.swing.Icon;
 
