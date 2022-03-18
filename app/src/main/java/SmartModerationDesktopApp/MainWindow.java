@@ -4,6 +4,7 @@
  */
 package SmartModerationDesktopApp;
 
+import SmartModerationDesktopApp.Server.Server;
 import com.google.zxing.WriterException;
 import java.awt.GraphicsDevice;
 import java.awt.GraphicsEnvironment;
@@ -37,7 +38,6 @@ public class MainWindow extends javax.swing.JFrame {
         QRCodeLabel = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-        setAlwaysOnTop(true);
         setPreferredSize(new java.awt.Dimension(1920, 1080));
         setSize(new java.awt.Dimension(1920, 1080));
 
@@ -124,6 +124,9 @@ public class MainWindow extends javax.swing.JFrame {
                 }
             }
         });
+
+        Server server = new Server();
+        
 
     }
 
