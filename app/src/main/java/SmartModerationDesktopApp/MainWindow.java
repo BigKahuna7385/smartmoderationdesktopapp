@@ -33,40 +33,45 @@ public class MainWindow extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        jLabel1 = new javax.swing.JLabel();
-        jComboBox1 = new javax.swing.JComboBox<>();
+        QRCode = new javax.swing.JLabel();
+        QRCodeLabel = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setAlwaysOnTop(true);
+        setPreferredSize(new java.awt.Dimension(1920, 1080));
+        setSize(new java.awt.Dimension(1920, 1080));
 
-        jLabel1.setText("Scan QR Code to start Session");
+        QRCode.setToolTipText("Scan QRCode to start session");
+        QRCode.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
 
-        jComboBox1.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+        QRCodeLabel.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        QRCodeLabel.setText("Scan QR-code to start session");
+        QRCodeLabel.setFocusable(false);
+        QRCodeLabel.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addContainerGap(117, Short.MAX_VALUE)
-                .addComponent(jLabel1)
-                .addGap(91, 91, 91))
             .addGroup(layout.createSequentialGroup()
-                .addGap(161, 161, 161)
-                .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addGap(760, 760, 760)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.CENTER)
+                    .addComponent(QRCodeLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 400, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(QRCode, javax.swing.GroupLayout.PREFERRED_SIZE, 400, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(760, 760, 760))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGap(91, 91, 91)
-                .addComponent(jLabel1)
-                .addGap(66, 66, 66)
-                .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(103, Short.MAX_VALUE))
+                .addGap(266, 266, 266)
+                .addComponent(QRCodeLabel)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(QRCode, javax.swing.GroupLayout.PREFERRED_SIZE, 400, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(222, Short.MAX_VALUE))
         );
 
         pack();
+        setLocationRelativeTo(null);
     }// </editor-fold>//GEN-END:initComponents
 
     /**
@@ -111,7 +116,7 @@ public class MainWindow extends javax.swing.JFrame {
                 String qrString = "Java stinkt";
 
                 try {
-                    mainWindow.i2j(qrCodeGenerator.StringToQRCodeToIcon(qrString));
+                    mainWindow.setQRCodeLabel(qrCodeGenerator.StringToQRCodeToIcon(qrString));
                     System.out.println("buffy");
 
                 } catch (UnsupportedEncodingException | WriterException ex) {
@@ -119,14 +124,15 @@ public class MainWindow extends javax.swing.JFrame {
                 }
             }
         });
-    
-}
-   public void i2j(Icon icon){
-       jLabel1.setIcon(icon);
-   }     
+
+    }
+
+    public void setQRCodeLabel(Icon icon) {
+        QRCode.setIcon(icon);
+    }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JComboBox<String> jComboBox1;
-    private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel QRCode;
+    private javax.swing.JLabel QRCodeLabel;
     // End of variables declaration//GEN-END:variables
 }

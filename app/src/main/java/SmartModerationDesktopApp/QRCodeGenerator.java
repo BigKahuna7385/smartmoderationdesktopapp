@@ -19,8 +19,8 @@ import javax.swing.ImageIcon;
 public class QRCodeGenerator {
 
     private final String charset = "UTF-8";
-    private final int width = 200;
-    private final int height = 200;
+    private final int width = 400;
+    private final int height = 400;
 
 //static function that creates QR Code  
     public ImageIcon StringToQRCodeToIcon(String data) throws WriterException, UnsupportedEncodingException {
@@ -29,3 +29,4 @@ public class QRCodeGenerator {
     }
 
 }
+    
