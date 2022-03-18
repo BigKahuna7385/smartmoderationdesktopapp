@@ -4,9 +4,11 @@
  */
 package SmartModerationDesktopApp;
 
+import com.google.zxing.WriterException;
 import java.awt.GraphicsDevice;
 import java.awt.GraphicsEnvironment;
-import java.awt.Window;
+import java.io.UnsupportedEncodingException;
+import javax.swing.Icon;
 
 /**
  *
@@ -31,31 +33,45 @@ public class MainWindow extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        jLabel1 = new javax.swing.JLabel();
+        QRCode = new javax.swing.JLabel();
+        QRCodeLabel = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setAlwaysOnTop(true);
+        setPreferredSize(new java.awt.Dimension(1920, 1080));
+        setSize(new java.awt.Dimension(1920, 1080));
 
-        jLabel1.setText("Scan QR Code to start Session");
+        QRCode.setToolTipText("Scan QRCode to start session");
+        QRCode.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+
+        QRCodeLabel.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        QRCodeLabel.setText("Scan QR-code to start session");
+        QRCodeLabel.setFocusable(false);
+        QRCodeLabel.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addContainerGap(117, Short.MAX_VALUE)
-                .addComponent(jLabel1)
-                .addGap(91, 91, 91))
+            .addGroup(layout.createSequentialGroup()
+                .addGap(760, 760, 760)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.CENTER)
+                    .addComponent(QRCodeLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 400, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(QRCode, javax.swing.GroupLayout.PREFERRED_SIZE, 400, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(760, 760, 760))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGap(91, 91, 91)
-                .addComponent(jLabel1)
-                .addContainerGap(192, Short.MAX_VALUE))
+                .addGap(266, 266, 266)
+                .addComponent(QRCodeLabel)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(QRCode, javax.swing.GroupLayout.PREFERRED_SIZE, 400, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(222, Short.MAX_VALUE))
         );
 
         pack();
+        setLocationRelativeTo(null);
     }// </editor-fold>//GEN-END:initComponents
 
     /**
@@ -89,17 +105,34 @@ public class MainWindow extends javax.swing.JFrame {
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                GraphicsEnvironment graphics =
-                GraphicsEnvironment.getLocalGraphicsEnvironment();
+                GraphicsEnvironment graphics = GraphicsEnvironment.getLocalGraphicsEnvironment();
                 GraphicsDevice device = graphics.getDefaultScreenDevice();
                 MainWindow mainWindow = new MainWindow();
                 mainWindow.setVisible(true);
                 device.setFullScreenWindow(mainWindow);
+
+                QRCodeGenerator qrCodeGenerator = new QRCodeGenerator();
+
+                String qrString = "Java stinkt";
+
+                try {
+                    mainWindow.setQRCodeLabel(qrCodeGenerator.StringToQRCodeToIcon(qrString));
+                    System.out.println("buffy");
+
+                } catch (UnsupportedEncodingException | WriterException ex) {
+                    ex.printStackTrace();
+                }
             }
         });
+
+    }
+
+    public void setQRCodeLabel(Icon icon) {
+        QRCode.setIcon(icon);
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel QRCode;
+    private javax.swing.JLabel QRCodeLabel;
     // End of variables declaration//GEN-END:variables
 }
