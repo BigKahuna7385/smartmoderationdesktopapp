@@ -5,13 +5,16 @@
 package SmartModerationDesktopApp;
 
 import SmartModerationDesktopApp.Server.Server;
+import SmartModerationDesktopApp.ModerationCards.ModerationCard;
 import com.google.zxing.WriterException;
+import java.awt.BorderLayout;
 import java.awt.GraphicsDevice;
 import java.awt.GraphicsEnvironment;
 import java.io.UnsupportedEncodingException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.Icon;
+import javax.swing.JFrame;
 
 /**
  *
@@ -105,20 +108,59 @@ public class MainWindow extends javax.swing.JFrame {
         }
 
         java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
+            public void run() { 
+                
                 GraphicsEnvironment graphics = GraphicsEnvironment.getLocalGraphicsEnvironment();
                 GraphicsDevice device = graphics.getDefaultScreenDevice();
                 MainWindow mainWindow = new MainWindow();
-                mainWindow.setVisible(true);
+                //mainWindow.setVisible(true);
                 device.setFullScreenWindow(mainWindow);
 
+                ModerationCard moderationCard = new ModerationCard();
+                System.out.println(moderationCard.getBackground().toString());
+                mainWindow.getContentPane().add(moderationCard);
+                
+                //moderationCard.setVisible(true);
+                //mainWindow.add(moderationCard);               
+                javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(moderationCard);
+                moderationCard.setLayout(jPanel1Layout);
+                jPanel1Layout.setHorizontalGroup(
+                        jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                .addGap(0, 100, Short.MAX_VALUE)
+                );
+                jPanel1Layout.setVerticalGroup(
+                        jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                .addGap(0, 100, Short.MAX_VALUE)
+                );
+
+                javax.swing.GroupLayout layout = new javax.swing.GroupLayout(mainWindow.getContentPane());
+                mainWindow.getContentPane().setLayout(layout);
+                layout.setHorizontalGroup(
+                        layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                .addGroup(layout.createSequentialGroup()
+                                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                                .addGroup(layout.createSequentialGroup()
+                                                        .addGap(154, 154, 154)
+                                                        .addComponent(moderationCard, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                                        .addGap(760, 760, 760))
+                );
+                layout.setVerticalGroup(
+                        layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                .addGroup(layout.createSequentialGroup()
+                                        .addGap(109, 109, 109)
+                                        .addComponent(moderationCard, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                ));
+                
+                mainWindow.pack();
+                mainWindow.setVisible(true);
+                //mainWindow.setLocationRelativeTo(null);
+                
                 try {
                     mainWindow.setQRCodeLabel(qrCodeGenerator.StringToQRCodeToIcon(qrString));
                 } catch (UnsupportedEncodingException | WriterException ex) {
                     ex.printStackTrace();
                 }
-                System.out.println("Server: " + mainWindow.getServer());
-
+                 
             }
         });
 
