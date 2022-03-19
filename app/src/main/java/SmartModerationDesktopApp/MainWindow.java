@@ -9,6 +9,8 @@ import com.google.zxing.WriterException;
 import java.awt.GraphicsDevice;
 import java.awt.GraphicsEnvironment;
 import java.io.UnsupportedEncodingException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.Icon;
 
 /**
@@ -16,6 +18,8 @@ import javax.swing.Icon;
  * @author daniel
  */
 public class MainWindow extends javax.swing.JFrame {
+
+    private Server server;
 
     /**
      * Creates new form MainWindow
@@ -78,11 +82,10 @@ public class MainWindow extends javax.swing.JFrame {
      * @param args the command line arguments
      */
     public static void main(String args[]) {
-        /* Set the Nimbus look and feel */
-        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
-        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
-         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
-         */
+        MainWindow mainWindow = new MainWindow();
+        QRCodeGenerator qrCodeGenerator = new QRCodeGenerator();
+        mainWindow.createNewServer();
+        String qrString = mainWindow.getServer().getIpAddressAndPortAsString();
 
         try {
             for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
@@ -100,9 +103,7 @@ public class MainWindow extends javax.swing.JFrame {
         } catch (javax.swing.UnsupportedLookAndFeelException ex) {
             java.util.logging.Logger.getLogger(MainWindow.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
-        //</editor-fold>
 
-        /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
                 GraphicsEnvironment graphics = GraphicsEnvironment.getLocalGraphicsEnvironment();
@@ -111,27 +112,29 @@ public class MainWindow extends javax.swing.JFrame {
                 mainWindow.setVisible(true);
                 device.setFullScreenWindow(mainWindow);
 
-                QRCodeGenerator qrCodeGenerator = new QRCodeGenerator();
-
-                String qrString = "Java stinkt";
-
                 try {
                     mainWindow.setQRCodeLabel(qrCodeGenerator.StringToQRCodeToIcon(qrString));
-                    System.out.println("buffy");
-
                 } catch (UnsupportedEncodingException | WriterException ex) {
                     ex.printStackTrace();
                 }
+                System.out.println("Server: " + mainWindow.getServer());
+
             }
         });
 
-        Server server = new Server();
-        
-
+        mainWindow.getServer().createServer();
     }
 
     public void setQRCodeLabel(Icon icon) {
         QRCode.setIcon(icon);
+    }
+
+    public void createNewServer() {
+        server = new Server();
+    }
+
+    public Server getServer() {
+        return server;
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

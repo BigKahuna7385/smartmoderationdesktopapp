@@ -4,14 +4,22 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
+import java.net.InetAddress;
+import java.net.NetworkInterface;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.net.SocketException;
+import java.net.UnknownHostException;
 import java.util.Date;
+import java.util.Enumeration;
 import java.util.StringTokenizer;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class Server implements Runnable {
 
     static final int PORT = 8080;
+    private static InetAddress ipAddress;
     static final boolean VERBOSE = true;
     private Socket connect;
     private String contentType = "text/plain";
@@ -21,12 +29,13 @@ public class Server implements Runnable {
     }
 
     public Server() {
-        createServer();
+        ipAddress = getIpAddress();        
     }
 
-    private void createServer() {
+    public void createServer() {
         try {
             ServerSocket serverConnect = new ServerSocket(PORT);
+            System.out.println(serverConnect.getInetAddress().getHostAddress() + ":" + serverConnect.getLocalPort());
             System.out.println("Server started.\nListening for connections on port : " + PORT + " ...\n");
             while (true) {
                 Server myServer = new Server(serverConnect.accept());
@@ -105,5 +114,29 @@ public class Server implements Runnable {
                 System.out.println("Connection closed.\n");
             }
         }
+    }
+
+    private InetAddress getIpAddress() {
+        Enumeration en;
+        try {
+            en = NetworkInterface.getNetworkInterfaces();
+            while (en.hasMoreElements()) {
+                NetworkInterface ni = (NetworkInterface) en.nextElement();
+                Enumeration ee = ni.getInetAddresses();
+                while (ee.hasMoreElements()) {
+                    InetAddress ia = (InetAddress) ee.nextElement();                    
+                    if (ia.getHostAddress().contains("192.168.")) {
+                        return ia;
+                    }
+                }
+            }
+        } catch (SocketException ex) {
+            Logger.getLogger(Server.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return null;
+    }
+
+    public String getIpAddressAndPortAsString() {
+        return ipAddress.getCanonicalHostName() + ":" + PORT;
     }
 }
