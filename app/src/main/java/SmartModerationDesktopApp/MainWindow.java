@@ -2,6 +2,7 @@ package SmartModerationDesktopApp;
 
 import SmartModerationDesktopApp.Server.Server;
 import SmartModerationDesktopApp.ModerationCards.ModerationCard;
+import SmartModerationDesktopApp.Utilities.QRCodeGenerator;
 import com.google.zxing.WriterException;
 import java.awt.GraphicsDevice;
 import java.awt.GraphicsEnvironment;
@@ -11,6 +12,7 @@ import javax.swing.Icon;
 public class MainWindow extends javax.swing.JFrame {
 
     private Server server;
+    private StringBuilder qrString;
 
     public MainWindow() {
         setExtendedState(MAXIMIZED_BOTH);
@@ -65,7 +67,9 @@ public class MainWindow extends javax.swing.JFrame {
         MainWindow mainWindow = new MainWindow();
         QRCodeGenerator qrCodeGenerator = new QRCodeGenerator();
         mainWindow.createNewServer();
-        String qrString = mainWindow.getServer().getIpAddressAndPortAsString();
+        mainWindow.qrString = new StringBuilder(mainWindow.getServer().getIpAddressAndPortAsString());
+        mainWindow.qrString.append("\n");
+        mainWindow.qrString.append(mainWindow.server.getApiKey());
 
         try {
             for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
@@ -85,7 +89,7 @@ public class MainWindow extends javax.swing.JFrame {
             mainWindow.placeModerationCard();
 
             try {
-                mainWindow.setQRCodeLabel(qrCodeGenerator.StringToQRCodeToIcon(qrString));
+                mainWindow.setQRCodeLabel(qrCodeGenerator.StringToQRCodeToIcon(mainWindow.qrString.toString()));
             } catch (UnsupportedEncodingException | WriterException ex) {
             }
         });
@@ -94,9 +98,9 @@ public class MainWindow extends javax.swing.JFrame {
     }
 
     private void placeModerationCard() {
-        ModerationCard moderationCard = new ModerationCard();
+        ModerationCard moderationCard = new ModerationCard(50, 50);
         getContentPane().add(moderationCard);
-        moderationCard.setBounds(0, 0, moderationCard.getPreferredSize().width, moderationCard.getPreferredSize().height);
+        moderationCard.setBounds(moderationCard.getX(), moderationCard.getY(), moderationCard.getPreferredSize().width, moderationCard.getPreferredSize().height);
     }
 
     public void setQRCodeLabel(Icon icon) {

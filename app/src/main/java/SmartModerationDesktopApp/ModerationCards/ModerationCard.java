@@ -8,11 +8,19 @@ public class ModerationCard extends javax.swing.JPanel {
 
     private Point location;
     private MouseEvent pressed;
+    private int x;
+    private int y;
 
     public ModerationCard() {
         initComponents();
     }
-    
+
+    public ModerationCard(int x, int y) {        
+        this.x = x;
+        this.y = y;
+        initComponents();
+    }
+
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
@@ -80,20 +88,38 @@ public class ModerationCard extends javax.swing.JPanel {
 
     private void formMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_formMousePressed
         pressed = evt;
-        setCursor(new java.awt.Cursor(java.awt.Cursor.MOVE_CURSOR));        
+        setCursor(new java.awt.Cursor(java.awt.Cursor.MOVE_CURSOR));
     }//GEN-LAST:event_formMousePressed
 
     private void formMouseDragged(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_formMouseDragged
         Component component = evt.getComponent();
         location = component.getLocation(location);
-        int x = location.x - pressed.getX() + evt.getX();
-        int y = location.y - pressed.getY() + evt.getY();
+        x = location.x - pressed.getX() + evt.getX();
+        y = location.y - pressed.getY() + evt.getY();
         component.setLocation(x, y);
     }//GEN-LAST:event_formMouseDragged
 
     private void formMouseReleased(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_formMouseReleased
-          setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
+        setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
     }//GEN-LAST:event_formMouseReleased
+
+    @Override
+    public int getX() {
+        return x;
+    }
+
+    public void setX(int x) {
+        this.x = x;
+    }
+
+    @Override
+    public int getY() {
+        return y;
+    }
+
+    public void setY(int y) {
+        this.y = y;
+    }
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
