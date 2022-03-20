@@ -9,10 +9,10 @@ import java.net.NetworkInterface;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.SocketException;
-import java.net.UnknownHostException;
 import java.util.Date;
 import java.util.Enumeration;
 import java.util.StringTokenizer;
+import java.util.UUID;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -22,14 +22,16 @@ public class Server implements Runnable {
     private static InetAddress ipAddress;
     static final boolean VERBOSE = true;
     private Socket connect;
-    private String contentType = "text/plain";
+    private final String contentType = "text/plain";
+    private String apiKey;
 
     public Server(Socket c) {
         connect = c;
+        apiKey = UUID.randomUUID().toString();
     }
 
     public Server() {
-        ipAddress = getIpAddress();        
+        ipAddress = getIpAddress();
     }
 
     public void createServer() {
@@ -68,7 +70,7 @@ public class Server implements Runnable {
             StringTokenizer parse = new StringTokenizer(input);
             String method = parse.nextToken().toUpperCase();
 
-            if (method.equals("GET")) {
+            if (method.equals("GET")) {                
                 System.out.println(input);
                 System.out.println(in.readLine());
                 System.out.println(in.readLine());
@@ -124,7 +126,7 @@ public class Server implements Runnable {
                 NetworkInterface ni = (NetworkInterface) en.nextElement();
                 Enumeration ee = ni.getInetAddresses();
                 while (ee.hasMoreElements()) {
-                    InetAddress ia = (InetAddress) ee.nextElement();                    
+                    InetAddress ia = (InetAddress) ee.nextElement();
                     if (ia.getHostAddress().contains("192.168.")) {
                         return ia;
                     }
@@ -138,5 +140,9 @@ public class Server implements Runnable {
 
     public String getIpAddressAndPortAsString() {
         return ipAddress.getCanonicalHostName() + ":" + PORT;
+    }
+
+    public String getApiKey() {
+        return apiKey;
     }
 }
