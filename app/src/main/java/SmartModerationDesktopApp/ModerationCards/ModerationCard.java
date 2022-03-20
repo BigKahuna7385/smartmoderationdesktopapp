@@ -17,13 +17,14 @@ public class ModerationCard extends javax.swing.JPanel {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        jLabel1 = new javax.swing.JLabel();
+        cardTitle = new javax.swing.JLabel();
         jScrollPane1 = new javax.swing.JScrollPane();
-        jTextArea1 = new javax.swing.JTextArea();
-        jSeparator1 = new javax.swing.JSeparator();
+        moderationCardTextBody = new javax.swing.JTextArea();
+        separator = new javax.swing.JSeparator();
 
         setBackground(new java.awt.Color(153, 153, 255));
         setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
+        setToolTipText("Click to drag card");
         setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
         setMaximumSize(new java.awt.Dimension(200, 200));
         addMouseMotionListener(new java.awt.event.MouseMotionAdapter() {
@@ -35,13 +36,18 @@ public class ModerationCard extends javax.swing.JPanel {
             public void mousePressed(java.awt.event.MouseEvent evt) {
                 formMousePressed(evt);
             }
+            public void mouseReleased(java.awt.event.MouseEvent evt) {
+                formMouseReleased(evt);
+            }
         });
 
-        jLabel1.setText("jLabel1");
+        cardTitle.setText("Titel");
 
-        jTextArea1.setColumns(20);
-        jTextArea1.setRows(5);
-        jScrollPane1.setViewportView(jTextArea1);
+        moderationCardTextBody.setEditable(false);
+        moderationCardTextBody.setColumns(20);
+        moderationCardTextBody.setRows(5);
+        moderationCardTextBody.setText("Body");
+        jScrollPane1.setViewportView(moderationCardTextBody);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
@@ -54,18 +60,18 @@ public class ModerationCard extends javax.swing.JPanel {
                         .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 384, Short.MAX_VALUE))
                     .addGroup(layout.createSequentialGroup()
                         .addGap(168, 168, 168)
-                        .addComponent(jLabel1)
+                        .addComponent(cardTitle)
                         .addGap(0, 0, Short.MAX_VALUE)))
                 .addContainerGap())
-            .addComponent(jSeparator1, javax.swing.GroupLayout.Alignment.TRAILING)
+            .addComponent(separator, javax.swing.GroupLayout.Alignment.TRAILING)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addGap(14, 14, 14)
-                .addComponent(jLabel1)
+                .addComponent(cardTitle)
                 .addGap(5, 5, 5)
-                .addComponent(jSeparator1, javax.swing.GroupLayout.PREFERRED_SIZE, 10, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(separator, javax.swing.GroupLayout.PREFERRED_SIZE, 10, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(3, 3, 3)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 241, Short.MAX_VALUE)
                 .addContainerGap())
@@ -74,6 +80,7 @@ public class ModerationCard extends javax.swing.JPanel {
 
     private void formMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_formMousePressed
         pressed = evt;
+        setCursor(new java.awt.Cursor(java.awt.Cursor.MOVE_CURSOR));        
     }//GEN-LAST:event_formMousePressed
 
     private void formMouseDragged(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_formMouseDragged
@@ -84,11 +91,15 @@ public class ModerationCard extends javax.swing.JPanel {
         component.setLocation(x, y);
     }//GEN-LAST:event_formMouseDragged
 
+    private void formMouseReleased(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_formMouseReleased
+          setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
+    }//GEN-LAST:event_formMouseReleased
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel cardTitle;
     private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JSeparator jSeparator1;
-    private javax.swing.JTextArea jTextArea1;
+    private javax.swing.JTextArea moderationCardTextBody;
+    private javax.swing.JSeparator separator;
     // End of variables declaration//GEN-END:variables
 }
