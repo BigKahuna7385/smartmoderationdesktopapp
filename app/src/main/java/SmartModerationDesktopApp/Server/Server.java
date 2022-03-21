@@ -23,14 +23,10 @@ public class Server implements Runnable {
     static final boolean VERBOSE = true;
     private Socket connect;
     private final String contentType = "text/plain";
-    private String apiKey;
-
-    public Server(Socket c) {
-        connect = c;
-        apiKey = UUID.randomUUID().toString();
-    }
+    private final String apiKey;
 
     public Server() {
+        apiKey = UUID.randomUUID().toString();
         ipAddress = getIpAddress();
     }
 
@@ -40,15 +36,14 @@ public class Server implements Runnable {
             System.out.println(serverConnect.getInetAddress().getHostAddress() + ":" + serverConnect.getLocalPort());
             System.out.println("Server started.\nListening for connections on port : " + PORT + " ...\n");
             while (true) {
-                Server myServer = new Server(serverConnect.accept());
+                connect = serverConnect.accept();
 
                 if (VERBOSE) {
                     System.out.println("Connecton opened. (" + new Date() + ")");
                 }
-                Thread thread = new Thread(myServer);
+                Thread thread = new Thread(this);
                 thread.start();
             }
-
         } catch (IOException e) {
             System.err.println("Server Connection error : " + e.getMessage());
         }
@@ -70,7 +65,7 @@ public class Server implements Runnable {
             StringTokenizer parse = new StringTokenizer(input);
             String method = parse.nextToken().toUpperCase();
 
-            if (method.equals("GET")) {                
+            if (method.equals("GET")) {
                 System.out.println(input);
                 System.out.println(in.readLine());
                 System.out.println(in.readLine());
@@ -107,8 +102,8 @@ public class Server implements Runnable {
             try {
                 in.close();
                 out.close();
-                connect.close(); // we close socket connection
-            } catch (Exception e) {
+                connect.close();
+            } catch (IOException e) {
                 System.err.println("Error closing stream : " + e.getMessage());
             }
 
@@ -127,7 +122,8 @@ public class Server implements Runnable {
                 Enumeration ee = ni.getInetAddresses();
                 while (ee.hasMoreElements()) {
                     InetAddress ia = (InetAddress) ee.nextElement();
-                    if (ia.getHostAddress().contains("192.168.")) {
+                    System.out.println(ia.getCanonicalHostName());
+                    if (ia.getHostAddress().contains("192.168.") || ia.getHostAddress().contains("172.")) {
                         return ia;
                     }
                 }
@@ -139,6 +135,9 @@ public class Server implements Runnable {
     }
 
     public String getIpAddressAndPortAsString() {
+        if (ipAddress == null) {
+            return null;
+        }
         return ipAddress.getCanonicalHostName() + ":" + PORT;
     }
 
