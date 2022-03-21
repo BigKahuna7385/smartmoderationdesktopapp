@@ -36,17 +36,6 @@ public class MainWindow extends javax.swing.JFrame {
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setPreferredSize(new java.awt.Dimension(1920, 1080));
         setSize(new java.awt.Dimension(1920, 1080));
-        addKeyListener(new java.awt.event.KeyAdapter() {
-            public void keyPressed(java.awt.event.KeyEvent evt) {
-                formKeyPressed(evt);
-            }
-            public void keyReleased(java.awt.event.KeyEvent evt) {
-                formKeyReleased(evt);
-            }
-            public void keyTyped(java.awt.event.KeyEvent evt) {
-                formKeyTyped(evt);
-            }
-        });
 
         QRCode.setToolTipText("Scan QRCode to start session");
         QRCode.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
@@ -80,18 +69,6 @@ public class MainWindow extends javax.swing.JFrame {
         pack();
         setLocationRelativeTo(null);
     }// </editor-fold>//GEN-END:initComponents
-
-    private void formKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_formKeyPressed
-        System.out.println(evt.getExtendedKeyCode());
-    }//GEN-LAST:event_formKeyPressed
-
-    private void formKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_formKeyReleased
-        System.out.println(evt.getExtendedKeyCode());
-    }//GEN-LAST:event_formKeyReleased
-
-    private void formKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_formKeyTyped
-        System.out.println(evt.getExtendedKeyCode());
-    }//GEN-LAST:event_formKeyTyped
 
     public static void main(String args[]) {
         MainWindow mainWindow = new MainWindow();
