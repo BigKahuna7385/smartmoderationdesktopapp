@@ -2,6 +2,7 @@ package SmartModerationDesktopApp;
 
 import SmartModerationDesktopApp.Server.Server;
 import SmartModerationDesktopApp.ModerationCards.ModerationCard;
+import SmartModerationDesktopApp.Utilities.JsonReader;
 import SmartModerationDesktopApp.Utilities.QRCodeGenerator;
 import com.google.zxing.WriterException;
 import java.awt.BasicStroke;
@@ -71,6 +72,8 @@ public class MainWindow extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     public static void main(String args[]) {
+        JsonReader jsonReader = new JsonReader();
+        jsonReader.parseJson();
         MainWindow mainWindow = new MainWindow();
         QRCodeGenerator qrCodeGenerator = new QRCodeGenerator();
         mainWindow.createNewServer();
@@ -123,6 +126,12 @@ public class MainWindow extends javax.swing.JFrame {
         moderationCardList.add(moderationCard2);
         moderationCard2.setModerationCardList(moderationCardList);
 
+        ModerationCard moderationCard3 = new ModerationCard(150, 150, this);
+        getContentPane().add(moderationCard3);
+        moderationCard3.setBounds(moderationCard3.getX(), moderationCard3.getY(), moderationCard3.getPreferredSize().width, moderationCard3.getPreferredSize().height);
+        moderationCardList.add(moderationCard3);
+        moderationCard3.setModerationCardList(moderationCardList);
+
     }
 
     public void setQRCodeLabel(Icon icon) {
@@ -143,10 +152,11 @@ public class MainWindow extends javax.swing.JFrame {
     // End of variables declaration//GEN-END:variables
 
     public void drawDottedLineBetween(ModerationCard movingCard, ModerationCard magneticCard) {
-        if (isLineDrawn) {
-            return;
+        if (movingCard.isDistancedMagnet() != hasLineDistance) {
+            clearBackground();
+            hasLineDistance = movingCard.isDistancedMagnet();
         }
-        hasLineDistance = movingCard.isDistancedMagnet();
+
         Graphics2D g2d = (Graphics2D) getGraphics();
         float dashPhase = 0f;
         float dash[] = {5.0f, 5.0f};
@@ -176,6 +186,7 @@ public class MainWindow extends javax.swing.JFrame {
         }
         Graphics2D g2d = (Graphics2D) getGraphics();
         g2d.clearRect(0, 0, this.getHeight(), this.getWidth());
+        revalidate();
         repaint();
         isLineDrawn = false;
     }

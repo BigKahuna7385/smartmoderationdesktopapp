@@ -139,8 +139,6 @@ public class ModerationCard extends javax.swing.JPanel {
     }//GEN-LAST:event_formMouseDragged
 
     private void formMouseReleased(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_formMouseReleased
-        mainWindow.clearBackground();
-
         setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
         if (magneticCard != null) {
             dockedModerationCardList.add(magneticCard);
@@ -163,6 +161,7 @@ public class ModerationCard extends javax.swing.JPanel {
             }
             currentComponent.setLocation(x, y);
         }
+        mainWindow.clearBackground();
     }//GEN-LAST:event_formMouseReleased
 
     public void keyPressed(KeyEvent evt) {
