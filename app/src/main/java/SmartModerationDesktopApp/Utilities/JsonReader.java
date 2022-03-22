@@ -13,7 +13,7 @@ public class JsonReader {
         JSONParser parser = new JSONParser();
         try {
             Object object = parser
-                    .parse(new FileReader("/home/daniel/Downloads/Telegram Desktop/ModerationCardsTestSet.json"));
+                    .parse(new FileReader("./src/testFiles/ModerationCardsTestSet.json"));
             System.out.println("File read!");
             //convert Object to JSONObject
 
