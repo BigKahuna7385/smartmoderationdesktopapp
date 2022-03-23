@@ -23,7 +23,7 @@ public class MainWindow extends javax.swing.JFrame {
     private boolean hasLineDistance = false;
     private final ArrayList<ModerationCard> moderationCardList;
     private final Client client;
-    private JsonReader jsonReader;
+    private final JsonReader jsonReader;
 
     public MainWindow() {
         setExtendedState(MAXIMIZED_BOTH);
