@@ -17,13 +17,13 @@ import javax.swing.Icon;
 
 public class MainWindow extends javax.swing.JFrame {
 
-    private StringBuilder qrString;
-    private boolean isLineDrawn = false;
-    private boolean hasLineDistance = false;
-    private final ArrayList<ModerationCard> moderationCardList;
     private final Server server;
     private final Client client;
     private final JsonReader jsonReader;
+    private final ArrayList<ModerationCard> moderationCardList;
+    private boolean isLineDrawn = false;
+    private boolean hasLineDistance = false;
+    private StringBuilder qrString;
 
     public MainWindow() {
         setExtendedState(MAXIMIZED_BOTH);
@@ -80,7 +80,10 @@ public class MainWindow extends javax.swing.JFrame {
 
     public static void main(String args[]) throws IOException {
         MainWindow mainWindow = new MainWindow();
+
+        //TODO: move to login procedure
         mainWindow.moderationCardList.addAll(mainWindow.jsonReader.parseModerationCardJson(mainWindow.client.getModerationCards()));
+
         QRCodeGenerator qrCodeGenerator = new QRCodeGenerator();
 
         if (mainWindow.getServer().getIpAddressAndPortAsString() != null) {
@@ -118,7 +121,8 @@ public class MainWindow extends javax.swing.JFrame {
         mainWindow.getServer().createServer();
     }
 
-    private void placeModerationCards() {        
+    //TODO: move to factory
+    private void placeModerationCards() {
         moderationCardList.forEach((moderationCard) -> {
             moderationCard.setMainWindow(this);
             moderationCard.setX(0);
@@ -142,6 +146,7 @@ public class MainWindow extends javax.swing.JFrame {
     private javax.swing.JLabel QRCodeLabel;
     // End of variables declaration//GEN-END:variables
 
+    //TODO: move to own class 
     public void drawDottedLineBetween(ModerationCard movingCard, ModerationCard magneticCard) {
         if (movingCard.isDistancedMagnet() != hasLineDistance) {
             clearBackground();

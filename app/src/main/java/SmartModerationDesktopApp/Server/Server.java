@@ -18,12 +18,12 @@ import java.util.logging.Logger;
 
 public class Server implements Runnable {
 
-    static final int PORT = 8080;
-    private static InetAddress ipAddress;
-    static final boolean VERBOSE = true;
-    private Socket connect;
+    private final int PORT = 8080;
+    private final boolean VERBOSE = true;
     private final String contentType = "text/plain";
     private final String apiKey;
+    private final InetAddress ipAddress;
+    private Socket connect;
 
     public Server() {
         apiKey = UUID.randomUUID().toString();
@@ -39,7 +39,7 @@ public class Server implements Runnable {
                 connect = serverConnect.accept();
 
                 if (VERBOSE) {
-                    System.out.println("Connecton opened. (" + new Date() + ")");
+                    System.out.println("Connection opened. (" + new Date() + ")");
                 }
                 Thread thread = new Thread(this);
                 thread.start();
