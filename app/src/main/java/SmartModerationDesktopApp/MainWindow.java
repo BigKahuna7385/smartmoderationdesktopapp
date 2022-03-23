@@ -17,17 +17,18 @@ import javax.swing.Icon;
 
 public class MainWindow extends javax.swing.JFrame {
 
-    private Server server;
     private StringBuilder qrString;
     private boolean isLineDrawn = false;
     private boolean hasLineDistance = false;
     private final ArrayList<ModerationCard> moderationCardList;
+    private final Server server;
     private final Client client;
     private final JsonReader jsonReader;
 
     public MainWindow() {
         setExtendedState(MAXIMIZED_BOTH);
         client = new Client();
+        server = new Server();
         jsonReader = new JsonReader();
         moderationCardList = new ArrayList<>();
         initComponents();
@@ -81,7 +82,7 @@ public class MainWindow extends javax.swing.JFrame {
         MainWindow mainWindow = new MainWindow();
         mainWindow.jsonReader.parseJson(mainWindow.client.getModerationCards());
         QRCodeGenerator qrCodeGenerator = new QRCodeGenerator();
-        mainWindow.createNewServer();
+
         if (mainWindow.getServer().getIpAddressAndPortAsString() != null) {
             mainWindow.qrString = new StringBuilder(mainWindow.getServer().getIpAddressAndPortAsString());
             mainWindow.qrString.append("\n");
@@ -141,10 +142,6 @@ public class MainWindow extends javax.swing.JFrame {
 
     public void setQRCodeLabel(Icon icon) {
         QRCode.setIcon(icon);
-    }
-
-    public void createNewServer() {
-        server = new Server();
     }
 
     public Server getServer() {
