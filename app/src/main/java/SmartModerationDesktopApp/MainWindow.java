@@ -80,7 +80,7 @@ public class MainWindow extends javax.swing.JFrame {
 
     public static void main(String args[]) throws IOException {
         MainWindow mainWindow = new MainWindow();
-        mainWindow.jsonReader.parseJson(mainWindow.client.getModerationCards());
+        mainWindow.moderationCardList.addAll(mainWindow.jsonReader.parseModerationCardJson(mainWindow.client.getModerationCards()));
         QRCodeGenerator qrCodeGenerator = new QRCodeGenerator();
 
         if (mainWindow.getServer().getIpAddressAndPortAsString() != null) {
@@ -107,7 +107,7 @@ public class MainWindow extends javax.swing.JFrame {
             GraphicsEnvironment graphics = GraphicsEnvironment.getLocalGraphicsEnvironment();
             GraphicsDevice device = graphics.getDefaultScreenDevice();
             device.setFullScreenWindow(mainWindow);
-            mainWindow.placeModerationCard();
+            mainWindow.placeModerationCards();
 
             try {
                 mainWindow.setQRCodeLabel(qrCodeGenerator.StringToQRCodeToIcon(mainWindow.qrString.toString()));
@@ -118,26 +118,15 @@ public class MainWindow extends javax.swing.JFrame {
         mainWindow.getServer().createServer();
     }
 
-    private void placeModerationCard() {
-        // dummy moderation cards are placed
-        ModerationCard moderationCard = new ModerationCard(50, 50, this);
-        getContentPane().add(moderationCard);
-        moderationCard.setBounds(moderationCard.getX(), moderationCard.getY(), moderationCard.getPreferredSize().width, moderationCard.getPreferredSize().height);
-        moderationCardList.add(moderationCard);
-        moderationCard.setModerationCardList(moderationCardList);
-
-        ModerationCard moderationCard2 = new ModerationCard(100, 100, this);
-        getContentPane().add(moderationCard2);
-        moderationCard2.setBounds(moderationCard2.getX(), moderationCard2.getY(), moderationCard2.getPreferredSize().width, moderationCard2.getPreferredSize().height);
-        moderationCardList.add(moderationCard2);
-        moderationCard2.setModerationCardList(moderationCardList);
-
-        ModerationCard moderationCard3 = new ModerationCard(150, 150, this);
-        getContentPane().add(moderationCard3);
-        moderationCard3.setBounds(moderationCard3.getX(), moderationCard3.getY(), moderationCard3.getPreferredSize().width, moderationCard3.getPreferredSize().height);
-        moderationCardList.add(moderationCard3);
-        moderationCard3.setModerationCardList(moderationCardList);
-
+    private void placeModerationCards() {        
+        moderationCardList.forEach((moderationCard) -> {
+            moderationCard.setMainWindow(this);
+            moderationCard.setX(0);
+            moderationCard.setY(0);
+            getContentPane().add(moderationCard);
+            moderationCard.setBounds(moderationCard.getX(), moderationCard.getY(), moderationCard.getPreferredSize().width, moderationCard.getPreferredSize().height);
+            moderationCard.setModerationCardList(moderationCardList);
+        });
     }
 
     public void setQRCodeLabel(Icon icon) {

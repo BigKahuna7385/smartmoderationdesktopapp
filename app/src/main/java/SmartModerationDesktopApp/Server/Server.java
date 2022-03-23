@@ -122,7 +122,6 @@ public class Server implements Runnable {
                 Enumeration ee = ni.getInetAddresses();
                 while (ee.hasMoreElements()) {
                     InetAddress ia = (InetAddress) ee.nextElement();
-                    System.out.println(ia.getCanonicalHostName());
                     if (ia.getHostAddress().contains("192.168.") || ia.getHostAddress().contains("172.")) {
                         return ia;
                     }
@@ -135,14 +134,11 @@ public class Server implements Runnable {
     }
 
     public String getIpAddressAndPortAsString() {
-        if (ipAddress == null) {
-            return null;
-        }
-        return ipAddress.getCanonicalHostName() + ":" + PORT;
+        return ipAddress == null ? null : ipAddress.getCanonicalHostName() + ":" + PORT;
     }
 
     public String getApiKey() {
         return apiKey;
     }
-    
+
 }

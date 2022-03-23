@@ -23,18 +23,15 @@ public class ModerationCard extends javax.swing.JPanel {
     private boolean distancedMagnet = false;
     private MainWindow mainWindow;
     private SnapDirection snapDirection;
+    private long cardId;
+    private long meetingId;
 
-    public ModerationCard() {
+    public ModerationCard(long cardId, long meetingId, String content, String backgroundColor) {
         initComponents();
-    }
-
-    public ModerationCard(int x, int y, MainWindow mainWindow) {
-        this.x = x;
-        this.y = y;
-        this.mainWindow = mainWindow;
-        moderationCardList = new ArrayList<>();
-        dockedModerationCardList = new ArrayList<>();
-        initComponents();
+        this.cardId = cardId;
+        this.meetingId = meetingId;
+        this.moderationCardTextBody.setText(content);
+        this.setBackground(Color.decode(backgroundColor));
     }
 
     @SuppressWarnings("unchecked")
@@ -128,10 +125,8 @@ public class ModerationCard extends javax.swing.JPanel {
         }
 
         if (snapTo(isCardMagnetic())) {
-            this.setBackground(Color.green);
             mainWindow.drawDottedLineBetween(this, magneticCard);
         } else {
-            this.setBackground(Color.red);
             mainWindow.clearBackground();
         }
 
@@ -141,7 +136,7 @@ public class ModerationCard extends javax.swing.JPanel {
     private void formMouseReleased(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_formMouseReleased
         setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
         if (magneticCard != null) {
-            dockedModerationCardList.add(magneticCard);
+            //dockedModerationCardList.add(magneticCard);
             int distance = isDistancedMagnet() ? MAGNETRANGE : 0;
             switch (snapDirection) {
                 case WEST:
@@ -185,6 +180,11 @@ public class ModerationCard extends javax.swing.JPanel {
     public void setY(int y) {
         this.y = y;
     }
+
+    public void setMainWindow(MainWindow mainWindow) {
+        this.mainWindow = mainWindow;
+    }
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel cardTitle;
