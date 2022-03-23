@@ -1,24 +1,17 @@
 package SmartModerationDesktopApp.Utilities;
 
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
 
 public class JsonReader {
 
-    public void parseJson() {
+    public void parseJson(String inputString) {
         JSONParser parser = new JSONParser();
         try {
-            Object object = parser
-                    .parse(new FileReader("./src/testFiles/ModerationCardsTestSet.json"));
-            System.out.println("File read!");
-            //convert Object to JSONObject
-
-            JSONArray meetingCards = (JSONArray) object;
-            //Reading the String
+            Object object = parser.parse(inputString);
+            JSONArray meetingCards = (JSONArray) object;          
             for (Object meetingCard : meetingCards) {
                 JSONObject jsonObject = (JSONObject) meetingCard;
                 long cardId = (long) jsonObject.get("cardId");
@@ -30,9 +23,7 @@ public class JsonReader {
                 System.out.println("Color: " + color);
                 System.out.println("meetingId: " + meetingId);
             }
-        } catch (FileNotFoundException fe) {
-        } catch (Exception e) {
+        } catch (ParseException e) {
         }
     }
-
 }

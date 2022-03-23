@@ -2,6 +2,7 @@ package SmartModerationDesktopApp;
 
 import SmartModerationDesktopApp.Server.Server;
 import SmartModerationDesktopApp.ModerationCards.ModerationCard;
+import SmartModerationDesktopApp.Server.Client;
 import SmartModerationDesktopApp.Utilities.JsonReader;
 import SmartModerationDesktopApp.Utilities.QRCodeGenerator;
 import com.google.zxing.WriterException;
@@ -9,6 +10,7 @@ import java.awt.BasicStroke;
 import java.awt.Graphics2D;
 import java.awt.GraphicsDevice;
 import java.awt.GraphicsEnvironment;
+import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import javax.swing.Icon;
@@ -20,9 +22,13 @@ public class MainWindow extends javax.swing.JFrame {
     private boolean isLineDrawn = false;
     private boolean hasLineDistance = false;
     private final ArrayList<ModerationCard> moderationCardList;
+    private final Client client;
+    private JsonReader jsonReader;
 
     public MainWindow() {
         setExtendedState(MAXIMIZED_BOTH);
+        client = new Client();
+        jsonReader = new JsonReader();
         moderationCardList = new ArrayList<>();
         initComponents();
     }
@@ -71,10 +77,9 @@ public class MainWindow extends javax.swing.JFrame {
         setLocationRelativeTo(null);
     }// </editor-fold>//GEN-END:initComponents
 
-    public static void main(String args[]) {
-        JsonReader jsonReader = new JsonReader();
-        jsonReader.parseJson();
+    public static void main(String args[]) throws IOException {
         MainWindow mainWindow = new MainWindow();
+        mainWindow.jsonReader.parseJson(mainWindow.client.getModerationCards());
         QRCodeGenerator qrCodeGenerator = new QRCodeGenerator();
         mainWindow.createNewServer();
         if (mainWindow.getServer().getIpAddressAndPortAsString() != null) {
@@ -170,16 +175,16 @@ public class MainWindow extends javax.swing.JFrame {
                 g2d.drawLine(magneticCard.getBounds().x + magneticCard.getBounds().width + distance, 0, magneticCard.getBounds().x + magneticCard.getBounds().width + distance, getContentPane().getMaximumSize().height);
                 break;
             case NORTH:
-                g2d.drawLine(0, magneticCard.getY() + 35 - distance, getContentPane().getMaximumSize().width, magneticCard.getY() + 35 - distance);
+                g2d.drawLine(0, magneticCard.getY() - distance, getContentPane().getMaximumSize().width, magneticCard.getY() - distance);
                 break;
             case SOUTH:
-                g2d.drawLine(0, magneticCard.getY() + magneticCard.getBounds().height + 35 + distance, getContentPane().getMaximumSize().width, magneticCard.getY() + magneticCard.getBounds().height + 35 + distance);
+                g2d.drawLine(0, magneticCard.getY() + magneticCard.getBounds().height + distance, getContentPane().getMaximumSize().width, magneticCard.getY() + magneticCard.getBounds().height + distance);
                 break;
         }
         isLineDrawn = true;
     }
 
-    //TOCO: clear only drawn line
+    //TODO: clear only drawn line
     public void clearBackground() {
         if (!isLineDrawn) {
             return;
