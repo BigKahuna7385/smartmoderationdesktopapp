@@ -1,38 +1,35 @@
 package SmartModerationDesktopApp.Utilities;
 
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-
+import SmartModerationDesktopApp.ModerationCards.ModerationCard;
+import java.util.ArrayList;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
 
 public class JsonReader {
 
-    public void parseJson() {
-        JSONParser parser = new JSONParser();
+    public ArrayList<ModerationCard> parseModerationCardJson(String inputJson) {
+        ArrayList<ModerationCard> moderationCardList = new ArrayList();
+        
+        if (inputJson == null) {
+            return moderationCardList;
+        }
+        
+        JSONParser jsonParser = new JSONParser();
         try {
-            Object object = parser
-                    .parse(new FileReader("./src/testFiles/ModerationCardsTestSet.json"));
-            System.out.println("File read!");
-            //convert Object to JSONObject
-
+            Object object = jsonParser.parse(inputJson);
             JSONArray meetingCards = (JSONArray) object;
-            //Reading the String
             for (Object meetingCard : meetingCards) {
                 JSONObject jsonObject = (JSONObject) meetingCard;
                 long cardId = (long) jsonObject.get("cardId");
                 String content = (String) jsonObject.get("content");
                 String color = (String) jsonObject.get("color");
                 long meetingId = (long) jsonObject.get("meetingId");
-                System.out.println("cardId: " + cardId);
-                System.out.println("Content: " + content);
-                System.out.println("Color: " + color);
-                System.out.println("meetingId: " + meetingId);
+                moderationCardList.add(new ModerationCard(cardId, meetingId, content, color));
             }
-        } catch (FileNotFoundException fe) {
-        } catch (Exception e) {
+        } catch (ParseException e) {
         }
+        return moderationCardList;
     }
-
 }
