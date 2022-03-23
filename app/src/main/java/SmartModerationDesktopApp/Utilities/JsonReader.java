@@ -10,7 +10,11 @@ import org.json.simple.parser.ParseException;
 public class JsonReader {
 
     public ArrayList<ModerationCard> parseModerationCardJson(String inputJson) {
+
         ArrayList<ModerationCard> moderationCardList = new ArrayList();
+        if (inputJson == null) {
+            return moderationCardList;
+        }
         JSONParser parser = new JSONParser();
         try {
             Object object = parser.parse(inputJson);
@@ -21,7 +25,7 @@ public class JsonReader {
                 String content = (String) jsonObject.get("content");
                 String color = (String) jsonObject.get("color");
                 long meetingId = (long) jsonObject.get("meetingId");
-                moderationCardList.add(new ModerationCard(cardId, meetingId, content, color));               
+                moderationCardList.add(new ModerationCard(cardId, meetingId, content, color));
             }
         } catch (ParseException e) {
         }

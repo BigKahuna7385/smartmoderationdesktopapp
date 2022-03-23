@@ -1,13 +1,15 @@
 package SmartModerationDesktopApp.ModerationCards;
 
-import static SmartModerationDesktopApp.ModerationCards.SnapDirection.*;
 import SmartModerationDesktopApp.MainWindow;
+import static SmartModerationDesktopApp.ModerationCards.SnapDirection.*;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Point;
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;
-import java.awt.event.KeyEvent;
+import javax.swing.text.SimpleAttributeSet;
+import javax.swing.text.StyleConstants;
+import javax.swing.text.StyledDocument;
 
 public class ModerationCard extends javax.swing.JPanel {
 
@@ -30,18 +32,23 @@ public class ModerationCard extends javax.swing.JPanel {
         initComponents();
         this.cardId = cardId;
         this.meetingId = meetingId;
-        this.moderationCardTextBody.setText(content);
-        this.setBackground(Color.decode(backgroundColor));
+        setBackground(Color.decode(backgroundColor));
+        jScrollPane.setOpaque(false);
+        jScrollPane.getViewport().setOpaque(false);
+        StyledDocument doc = moderationCardTextBody.getStyledDocument();
+        SimpleAttributeSet center = new SimpleAttributeSet();
+        StyleConstants.setAlignment(center, StyleConstants.ALIGN_CENTER);
+        doc.setParagraphAttributes(0, doc.getLength(), center, false);
+        moderationCardTextBody.setText(content);
+        moderationCardTextBody.setBackground(new java.awt.Color(0, 0, 0, 0));
     }
 
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        cardTitle = new javax.swing.JLabel();
-        jScrollPane1 = new javax.swing.JScrollPane();
-        moderationCardTextBody = new javax.swing.JTextArea();
-        separator = new javax.swing.JSeparator();
+        jScrollPane = new javax.swing.JScrollPane();
+        moderationCardTextBody = new javax.swing.JTextPane();
 
         setBackground(new java.awt.Color(153, 153, 255));
         setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
@@ -62,49 +69,70 @@ public class ModerationCard extends javax.swing.JPanel {
             }
         });
 
-        cardTitle.setText("Titel");
-
         moderationCardTextBody.setEditable(false);
-        moderationCardTextBody.setColumns(20);
-        moderationCardTextBody.setRows(5);
-        moderationCardTextBody.setText("Body");
-        jScrollPane1.setViewportView(moderationCardTextBody);
+        moderationCardTextBody.addMouseMotionListener(new java.awt.event.MouseMotionAdapter() {
+            public void mouseDragged(java.awt.event.MouseEvent evt) {
+                moderationCardTextBodyMouseDragged(evt);
+            }
+        });
+        moderationCardTextBody.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                moderationCardTextBodyMouseClicked(evt);
+            }
+            public void mouseReleased(java.awt.event.MouseEvent evt) {
+                moderationCardTextBodyMouseReleased(evt);
+            }
+        });
+        jScrollPane.setViewportView(moderationCardTextBody);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createSequentialGroup()
-                        .addContainerGap()
-                        .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 384, Short.MAX_VALUE))
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(168, 168, 168)
-                        .addComponent(cardTitle)
-                        .addGap(0, 0, Short.MAX_VALUE)))
+                .addContainerGap()
+                .addComponent(jScrollPane, javax.swing.GroupLayout.DEFAULT_SIZE, 384, Short.MAX_VALUE)
                 .addContainerGap())
-            .addComponent(separator, javax.swing.GroupLayout.Alignment.TRAILING)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGap(14, 14, 14)
-                .addComponent(cardTitle)
-                .addGap(5, 5, 5)
-                .addComponent(separator, javax.swing.GroupLayout.PREFERRED_SIZE, 10, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(3, 3, 3)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 241, Short.MAX_VALUE)
+                .addContainerGap()
+                .addComponent(jScrollPane, javax.swing.GroupLayout.DEFAULT_SIZE, 283, Short.MAX_VALUE)
                 .addContainerGap())
         );
     }// </editor-fold>//GEN-END:initComponents
 
     private void formMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_formMousePressed
-        pressed = evt;
-        setCursor(new java.awt.Cursor(java.awt.Cursor.MOVE_CURSOR));
+        cardPressed(evt);
     }//GEN-LAST:event_formMousePressed
 
     private void formMouseDragged(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_formMouseDragged
+        cardDragged(evt);
+    }//GEN-LAST:event_formMouseDragged
+
+    private void formMouseReleased(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_formMouseReleased
+        cardReleased(evt);
+    }//GEN-LAST:event_formMouseReleased
+
+    private void moderationCardTextBodyMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_moderationCardTextBodyMouseClicked
+        cardPressed(evt);
+    }//GEN-LAST:event_moderationCardTextBodyMouseClicked
+
+    private void moderationCardTextBodyMouseDragged(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_moderationCardTextBodyMouseDragged
+        cardDragged(evt);
+    }//GEN-LAST:event_moderationCardTextBodyMouseDragged
+
+    private void moderationCardTextBodyMouseReleased(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_moderationCardTextBodyMouseReleased
+        cardReleased(evt);
+    }//GEN-LAST:event_moderationCardTextBodyMouseReleased
+
+    private void cardPressed(java.awt.event.MouseEvent evt) {
+        pressed = evt;
+        setCursor(new java.awt.Cursor(java.awt.Cursor.MOVE_CURSOR));
+    }
+
+    private void cardDragged(java.awt.event.MouseEvent evt) {
         currentComponent = evt.getComponent();
         location = currentComponent.getLocation(location);
         int dX = evt.getX() - pressed.getX();
@@ -131,9 +159,9 @@ public class ModerationCard extends javax.swing.JPanel {
         }
 
         currentComponent.setLocation(x, y);
-    }//GEN-LAST:event_formMouseDragged
+    }
 
-    private void formMouseReleased(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_formMouseReleased
+    private void cardReleased(java.awt.event.MouseEvent evt) {
         setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
         if (magneticCard != null) {
             //dockedModerationCardList.add(magneticCard);
@@ -157,10 +185,6 @@ public class ModerationCard extends javax.swing.JPanel {
             currentComponent.setLocation(x, y);
         }
         mainWindow.clearBackground();
-    }//GEN-LAST:event_formMouseReleased
-
-    public void keyPressed(KeyEvent evt) {
-
     }
 
     @Override
@@ -185,12 +209,9 @@ public class ModerationCard extends javax.swing.JPanel {
         this.mainWindow = mainWindow;
     }
 
-
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JLabel cardTitle;
-    private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JTextArea moderationCardTextBody;
-    private javax.swing.JSeparator separator;
+    private javax.swing.JScrollPane jScrollPane;
+    private javax.swing.JTextPane moderationCardTextBody;
     // End of variables declaration//GEN-END:variables
 
     private ModerationCard isCardMagnetic() {

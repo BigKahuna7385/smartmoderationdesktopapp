@@ -1,6 +1,18 @@
-[{"cardId":2624659524793748349,"content":"Lawand ist doof","color":"#E91E63","meetingId":3570151905752727837},
-    {"cardId":2624659524793748349,"content":"Lawand ist doof","color":"#E91E63","meetingId":3570151905752727837},
-    {"cardId":2760337309490495595,"content":"Daniel ist doof","color":"#673AB7","meetingId":3570151905752727837},
-    {"cardId":2760337309490495595,"content":"Daniel ist doof","color":"#673AB7","meetingId":3570151905752727837},
-    {"cardId":3239753487134706863,"content":"Daniel ist doch nicht doof","color":"#8BC34A","meetingId":3570151905752727837},
-    {"cardId":3239753487134706863,"content":"Daniel ist doch nicht doof","color":"#8BC34A","meetingId":3570151905752727837}]
+[{
+        "cardId": 2624659524793748349,
+        "content": "Lawand ist doof",
+        "color": "#E91E63",
+        "meetingId": 3570151905752727837
+    },
+    {
+        "cardId": 2760337309490495595,
+        "content": "Daniel ist doof",
+        "color": "#673AB7",
+        "meetingId": 3570151905752727837
+    },
+    {
+        "cardId": 3239753487134706863,
+        "content": "Daniel ist doch nicht doof",
+        "color": "#8BC34A",
+        "meetingId": 3570151905752727837
+    }]
