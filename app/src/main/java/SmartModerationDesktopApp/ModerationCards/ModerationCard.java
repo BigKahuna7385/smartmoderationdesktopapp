@@ -13,23 +13,23 @@ import javax.swing.text.StyledDocument;
 public class ModerationCard extends javax.swing.JPanel {
 
     private final int MAGNETRANGE = 30;
+    private final long cardId;
+    private final long meetingId;
+    private final String content;
+    private final String backgroundColor;
+    private final SnapDirectionChecker snapDirectionChecker;
     private int x;
     private int y;
-    private long cardId;
-    private long meetingId;
     private boolean distancedMagnet = false;
-    private String content;
-    private String backgroundColor;
     private Point location;
     private MouseEvent pressed;
     private MainWindow mainWindow;
     private ModerationCard magneticCard;
     private SnapDirections snapDirection;
-    private SnapDirectionChecker snapDirectionChecker;
     private ArrayList<ModerationCard> moderationCardList;
     private ArrayList<ModerationCard> dockedModerationCardList;
 
-   public ModerationCard(long cardId, long meetingId, String content, String backgroundColor) {
+    public ModerationCard(long cardId, long meetingId, String content, String backgroundColor) {
         initComponents();
         this.cardId = cardId;
         this.meetingId = meetingId;
@@ -39,7 +39,7 @@ public class ModerationCard extends javax.swing.JPanel {
         jScrollPane.getViewport().setOpaque(false);
         centerText();
         moderationCardTextBody.setText(content);
-        snapDirectionChecker = new SnapDirectionChecker();      
+        snapDirectionChecker = new SnapDirectionChecker();
     }
 
     @SuppressWarnings("unchecked")
@@ -151,20 +151,20 @@ public class ModerationCard extends javax.swing.JPanel {
 
         if (x < 0) {
             x = 0;
-        } else if (x > 1920 - getPreferredSize().width) {
-            x = 1920 - getBounds().width;
+        } else if (x > mainWindow.getGraphicsEnvironment().getDefaultScreenDevice().getFullScreenWindow().getWidth() - getPreferredSize().width) {
+            x = mainWindow.getGraphicsEnvironment().getDefaultScreenDevice().getFullScreenWindow().getWidth() - getPreferredSize().width;
         }
 
         if (y < 0) {
             y = 0;
-        } else if (y > 1080 - getPreferredSize().height) {
-            y = 1080 - getBounds().height;
+        } else if (y > mainWindow.getGraphicsEnvironment().getDefaultScreenDevice().getFullScreenWindow().getHeight() - getPreferredSize().height) {
+            y = mainWindow.getGraphicsEnvironment().getDefaultScreenDevice().getFullScreenWindow().getHeight() - getBounds().height;
         }
         isCardMagnetic();
         if (snapTo(magneticCard)) {
-            mainWindow.drawDottedLineBetween(this, magneticCard);
+            mainWindow.getLineDrawer().drawDottedLineBetween(this, magneticCard);
         } else {
-            mainWindow.clearBackground();
+            mainWindow.getLineDrawer().clearLine();
         }
 
         setLocation(x, y);
@@ -193,21 +193,45 @@ public class ModerationCard extends javax.swing.JPanel {
             }
             setLocation(x, y);
         }
-        mainWindow.clearBackground();
+        mainWindow.getLineDrawer().clearLine();
     }
-    
+
+    private void isCardMagnetic() {
+        distancedMagnet = false;
+        magneticCard = null;
+        for (ModerationCard moderationCard : moderationCardList) {
+            snapDirectionChecker.setSnapDirectionBetween(this, moderationCard);
+        }
+    }
+
+    private boolean snapTo(ModerationCard cardMagnetic) {
+        if (cardMagnetic == null) {
+            magneticCard = null;
+            return false;
+        }
+        magneticCard = cardMagnetic;
+        return true;
+    }
+
+    private void centerText() {
+        StyledDocument doc = moderationCardTextBody.getStyledDocument();
+        SimpleAttributeSet center = new SimpleAttributeSet();
+        StyleConstants.setAlignment(center, StyleConstants.ALIGN_CENTER);
+        doc.setParagraphAttributes(0, doc.getLength(), center, false);
+    }
+
     public long getCardId() {
         return cardId;
     }
-    
+
     public String getContent() {
         return content;
     }
-    
+
     public String getColor() {
         return backgroundColor;
     }
-    
+
     @Override
     public int getX() {
         return x;
@@ -230,30 +254,8 @@ public class ModerationCard extends javax.swing.JPanel {
         this.mainWindow = mainWindow;
     }
 
-    // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JScrollPane jScrollPane;
-    private javax.swing.JTextPane moderationCardTextBody;
-    // End of variables declaration//GEN-END:variables
-
-    private void isCardMagnetic() {
-        distancedMagnet = false;
-        magneticCard = null;
-        for (ModerationCard moderationCard : moderationCardList) {
-            snapDirectionChecker.setSnapDirectionBetween(this, moderationCard);
-        }
-    }
-
     public void setModerationCardList(ArrayList<ModerationCard> moderationCardList) {
         this.moderationCardList = moderationCardList;
-    }
-
-    private boolean snapTo(ModerationCard cardMagnetic) {
-        if (cardMagnetic == null) {
-            magneticCard = null;
-            return false;
-        }
-        magneticCard = cardMagnetic;
-        return true;
     }
 
     public SnapDirections getSnapDirection() {
@@ -284,10 +286,8 @@ public class ModerationCard extends javax.swing.JPanel {
         this.snapDirection = snapDirection;
     }
 
-    private void centerText() {
-        StyledDocument doc = moderationCardTextBody.getStyledDocument();
-        SimpleAttributeSet center = new SimpleAttributeSet();
-        StyleConstants.setAlignment(center, StyleConstants.ALIGN_CENTER);
-        doc.setParagraphAttributes(0, doc.getLength(), center, false);
-    }
+    // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JScrollPane jScrollPane;
+    private javax.swing.JTextPane moderationCardTextBody;
+    // End of variables declaration//GEN-END:variables
 }
