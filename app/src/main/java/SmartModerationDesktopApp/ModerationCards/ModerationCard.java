@@ -29,7 +29,7 @@ public class ModerationCard extends javax.swing.JPanel {
     private ArrayList<ModerationCard> moderationCardList;
     private ArrayList<ModerationCard> dockedModerationCardList;
 
-   public ModerationCard(long cardId, long meetingId, String content, String backgroundColor) {
+    public ModerationCard(long cardId, long meetingId, String content, String backgroundColor) {
         initComponents();
         this.cardId = cardId;
         this.meetingId = meetingId;
@@ -39,7 +39,7 @@ public class ModerationCard extends javax.swing.JPanel {
         jScrollPane.getViewport().setOpaque(false);
         centerText();
         moderationCardTextBody.setText(content);
-        snapDirectionChecker = new SnapDirectionChecker();      
+        snapDirectionChecker = new SnapDirectionChecker();
     }
 
     @SuppressWarnings("unchecked")
@@ -162,9 +162,9 @@ public class ModerationCard extends javax.swing.JPanel {
         }
         isCardMagnetic();
         if (snapTo(magneticCard)) {
-            mainWindow.drawDottedLineBetween(this, magneticCard);
+            mainWindow.getLineDrawer().drawDottedLineBetween(this, magneticCard);
         } else {
-            mainWindow.clearBackground();
+            mainWindow.getLineDrawer().clearBackground();
         }
 
         setLocation(x, y);
@@ -193,21 +193,21 @@ public class ModerationCard extends javax.swing.JPanel {
             }
             setLocation(x, y);
         }
-        mainWindow.clearBackground();
+        mainWindow.getLineDrawer().clearBackground();
     }
-    
+
     public long getCardId() {
         return cardId;
     }
-    
+
     public String getContent() {
         return content;
     }
-    
+
     public String getColor() {
         return backgroundColor;
     }
-    
+
     @Override
     public int getX() {
         return x;

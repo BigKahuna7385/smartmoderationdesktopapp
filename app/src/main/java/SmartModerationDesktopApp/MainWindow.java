@@ -5,6 +5,7 @@ import SmartModerationDesktopApp.ModerationCards.ModerationCard;
 import SmartModerationDesktopApp.Server.Client;
 import SmartModerationDesktopApp.Utilities.JsonReader;
 import SmartModerationDesktopApp.Utilities.JsonWriter;
+import SmartModerationDesktopApp.Utilities.LineDrawer;
 import SmartModerationDesktopApp.Utilities.QRCodeGenerator;
 import com.google.zxing.WriterException;
 import java.awt.BasicStroke;
@@ -22,6 +23,7 @@ public class MainWindow extends javax.swing.JFrame {
     private final Client client;
     private final JsonReader jsonReader;
     private final JsonWriter jsonWriter;
+    private final LineDrawer lineDrawer;
     private final ArrayList<ModerationCard> moderationCardList;
     //TODO: fetch meeting ID in login process to load moderation cards
     private final long meetingId = 3570151905752727837L;
@@ -35,6 +37,7 @@ public class MainWindow extends javax.swing.JFrame {
         server = new Server();
         jsonReader = new JsonReader();
         jsonWriter = new JsonWriter();
+        lineDrawer = new LineDrawer(this);
         moderationCardList = new ArrayList<>();
         initComponents();
     }
@@ -167,50 +170,29 @@ public class MainWindow extends javax.swing.JFrame {
         return server;
     }
 
+    public boolean isIsLineDrawn() {
+        return isLineDrawn;
+    }
+
+    public boolean isHasLineDistance() {
+        return hasLineDistance;
+    }
+
+    public void setHasLineDistance(boolean hasLineDistance) {
+        this.hasLineDistance = hasLineDistance;
+    }
+
+    public void setIsLineDrawn(boolean isLineDrawn) {
+        this.isLineDrawn = isLineDrawn;
+    }
+
+    public LineDrawer getLineDrawer() {
+        return lineDrawer;
+    }    
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel QRCode;
     private javax.swing.JLabel QRCodeLabel;
     private javax.swing.JButton saveButton;
     // End of variables declaration//GEN-END:variables
-
-    //TODO: move to own class 
-    public void drawDottedLineBetween(ModerationCard movingCard, ModerationCard magneticCard) {
-        if (movingCard.isDistancedMagnet() != hasLineDistance) {
-            clearBackground();
-            hasLineDistance = movingCard.isDistancedMagnet();
-        }
-
-        Graphics2D g2d = (Graphics2D) getGraphics();
-        float dashPhase = 0f;
-        float dash[] = {5.0f, 5.0f};
-        g2d.setStroke(new BasicStroke(1.5f, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND, 1.5f, dash, dashPhase));
-        int distance = hasLineDistance ? magneticCard.getMAGNETRANGE() : 0;
-        switch (movingCard.getSnapDirection()) {
-            case EAST:
-                g2d.drawLine(magneticCard.getBounds().x - distance, 0, magneticCard.getBounds().x - distance, getContentPane().getMaximumSize().height);
-                break;
-            case WEST:
-                g2d.drawLine(magneticCard.getBounds().x + magneticCard.getBounds().width + distance, 0, magneticCard.getBounds().x + magneticCard.getBounds().width + distance, getContentPane().getMaximumSize().height);
-                break;
-            case NORTH:
-                g2d.drawLine(0, magneticCard.getY() - distance, getContentPane().getMaximumSize().width, magneticCard.getY() - distance);
-                break;
-            case SOUTH:
-                g2d.drawLine(0, magneticCard.getY() + magneticCard.getBounds().height + distance, getContentPane().getMaximumSize().width, magneticCard.getY() + magneticCard.getBounds().height + distance);
-                break;
-        }
-        isLineDrawn = true;
-    }
-
-    //TODO: clear only drawn line
-    public void clearBackground() {
-        if (!isLineDrawn) {
-            return;
-        }
-        Graphics2D g2d = (Graphics2D) getGraphics();
-        g2d.clearRect(0, 0, this.getHeight(), this.getWidth());
-        revalidate();
-        repaint();
-        isLineDrawn = false;
-    }
 }
