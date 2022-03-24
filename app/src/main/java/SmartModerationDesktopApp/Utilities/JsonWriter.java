@@ -9,7 +9,6 @@ import java.util.ArrayList;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
-
 public class JsonWriter {
     
     public void saveMeetingStatus(long meetingID, ArrayList<ModerationCard> moderationCards){
@@ -30,17 +29,11 @@ public class JsonWriter {
         if (!directory.exists()){
             directory.mkdir();
         }
-        
         try (FileWriter fileWriter = new FileWriter("./cache/" + meetingID + ".json")) {
             fileWriter.write(cardsArray.toJSONString()); 
             fileWriter.close();
- 
         } catch (IOException ex) {
             ex.printStackTrace();
         }
-        
     }
-    
-    
-    
 }
