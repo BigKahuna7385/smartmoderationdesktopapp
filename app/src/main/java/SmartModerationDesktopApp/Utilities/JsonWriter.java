@@ -1,4 +1,3 @@
-
 package SmartModerationDesktopApp.Utilities;
 
 import SmartModerationDesktopApp.ModerationCards.ModerationCard;
@@ -34,8 +33,6 @@ public class JsonWriter {
             fileWriter.write(cardsArray.toJSONString()); 
             fileWriter.close();
         } catch (IOException ex) {
-            ex.printStackTrace();
-        }
-        
+        }        
     }
 }

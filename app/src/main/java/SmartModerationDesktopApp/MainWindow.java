@@ -3,6 +3,7 @@ package SmartModerationDesktopApp;
 import SmartModerationDesktopApp.ModerationCards.ModerationCard;
 import SmartModerationDesktopApp.ModerationCards.ModerationCardFactory;
 import SmartModerationDesktopApp.Server.Client;
+import SmartModerationDesktopApp.Server.LoginInformation;
 import SmartModerationDesktopApp.Server.Server;
 import SmartModerationDesktopApp.Utilities.JsonReader;
 import SmartModerationDesktopApp.Utilities.JsonWriter;
@@ -14,32 +15,34 @@ import java.awt.GraphicsEnvironment;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.Icon;
+import org.json.simple.parser.ParseException;
 
 public class MainWindow extends javax.swing.JFrame {
 
     private final Server server;
-    private final Client client;
     private final JsonReader jsonReader;
     private final JsonWriter jsonWriter;
     private final LineDrawer lineDrawer;
     private final GraphicsEnvironment graphicsEnvironment;
     private final ArrayList<ModerationCard> moderationCards;
-    //TODO: fetch meeting ID in login process to load moderation cards
-    private final long meetingId = 3570151905752727837L;
+    private final ModerationCardFactory moderationCardFactory;
+    private Client client;
+    private long meetingId;
     private boolean isLineDrawn = false;
     private boolean hasLineDistance = false;
-    private StringBuilder qrString;
 
     public MainWindow() {
         setExtendedState(MAXIMIZED_BOTH);
-        client = new Client();
-        server = new Server();
+        server = new Server(this);
         jsonReader = new JsonReader();
         jsonWriter = new JsonWriter();
         lineDrawer = new LineDrawer(this);
         moderationCards = new ArrayList<>();
         graphicsEnvironment = GraphicsEnvironment.getLocalGraphicsEnvironment();
+        moderationCardFactory = new ModerationCardFactory(this);
         initComponents();
     }
 
@@ -108,21 +111,7 @@ public class MainWindow extends javax.swing.JFrame {
 
     public static void main(String args[]) throws IOException {
         MainWindow mainWindow = new MainWindow();
-
-        //TODO: move to login procedure
-        mainWindow.moderationCards.addAll(mainWindow.jsonReader.parseModerationCardJson(mainWindow.client.getModerationCards()));
-
         QRCodeGenerator qrCodeGenerator = new QRCodeGenerator();
-
-        if (mainWindow.getServer().getIpAddressAndPortAsString() != null) {
-            mainWindow.qrString = new StringBuilder(mainWindow.getServer().getIpAddressAndPortAsString());
-            mainWindow.qrString.append("\n");
-            mainWindow.qrString.append(mainWindow.server.getApiKey());
-            System.out.println("Server");
-        } else {
-            mainWindow.qrString = new StringBuilder("No server setup possible");
-        }
-
         try {
             for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
                 if ("Nimbus".equals(info.getName())) {
@@ -133,22 +122,33 @@ public class MainWindow extends javax.swing.JFrame {
         } catch (ClassNotFoundException | InstantiationException | IllegalAccessException | javax.swing.UnsupportedLookAndFeelException ex) {
             java.util.logging.Logger.getLogger(MainWindow.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
-        ModerationCardFactory moderationCardFactory = new ModerationCardFactory(mainWindow);
 
         java.awt.EventQueue.invokeLater(() -> {
             GraphicsDevice device = mainWindow.getGraphicsEnvironment().getDefaultScreenDevice();
             device.setFullScreenWindow(mainWindow);
-            moderationCardFactory.placeModerationCards();
-
             try {
-                mainWindow.setQRCodeLabel(qrCodeGenerator.StringToQRCodeToIcon(mainWindow.qrString.toString()));
-            } catch (UnsupportedEncodingException | WriterException ex) {
+                mainWindow.setQRCodeLabel(qrCodeGenerator.createLoginQRCode(mainWindow));
+            } catch (WriterException ex) {
+            } catch (UnsupportedEncodingException ex) {
+                Logger.getLogger(MainWindow.class.getName()).log(Level.SEVERE, null, ex);
             }
         });
 
         mainWindow.getServer().createServer();
     }
 
+    public void processLogin(String loginString) throws ParseException, IOException {
+        readLoginInformation(jsonReader.readLoginInformationJson(loginString));
+        QRCode.setVisible(false);
+        QRCodeLabel.setVisible(false);
+        moderationCards.addAll(jsonReader.parseModerationCardJson(client.getModerationCards()));
+        moderationCardFactory.placeModerationCards();
+    }
+
+    private void readLoginInformation(LoginInformation loginInformation) {
+        setMeetingId(loginInformation.getMeetingId());
+        client = new Client(loginInformation);
+    }
 
     public void setQRCodeLabel(Icon icon) {
         QRCode.setIcon(icon);
@@ -157,12 +157,12 @@ public class MainWindow extends javax.swing.JFrame {
     public Server getServer() {
         return server;
     }
-    
-    public ArrayList<ModerationCard> getModerationCards(){
+
+    public ArrayList<ModerationCard> getModerationCards() {
         return this.moderationCards;
     }
-    
-    public long getMeetingId(){
+
+    public long getMeetingId() {
         return meetingId;
     }
 
@@ -190,6 +190,9 @@ public class MainWindow extends javax.swing.JFrame {
         return graphicsEnvironment;
     }
 
+    public void setMeetingId(long meetingId) {
+        this.meetingId = meetingId;
+    }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel QRCode;

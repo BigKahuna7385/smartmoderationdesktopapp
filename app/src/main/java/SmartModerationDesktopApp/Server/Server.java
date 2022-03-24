@@ -1,115 +1,96 @@
 package SmartModerationDesktopApp.Server;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.PrintWriter;
+import SmartModerationDesktopApp.MainWindow;
+import com.sun.net.httpserver.Headers;
+import com.sun.net.httpserver.HttpExchange;
+import com.sun.net.httpserver.HttpServer;
+import java.io.*;
 import java.net.InetAddress;
+import java.net.InetSocketAddress;
 import java.net.NetworkInterface;
-import java.net.ServerSocket;
-import java.net.Socket;
 import java.net.SocketException;
-import java.util.Date;
 import java.util.Enumeration;
-import java.util.StringTokenizer;
 import java.util.UUID;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import org.json.simple.parser.ParseException;
 
-public class Server implements Runnable {
+public class Server {
 
-    private final int PORT = 8080;
-    private final boolean VERBOSE = true;
-    private final String contentType = "text/plain";
+    static final int PORT = 8080;
+    private static InetAddress ipAddress;
+    static final boolean VERBOSE = true;
     private final String apiKey;
-    private final InetAddress ipAddress;
-    private Socket connect;
+    private final MainWindow mainWindow;
 
-    public Server() {
+    public Server(MainWindow mainWindow) {
         apiKey = UUID.randomUUID().toString();
+        System.out.println("apiKey:" + apiKey);
         ipAddress = getIpAddress();
+        this.mainWindow = mainWindow;
     }
 
     public void createServer() {
         try {
-            ServerSocket serverConnect = new ServerSocket(PORT);
-            System.out.println(serverConnect.getInetAddress().getHostAddress() + ":" + serverConnect.getLocalPort());
-            System.out.println("Server started.\nListening for connections on port : " + PORT + " ...\n");
-            while (true) {
-                connect = serverConnect.accept();
-
-                if (VERBOSE) {
-                    System.out.println("Connection opened. (" + new Date() + ")");
+            HttpServer server = HttpServer.create(new InetSocketAddress(8080), 0);
+            server.createContext("/", (HttpExchange t) -> {
+                StringBuilder sb = new StringBuilder();
+                InputStream ios = t.getRequestBody();
+                int i;
+                while ((i = ios.read()) != -1) {
+                    sb.append((char) i);
                 }
-                Thread thread = new Thread(this);
-                thread.start();
-            }
+                System.out.println("hm: " + sb.toString());
+
+                String response = " <html>\n"
+                        + "<body>\n"
+                        + "\n"
+                        + "<form action=\"http://localhost:8000\" method=\"post\">\n"
+                        + "input: <input type=\"text\" name=\"input\"><br>\n"
+                        + "input2: <input type=\"text\" name=\"input2\"><br>\n"
+                        + "<input type=\"submit\">\n"
+                        + "</form>\n"
+                        + "\n"
+                        + "</body>\n"
+                        + "</html> ";
+                t.sendResponseHeaders(200, response.length());
+                try ( OutputStream os = t.getResponseBody()) {
+                    os.write(response.getBytes());
+                }
+            });
+            server.createContext("/login", (HttpExchange t) -> {
+                StringBuilder sb = new StringBuilder();
+                String requestMethod = t.getRequestMethod();
+                System.out.println("Method: " + requestMethod);
+                Headers headers = t.getRequestHeaders();
+                if (!headers.containsKey("Authorization") || !headers.getFirst("Authorization").equals("Bearer " + apiKey)) {
+                    String response = "Missing or incorrect Authorization";
+                    t.sendResponseHeaders(401, response.length());
+                    try ( OutputStream os = t.getResponseBody()) {
+                        os.write(response.getBytes());
+                    }
+                } else {
+                    InputStream ios = t.getRequestBody();
+                    int i;
+                    while ((i = ios.read()) != -1) {
+                        sb.append((char) i);
+                    }
+                    System.out.println("meetingJson: " + sb.toString());
+                    String response = "OK";
+                    t.sendResponseHeaders(200, response.length());
+                    try ( OutputStream os = t.getResponseBody()) {
+                        os.write(response.getBytes());
+                    }
+                    try {
+                        mainWindow.processLogin(sb.toString());
+                    } catch (ParseException | IOException ex) {
+                        Logger.getLogger(Server.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                }
+            });
+            server.setExecutor(null);
+            server.start();
         } catch (IOException e) {
-            System.err.println("Server Connection error : " + e.getMessage());
-        }
-    }
-
-    @Override
-    public void run() {
-        BufferedReader in = null;
-        PrintWriter out = null;
-
-        try {
-            in = new BufferedReader(new InputStreamReader(connect.getInputStream()));
-            out = new PrintWriter(connect.getOutputStream());
-            String input = in.readLine();
-
-            if (input == null) {
-                return;
-            }
-            StringTokenizer parse = new StringTokenizer(input);
-            String method = parse.nextToken().toUpperCase();
-
-            if (method.equals("GET")) {
-                System.out.println(input);
-                System.out.println(in.readLine());
-                System.out.println(in.readLine());
-                System.out.println(in.readLine());
-                System.out.println(in.readLine());
-                System.out.println(in.readLine());
-                System.out.println(in.readLine());
-
-                out.println("HTTP/1.1 200 OK");
-                out.println("Server: Java HTTP Server from SSaurel : 1.0");
-                out.println("Date: " + new Date());
-                out.println("Content-type: " + contentType);
-                out.println();
-                out.print("Body");
-                out.flush();
-
-            } else {
-                if (VERBOSE) {
-                    System.out.println("501 Not Implemented : " + method + " method.");
-                }
-
-                String contentMimeType = "text/html";
-                out.println("HTTP/1.1 501 Not Implemented");
-                out.println("Server: Java HTTP Server from SSaurel : 1.0");
-                out.println("Date: " + new Date());
-                out.println("Content-type: " + contentMimeType);
-                out.println();
-                out.flush();
-
-            }
-        } catch (IOException ioe) {
-            System.err.println("Server error : " + ioe);
-        } finally {
-            try {
-                in.close();
-                out.close();
-                connect.close();
-            } catch (IOException e) {
-                System.err.println("Error closing stream : " + e.getMessage());
-            }
-
-            if (VERBOSE) {
-                System.out.println("Connection closed.\n");
-            }
         }
     }
 
@@ -122,23 +103,27 @@ public class Server implements Runnable {
                 Enumeration ee = ni.getInetAddresses();
                 while (ee.hasMoreElements()) {
                     InetAddress ia = (InetAddress) ee.nextElement();
+                    System.out.println(ia.getCanonicalHostName());
                     if (ia.getHostAddress().contains("192.168.") || ia.getHostAddress().contains("172.")) {
                         return ia;
                     }
                 }
             }
         } catch (SocketException ex) {
-            Logger.getLogger(Server.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(Server.class
+                    .getName()).log(Level.SEVERE, null, ex);
         }
         return null;
     }
 
     public String getIpAddressAndPortAsString() {
-        return ipAddress == null ? null : ipAddress.getCanonicalHostName() + ":" + PORT;
+        if (ipAddress == null) {
+            return null;
+        }
+        return ipAddress.getCanonicalHostName() + ":" + PORT;
     }
 
     public String getApiKey() {
         return apiKey;
     }
-
 }
