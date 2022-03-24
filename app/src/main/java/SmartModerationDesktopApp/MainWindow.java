@@ -1,15 +1,13 @@
 package SmartModerationDesktopApp;
 
-import SmartModerationDesktopApp.Server.Server;
 import SmartModerationDesktopApp.ModerationCards.ModerationCard;
 import SmartModerationDesktopApp.Server.Client;
+import SmartModerationDesktopApp.Server.Server;
 import SmartModerationDesktopApp.Utilities.JsonReader;
 import SmartModerationDesktopApp.Utilities.JsonWriter;
 import SmartModerationDesktopApp.Utilities.LineDrawer;
 import SmartModerationDesktopApp.Utilities.QRCodeGenerator;
 import com.google.zxing.WriterException;
-import java.awt.BasicStroke;
-import java.awt.Graphics2D;
 import java.awt.GraphicsDevice;
 import java.awt.GraphicsEnvironment;
 import java.io.IOException;
@@ -24,6 +22,7 @@ public class MainWindow extends javax.swing.JFrame {
     private final JsonReader jsonReader;
     private final JsonWriter jsonWriter;
     private final LineDrawer lineDrawer;
+    private final GraphicsEnvironment graphicsEnvironment;
     private final ArrayList<ModerationCard> moderationCardList;
     //TODO: fetch meeting ID in login process to load moderation cards
     private final long meetingId = 3570151905752727837L;
@@ -39,6 +38,7 @@ public class MainWindow extends javax.swing.JFrame {
         jsonWriter = new JsonWriter();
         lineDrawer = new LineDrawer(this);
         moderationCardList = new ArrayList<>();
+        graphicsEnvironment = GraphicsEnvironment.getLocalGraphicsEnvironment();
         initComponents();
     }
 
@@ -135,8 +135,7 @@ public class MainWindow extends javax.swing.JFrame {
         }
 
         java.awt.EventQueue.invokeLater(() -> {
-            GraphicsEnvironment graphics = GraphicsEnvironment.getLocalGraphicsEnvironment();
-            GraphicsDevice device = graphics.getDefaultScreenDevice();
+            GraphicsDevice device = mainWindow.getGraphicsEnvironment().getDefaultScreenDevice();
             device.setFullScreenWindow(mainWindow);
             mainWindow.placeModerationCards();
 
@@ -188,7 +187,12 @@ public class MainWindow extends javax.swing.JFrame {
 
     public LineDrawer getLineDrawer() {
         return lineDrawer;
-    }    
+    }
+
+    public GraphicsEnvironment getGraphicsEnvironment() {
+        return graphicsEnvironment;
+    }
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel QRCode;

@@ -151,14 +151,14 @@ public class ModerationCard extends javax.swing.JPanel {
 
         if (x < 0) {
             x = 0;
-        } else if (x > 1920 - getPreferredSize().width) {
-            x = 1920 - getBounds().width;
+        } else if (x > mainWindow.getGraphicsEnvironment().getDefaultScreenDevice().getFullScreenWindow().getWidth() - getPreferredSize().width) {
+            x = mainWindow.getGraphicsEnvironment().getDefaultScreenDevice().getFullScreenWindow().getWidth() - getPreferredSize().width;
         }
 
         if (y < 0) {
             y = 0;
-        } else if (y > 1080 - getPreferredSize().height) {
-            y = 1080 - getBounds().height;
+        } else if (y > mainWindow.getGraphicsEnvironment().getDefaultScreenDevice().getFullScreenWindow().getHeight() - getPreferredSize().height) {
+            y = mainWindow.getGraphicsEnvironment().getDefaultScreenDevice().getFullScreenWindow().getHeight() - getBounds().height;
         }
         isCardMagnetic();
         if (snapTo(magneticCard)) {
