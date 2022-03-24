@@ -156,8 +156,6 @@ public class MainWindow extends javax.swing.JFrame {
         File moderationCardCacheFile = new File("./cache/" + meetingId + ".json");
         final boolean cacheExists = moderationCardCacheFile.exists();
         
-        
-        //TODO check if cards have been deleted in app and dont load them from cache
         if(cacheExists){
             HashMap<Long, Point> cachedModerationCardPositions = jsonReader.parseCacheJson(moderationCardCacheFile);
             moderationCardList.forEach((moderationCard) ->{
