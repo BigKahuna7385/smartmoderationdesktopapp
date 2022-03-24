@@ -1,6 +1,6 @@
 package SmartModerationDesktopApp.ModerationCards;
 
-import static SmartModerationDesktopApp.ModerationCards.SnapDirection.*;
+import static SmartModerationDesktopApp.ModerationCards.SnapDirections.*;
 import SmartModerationDesktopApp.MainWindow;
 import java.awt.Color;
 import java.awt.Component;
@@ -22,7 +22,8 @@ public class ModerationCard extends javax.swing.JPanel {
     private Component currentComponent;
     private boolean distancedMagnet = false;
     private MainWindow mainWindow;
-    private SnapDirection snapDirection;
+    private SnapDirections snapDirection;
+    private SnapDirectionChecker snapDirectionChecker;
 
     public ModerationCard() {
         initComponents();
@@ -34,6 +35,7 @@ public class ModerationCard extends javax.swing.JPanel {
         this.mainWindow = mainWindow;
         moderationCardList = new ArrayList<>();
         dockedModerationCardList = new ArrayList<>();
+        snapDirectionChecker = new SnapDirectionChecker();
         initComponents();
     }
 
@@ -126,8 +128,8 @@ public class ModerationCard extends javax.swing.JPanel {
         } else if (y > 1080 - getPreferredSize().height) {
             y = 1080 - getBounds().height;
         }
-
-        if (snapTo(isCardMagnetic())) {
+        isCardMagnetic();
+        if (snapTo(magneticCard)) {
             this.setBackground(Color.green);
             mainWindow.drawDottedLineBetween(this, magneticCard);
         } else {
@@ -193,49 +195,13 @@ public class ModerationCard extends javax.swing.JPanel {
     private javax.swing.JSeparator separator;
     // End of variables declaration//GEN-END:variables
 
-    private ModerationCard isCardMagnetic() {
+    private void isCardMagnetic() {
         distancedMagnet = false;
-        ModerationCard returnModerationCard = null;
+        magneticCard = null;
 
         for (ModerationCard moderationCard : moderationCardList) {
-            if ((y > moderationCard.getY() && y < moderationCard.getY() + moderationCard.getBounds().height) || (y + getBounds().height > moderationCard.getY() && y + getBounds().height < moderationCard.getY() + moderationCard.getBounds().height)) {
-                if (getBounds().x < moderationCard.getBounds().x + moderationCard.getBounds().width + MAGNETRANGE && getBounds().x > moderationCard.getBounds().x + moderationCard.getBounds().width - MAGNETRANGE) {
-                    returnModerationCard = moderationCard;
-                    distancedMagnet = false;
-                    snapDirection = WEST;
-                } else if (getBounds().x < moderationCard.getBounds().x + moderationCard.getBounds().width + 2 * MAGNETRANGE && getBounds().x >= moderationCard.getBounds().x + moderationCard.getBounds().width + MAGNETRANGE) {
-                    returnModerationCard = moderationCard;
-                    distancedMagnet = true;
-                    snapDirection = WEST;
-                } else if (getBounds().x + getBounds().width - MAGNETRANGE < moderationCard.getBounds().x && getBounds().x + getBounds().width + MAGNETRANGE > moderationCard.getBounds().x) {
-                    returnModerationCard = moderationCard;
-                    distancedMagnet = false;
-                    snapDirection = EAST;
-                } else if (getBounds().x + getBounds().width + MAGNETRANGE < moderationCard.getBounds().x && getBounds().x + getBounds().width + 2 * MAGNETRANGE >= moderationCard.getBounds().x) {
-                    returnModerationCard = moderationCard;
-                    distancedMagnet = true;
-                    snapDirection = EAST;
-                }
-            }
-            if ((getBounds().x > moderationCard.getBounds().x && getBounds().x < moderationCard.getBounds().x + moderationCard.getBounds().width) || (getBounds().x + getBounds().width > moderationCard.getBounds().x && getBounds().x + getBounds().width < moderationCard.getBounds().x + moderationCard.getBounds().width)) {
-                if (getBounds().y < moderationCard.getY() + moderationCard.getBounds().height + MAGNETRANGE && getBounds().y > moderationCard.getY() + moderationCard.getBounds().height - MAGNETRANGE) {
-                    returnModerationCard = moderationCard;
-                    snapDirection = SOUTH;
-                } else if (getBounds().y < moderationCard.getY() + moderationCard.getBounds().height + 2 * MAGNETRANGE && getBounds().y > moderationCard.getY() + moderationCard.getBounds().height + MAGNETRANGE) {
-                    returnModerationCard = moderationCard;
-                    distancedMagnet = true;
-                    snapDirection = SOUTH;
-                } else if (getBounds().y + moderationCard.getBounds().height - MAGNETRANGE < moderationCard.getY() && getBounds().y + moderationCard.getBounds().height + MAGNETRANGE > moderationCard.getY()) {
-                    returnModerationCard = moderationCard;
-                    snapDirection = NORTH;
-                } else if (getBounds().y + moderationCard.getBounds().height + MAGNETRANGE < moderationCard.getY() && getBounds().y + moderationCard.getBounds().height + 2 * MAGNETRANGE > moderationCard.getY()) {
-                    returnModerationCard = moderationCard;
-                    distancedMagnet = true;
-                    snapDirection = NORTH;
-                }
-            }
+            snapDirectionChecker.setSnapDirectionBetween(this, moderationCard);
         }
-        return returnModerationCard;
     }
 
     public void setModerationCardList(ArrayList<ModerationCard> moderationCardList) {
@@ -251,15 +217,31 @@ public class ModerationCard extends javax.swing.JPanel {
         return true;
     }
 
-    public SnapDirection getSnapDirection() {
+    public SnapDirections getSnapDirection() {
         return snapDirection;
     }
 
     public boolean isDistancedMagnet() {
         return distancedMagnet;
-    }
+    }    
 
     public int getMAGNETRANGE() {
         return MAGNETRANGE;
+    }
+
+    public void setMagneticCard(ModerationCard magneticCard) {
+        this.magneticCard = magneticCard;
+    }
+
+    public ModerationCard getMagneticCard() {
+        return magneticCard;
+    }    
+
+    public void setDistancedMagnet(boolean distancedMagnet) {
+        this.distancedMagnet = distancedMagnet;
+    }
+
+    public void setSnapDirection(SnapDirections snapDirection) {
+        this.snapDirection = snapDirection;
     }
 }
