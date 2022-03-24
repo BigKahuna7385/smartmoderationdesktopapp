@@ -49,6 +49,7 @@ public class MainWindow extends javax.swing.JFrame {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setPreferredSize(new java.awt.Dimension(1920, 1080));
+        setResizable(false);
         setSize(new java.awt.Dimension(1920, 1080));
 
         QRCode.setToolTipText("Scan QRCode to start session");

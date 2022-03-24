@@ -1,8 +1,9 @@
 package SmartModerationDesktopApp.ModerationCards;
 
-public enum SnapDirection {
+public enum SnapDirections {
     NORTH,
     EAST,
     SOUTH,
-    WEST
+    WEST,
+    NONE;
 }
