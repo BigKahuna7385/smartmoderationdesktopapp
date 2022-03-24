@@ -38,12 +38,19 @@ public class ModerationCardFactory {
             });
         }
         
-        moderationCards.forEach((moderationCard) -> {
+        int moderationCardOffset = 0;
+        
+        for(ModerationCard moderationCard : moderationCards) {
             moderationCard.setMainWindow(mainWindowFrame);
             mainWindowFrame.getContentPane().add(moderationCard);
+            if(moderationCard.getX() == 0 && moderationCard.getY() == 0){
+                moderationCard.setX(moderationCardOffset);
+                moderationCard.setY(moderationCardOffset);
+                moderationCardOffset += 10;
+            }
             moderationCard.setBounds(moderationCard.getX(), moderationCard.getY(), moderationCard.getPreferredSize().width, moderationCard.getPreferredSize().height);
             moderationCard.setModerationCardList(moderationCards);
-        });
+        };
     }
     
     
