@@ -18,6 +18,8 @@ public class ModerationCard extends javax.swing.JPanel {
     private long cardId;
     private long meetingId;
     private boolean distancedMagnet = false;
+    private String content;
+    private String backgroundColor;
     private Point location;
     private MouseEvent pressed;
     private MainWindow mainWindow;
@@ -31,6 +33,8 @@ public class ModerationCard extends javax.swing.JPanel {
         initComponents();
         this.cardId = cardId;
         this.meetingId = meetingId;
+        this.content = content;
+        this.backgroundColor = backgroundColor;
         setBackground(Color.decode(backgroundColor));
         jScrollPane.getViewport().setOpaque(false);
         centerText();
@@ -191,7 +195,19 @@ public class ModerationCard extends javax.swing.JPanel {
         }
         mainWindow.clearBackground();
     }
-
+    
+    public long getCardId() {
+        return cardId;
+    }
+    
+    public String getContent() {
+        return content;
+    }
+    
+    public String getColor() {
+        return backgroundColor;
+    }
+    
     @Override
     public int getX() {
         return x;

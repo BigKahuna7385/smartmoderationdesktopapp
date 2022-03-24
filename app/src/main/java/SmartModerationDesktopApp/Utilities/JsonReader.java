@@ -8,6 +8,8 @@ import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
 public class JsonReader {
+    
+    //TODO: Functionality to load existing moderation cards based on meeting id
 
     public ArrayList<ModerationCard> parseModerationCardJson(String inputJson) {
         ArrayList<ModerationCard> moderationCardList = new ArrayList();
