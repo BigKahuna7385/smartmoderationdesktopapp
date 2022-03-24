@@ -23,6 +23,7 @@ public class MainWindow extends javax.swing.JFrame {
     private final JsonReader jsonReader;
     private final JsonWriter jsonWriter;
     private final ArrayList<ModerationCard> moderationCardList;
+    private final long meetingId = 3570151905752727837L;
     private boolean isLineDrawn = false;
     private boolean hasLineDistance = false;
     private StringBuilder qrString;
@@ -97,7 +98,9 @@ public class MainWindow extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void saveButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_saveButtonActionPerformed
-        // TODO add your handling code here:
+        System.out.println("Button clicked");
+        jsonWriter.saveMeetingStatus(meetingId, moderationCardList);
+        System.out.println("Json Created");
     }//GEN-LAST:event_saveButtonActionPerformed
 
     public static void main(String args[]) throws IOException {
@@ -144,6 +147,7 @@ public class MainWindow extends javax.swing.JFrame {
     }
 
     //TODO: move to factory
+    //TODO: Add logic if moderation cards are loaded from cache
     private void placeModerationCards() {
         moderationCardList.forEach((moderationCard) -> {
             moderationCard.setMainWindow(this);
