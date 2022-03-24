@@ -18,12 +18,12 @@ import java.util.logging.Logger;
 
 public class Server implements Runnable {
 
-    static final int PORT = 8080;
-    private static InetAddress ipAddress;
-    static final boolean VERBOSE = true;
-    private Socket connect;
+    private final int PORT = 8080;
+    private final boolean VERBOSE = true;
     private final String contentType = "text/plain";
     private final String apiKey;
+    private final InetAddress ipAddress;
+    private Socket connect;
 
     public Server() {
         apiKey = UUID.randomUUID().toString();
@@ -39,7 +39,7 @@ public class Server implements Runnable {
                 connect = serverConnect.accept();
 
                 if (VERBOSE) {
-                    System.out.println("Connecton opened. (" + new Date() + ")");
+                    System.out.println("Connection opened. (" + new Date() + ")");
                 }
                 Thread thread = new Thread(this);
                 thread.start();
@@ -122,7 +122,6 @@ public class Server implements Runnable {
                 Enumeration ee = ni.getInetAddresses();
                 while (ee.hasMoreElements()) {
                     InetAddress ia = (InetAddress) ee.nextElement();
-                    System.out.println(ia.getCanonicalHostName());
                     if (ia.getHostAddress().contains("192.168.") || ia.getHostAddress().contains("172.")) {
                         return ia;
                     }
@@ -135,14 +134,11 @@ public class Server implements Runnable {
     }
 
     public String getIpAddressAndPortAsString() {
-        if (ipAddress == null) {
-            return null;
-        }
-        return ipAddress.getCanonicalHostName() + ":" + PORT;
+        return ipAddress == null ? null : ipAddress.getCanonicalHostName() + ":" + PORT;
     }
 
     public String getApiKey() {
         return apiKey;
     }
-    
+
 }

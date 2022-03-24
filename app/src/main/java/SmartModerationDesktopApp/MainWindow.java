@@ -2,6 +2,7 @@ package SmartModerationDesktopApp;
 
 import SmartModerationDesktopApp.Server.Server;
 import SmartModerationDesktopApp.ModerationCards.ModerationCard;
+import SmartModerationDesktopApp.Server.Client;
 import SmartModerationDesktopApp.Utilities.JsonReader;
 import SmartModerationDesktopApp.Utilities.QRCodeGenerator;
 import com.google.zxing.WriterException;
@@ -9,20 +10,26 @@ import java.awt.BasicStroke;
 import java.awt.Graphics2D;
 import java.awt.GraphicsDevice;
 import java.awt.GraphicsEnvironment;
+import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import javax.swing.Icon;
 
 public class MainWindow extends javax.swing.JFrame {
 
-    private Server server;
-    private StringBuilder qrString;
+    private final Server server;
+    private final Client client;
+    private final JsonReader jsonReader;
+    private final ArrayList<ModerationCard> moderationCardList;
     private boolean isLineDrawn = false;
     private boolean hasLineDistance = false;
-    private final ArrayList<ModerationCard> moderationCardList;
+    private StringBuilder qrString;
 
     public MainWindow() {
         setExtendedState(MAXIMIZED_BOTH);
+        client = new Client();
+        server = new Server();
+        jsonReader = new JsonReader();
         moderationCardList = new ArrayList<>();
         initComponents();
     }
@@ -72,12 +79,14 @@ public class MainWindow extends javax.swing.JFrame {
         setLocationRelativeTo(null);
     }// </editor-fold>//GEN-END:initComponents
 
-    public static void main(String args[]) {
-        JsonReader jsonReader = new JsonReader();
-        jsonReader.parseJson();
+    public static void main(String args[]) throws IOException {
         MainWindow mainWindow = new MainWindow();
+
+        //TODO: move to login procedure
+        mainWindow.moderationCardList.addAll(mainWindow.jsonReader.parseModerationCardJson(mainWindow.client.getModerationCards()));
+
         QRCodeGenerator qrCodeGenerator = new QRCodeGenerator();
-        mainWindow.createNewServer();
+
         if (mainWindow.getServer().getIpAddressAndPortAsString() != null) {
             mainWindow.qrString = new StringBuilder(mainWindow.getServer().getIpAddressAndPortAsString());
             mainWindow.qrString.append("\n");
@@ -102,7 +111,7 @@ public class MainWindow extends javax.swing.JFrame {
             GraphicsEnvironment graphics = GraphicsEnvironment.getLocalGraphicsEnvironment();
             GraphicsDevice device = graphics.getDefaultScreenDevice();
             device.setFullScreenWindow(mainWindow);
-            mainWindow.placeModerationCard();
+            mainWindow.placeModerationCards();
 
             try {
                 mainWindow.setQRCodeLabel(qrCodeGenerator.StringToQRCodeToIcon(mainWindow.qrString.toString()));
@@ -113,34 +122,20 @@ public class MainWindow extends javax.swing.JFrame {
         mainWindow.getServer().createServer();
     }
 
-    private void placeModerationCard() {
-        // dummy moderation cards are placed
-        ModerationCard moderationCard = new ModerationCard(50, 50, this);
-        getContentPane().add(moderationCard);
-        moderationCard.setBounds(moderationCard.getX(), moderationCard.getY(), moderationCard.getPreferredSize().width, moderationCard.getPreferredSize().height);
-        moderationCardList.add(moderationCard);
-        moderationCard.setModerationCardList(moderationCardList);
-
-        ModerationCard moderationCard2 = new ModerationCard(100, 100, this);
-        getContentPane().add(moderationCard2);
-        moderationCard2.setBounds(moderationCard2.getX(), moderationCard2.getY(), moderationCard2.getPreferredSize().width, moderationCard2.getPreferredSize().height);
-        moderationCardList.add(moderationCard2);
-        moderationCard2.setModerationCardList(moderationCardList);
-
-        ModerationCard moderationCard3 = new ModerationCard(150, 150, this);
-        getContentPane().add(moderationCard3);
-        moderationCard3.setBounds(moderationCard3.getX(), moderationCard3.getY(), moderationCard3.getPreferredSize().width, moderationCard3.getPreferredSize().height);
-        moderationCardList.add(moderationCard3);
-        moderationCard3.setModerationCardList(moderationCardList);
-
+    //TODO: move to factory
+    private void placeModerationCards() {
+        moderationCardList.forEach((moderationCard) -> {
+            moderationCard.setMainWindow(this);
+            moderationCard.setX(0);
+            moderationCard.setY(0);
+            getContentPane().add(moderationCard);
+            moderationCard.setBounds(moderationCard.getX(), moderationCard.getY(), moderationCard.getPreferredSize().width, moderationCard.getPreferredSize().height);
+            moderationCard.setModerationCardList(moderationCardList);
+        });
     }
 
     public void setQRCodeLabel(Icon icon) {
         QRCode.setIcon(icon);
-    }
-
-    public void createNewServer() {
-        server = new Server();
     }
 
     public Server getServer() {
@@ -152,6 +147,7 @@ public class MainWindow extends javax.swing.JFrame {
     private javax.swing.JLabel QRCodeLabel;
     // End of variables declaration//GEN-END:variables
 
+    //TODO: move to own class 
     public void drawDottedLineBetween(ModerationCard movingCard, ModerationCard magneticCard) {
         if (movingCard.isDistancedMagnet() != hasLineDistance) {
             clearBackground();
@@ -171,16 +167,16 @@ public class MainWindow extends javax.swing.JFrame {
                 g2d.drawLine(magneticCard.getBounds().x + magneticCard.getBounds().width + distance, 0, magneticCard.getBounds().x + magneticCard.getBounds().width + distance, getContentPane().getMaximumSize().height);
                 break;
             case NORTH:
-                g2d.drawLine(0, magneticCard.getY() + 35 - distance, getContentPane().getMaximumSize().width, magneticCard.getY() + 35 - distance);
+                g2d.drawLine(0, magneticCard.getY() - distance, getContentPane().getMaximumSize().width, magneticCard.getY() - distance);
                 break;
             case SOUTH:
-                g2d.drawLine(0, magneticCard.getY() + magneticCard.getBounds().height + 35 + distance, getContentPane().getMaximumSize().width, magneticCard.getY() + magneticCard.getBounds().height + 35 + distance);
+                g2d.drawLine(0, magneticCard.getY() + magneticCard.getBounds().height + distance, getContentPane().getMaximumSize().width, magneticCard.getY() + magneticCard.getBounds().height + distance);
                 break;
         }
         isLineDrawn = true;
     }
 
-    //TOCO: clear only drawn line
+    //TODO: clear only drawn line
     public void clearBackground() {
         if (!isLineDrawn) {
             return;
