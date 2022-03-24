@@ -1,7 +1,14 @@
 package SmartModerationDesktopApp.Utilities;
 
 import SmartModerationDesktopApp.ModerationCards.ModerationCard;
+import java.awt.Point;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
@@ -34,4 +41,29 @@ public class JsonReader {
         }
         return moderationCardList;
     }
+    
+    public HashMap<Long, Point> parseCacheJson(File inputJson) {
+        HashMap<Long, Point> cachedModerationCardPositions = new HashMap<>();
+        
+        try {
+            JSONParser jsonParser = new JSONParser();
+            FileReader fileReader = new FileReader(inputJson);
+            Object object = jsonParser.parse(fileReader);
+            JSONArray cachedModerationCards = (JSONArray) object;
+            for (Object moderationCard : cachedModerationCards) {
+                JSONObject jsonMeetingCard = (JSONObject) moderationCard;
+                long cardId = (long) jsonMeetingCard.get("cardId");
+                JSONArray positions = (JSONArray) jsonMeetingCard.get("positions");
+                for (Object point : positions) {
+                    JSONObject jsonPosition = (JSONObject) point;
+                    long positionX = (long) jsonPosition.get("positionX");
+                    long positionY = (long) jsonPosition.get("positionY");
+                    cachedModerationCardPositions.put(cardId, new Point((int)positionX, (int)positionY));
+                }
+            }
+        } catch (ParseException | IOException ex) {
+        }        return cachedModerationCardPositions;
+
+        }    
+    
 }

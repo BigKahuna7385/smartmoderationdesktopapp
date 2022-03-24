@@ -10,9 +10,13 @@ import SmartModerationDesktopApp.Utilities.QRCodeGenerator;
 import com.google.zxing.WriterException;
 import java.awt.GraphicsDevice;
 import java.awt.GraphicsEnvironment;
+import java.awt.Point;
+import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import javax.swing.Icon;
 
 public class MainWindow extends javax.swing.JFrame {
@@ -151,10 +155,23 @@ public class MainWindow extends javax.swing.JFrame {
     //TODO: move to factory
     //TODO: Add logic if moderation cards are loaded from cache
     private void placeModerationCards() {
+        
+        File moderationCardCacheFile = new File("./cache/" + meetingId + ".json");
+        final boolean cacheExists = moderationCardCacheFile.exists();
+        
+        if(cacheExists){
+            HashMap<Long, Point> cachedModerationCardPositions = jsonReader.parseCacheJson(moderationCardCacheFile);
+            moderationCardList.forEach((moderationCard) ->{
+                if(cachedModerationCardPositions.containsKey(moderationCard.getCardId())){
+                    Point point = cachedModerationCardPositions.get(moderationCard.getCardId());
+                    moderationCard.setX(point.x);
+                    moderationCard.setY(point.y);
+                }
+            });
+        }
+        
         moderationCardList.forEach((moderationCard) -> {
             moderationCard.setMainWindow(this);
-            moderationCard.setX(0);
-            moderationCard.setY(0);
             getContentPane().add(moderationCard);
             moderationCard.setBounds(moderationCard.getX(), moderationCard.getY(), moderationCard.getPreferredSize().width, moderationCard.getPreferredSize().height);
             moderationCard.setModerationCardList(moderationCardList);
