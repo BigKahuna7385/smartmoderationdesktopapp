@@ -164,7 +164,7 @@ public class ModerationCard extends javax.swing.JPanel {
         if (snapTo(magneticCard)) {
             mainWindow.getLineDrawer().drawDottedLineBetween(this, magneticCard);
         } else {
-            mainWindow.getLineDrawer().clearBackground();
+            mainWindow.getLineDrawer().clearLine();
         }
 
         setLocation(x, y);
@@ -193,7 +193,7 @@ public class ModerationCard extends javax.swing.JPanel {
             }
             setLocation(x, y);
         }
-        mainWindow.getLineDrawer().clearBackground();
+        mainWindow.getLineDrawer().clearLine();
     }
 
     public long getCardId() {

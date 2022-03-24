@@ -9,16 +9,18 @@ import java.awt.Point;
 public class LineDrawer {
 
     private final MainWindow mainWindow;
-    private Point startPoint;
-    private Point endPoint;
+    private final Point startPoint;
+    private final Point endPoint;
 
     public LineDrawer(MainWindow mainWindow) {
         this.mainWindow = mainWindow;
+        startPoint = new Point();
+        endPoint = new Point();
     }
 
     public void drawDottedLineBetween(ModerationCard movingCard, ModerationCard magneticCard) {
         if (movingCard.isDistancedMagnet() != mainWindow.isHasLineDistance()) {
-            clearBackground();
+            clearLine();
             mainWindow.setHasLineDistance(movingCard.isDistancedMagnet());
         }
 
@@ -31,28 +33,30 @@ public class LineDrawer {
             case EAST:
                 startPoint.setLocation(magneticCard.getBounds().x - distance, 0);
                 endPoint.setLocation(magneticCard.getBounds().x - distance, mainWindow.getContentPane().getMaximumSize().height);
-                g2d.drawLine(startPoint.x, startPoint.y, endPoint.x, endPoint.y);
                 break;
             case WEST:
-                g2d.drawLine(magneticCard.getBounds().x + magneticCard.getBounds().width + distance, 0, magneticCard.getBounds().x + magneticCard.getBounds().width + distance, mainWindow.getContentPane().getMaximumSize().height);
+                startPoint.setLocation(magneticCard.getBounds().x + magneticCard.getBounds().width + distance, 0);
+                endPoint.setLocation(magneticCard.getBounds().x + magneticCard.getBounds().width + distance, mainWindow.getContentPane().getMaximumSize().height);
                 break;
             case NORTH:
-                g2d.drawLine(0, magneticCard.getY() - distance, mainWindow.getContentPane().getMaximumSize().width, magneticCard.getY() - distance);
+                startPoint.setLocation(0, magneticCard.getY() - distance);
+                endPoint.setLocation(mainWindow.getContentPane().getMaximumSize().width, magneticCard.getY() - distance);
                 break;
             case SOUTH:
-                g2d.drawLine(0, magneticCard.getY() + magneticCard.getBounds().height + distance, mainWindow.getContentPane().getMaximumSize().width, magneticCard.getY() + magneticCard.getBounds().height + distance);
+                startPoint.setLocation(0, magneticCard.getY() + magneticCard.getBounds().height + distance);
+                endPoint.setLocation(mainWindow.getContentPane().getMaximumSize().width, magneticCard.getY() + magneticCard.getBounds().height + distance);
                 break;
         }
+        g2d.drawLine(startPoint.x, startPoint.y, endPoint.x, endPoint.y);
         mainWindow.setIsLineDrawn(true);
     }
 
-    //TODO: clear only drawn line
-    public void clearBackground() {
+    public void clearLine() {
         if (!mainWindow.isIsLineDrawn()) {
             return;
         }
         Graphics2D g2d = (Graphics2D) mainWindow.getGraphics();
-        g2d.clearRect(0, 0, mainWindow.getHeight(), mainWindow.getWidth());
+        g2d.clearRect(startPoint.x, startPoint.y, endPoint.x, endPoint.y);
         mainWindow.revalidate();
         mainWindow.repaint();
         mainWindow.setIsLineDrawn(false);
