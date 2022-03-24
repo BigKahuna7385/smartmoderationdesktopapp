@@ -1,6 +1,7 @@
 package SmartModerationDesktopApp;
 
 import SmartModerationDesktopApp.ModerationCards.ModerationCard;
+import SmartModerationDesktopApp.ModerationCards.ModerationCardFactory;
 import SmartModerationDesktopApp.Server.Client;
 import SmartModerationDesktopApp.Server.Server;
 import SmartModerationDesktopApp.Utilities.JsonReader;
@@ -10,13 +11,9 @@ import SmartModerationDesktopApp.Utilities.QRCodeGenerator;
 import com.google.zxing.WriterException;
 import java.awt.GraphicsDevice;
 import java.awt.GraphicsEnvironment;
-import java.awt.Point;
-import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import javax.swing.Icon;
 
 public class MainWindow extends javax.swing.JFrame {
@@ -27,7 +24,7 @@ public class MainWindow extends javax.swing.JFrame {
     private final JsonWriter jsonWriter;
     private final LineDrawer lineDrawer;
     private final GraphicsEnvironment graphicsEnvironment;
-    private final ArrayList<ModerationCard> moderationCardList;
+    private final ArrayList<ModerationCard> moderationCards;
     //TODO: fetch meeting ID in login process to load moderation cards
     private final long meetingId = 3570151905752727837L;
     private boolean isLineDrawn = false;
@@ -41,7 +38,7 @@ public class MainWindow extends javax.swing.JFrame {
         jsonReader = new JsonReader();
         jsonWriter = new JsonWriter();
         lineDrawer = new LineDrawer(this);
-        moderationCardList = new ArrayList<>();
+        moderationCards = new ArrayList<>();
         graphicsEnvironment = GraphicsEnvironment.getLocalGraphicsEnvironment();
         initComponents();
     }
@@ -79,11 +76,11 @@ public class MainWindow extends javax.swing.JFrame {
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGap(760, 760, 760)
+                .addContainerGap(760, Short.MAX_VALUE)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.CENTER)
                     .addComponent(QRCodeLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 400, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(QRCode, javax.swing.GroupLayout.PREFERRED_SIZE, 400, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(760, 760, 760))
+                .addContainerGap(760, Short.MAX_VALUE))
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(saveButton, javax.swing.GroupLayout.PREFERRED_SIZE, 125, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -94,7 +91,7 @@ public class MainWindow extends javax.swing.JFrame {
             .addGroup(layout.createSequentialGroup()
                 .addGap(20, 20, 20)
                 .addComponent(saveButton, javax.swing.GroupLayout.PREFERRED_SIZE, 53, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(200, 200, 200)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 200, Short.MAX_VALUE)
                 .addComponent(QRCodeLabel)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(QRCode, javax.swing.GroupLayout.PREFERRED_SIZE, 400, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -106,14 +103,14 @@ public class MainWindow extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void saveButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_saveButtonActionPerformed
-        jsonWriter.saveMeetingStatus(meetingId, moderationCardList);
+        jsonWriter.saveMeetingStatus(meetingId, moderationCards);
     }//GEN-LAST:event_saveButtonActionPerformed
 
     public static void main(String args[]) throws IOException {
         MainWindow mainWindow = new MainWindow();
 
         //TODO: move to login procedure
-        mainWindow.moderationCardList.addAll(mainWindow.jsonReader.parseModerationCardJson(mainWindow.client.getModerationCards()));
+        mainWindow.moderationCards.addAll(mainWindow.jsonReader.parseModerationCardJson(mainWindow.client.getModerationCards()));
 
         QRCodeGenerator qrCodeGenerator = new QRCodeGenerator();
 
@@ -136,11 +133,12 @@ public class MainWindow extends javax.swing.JFrame {
         } catch (ClassNotFoundException | InstantiationException | IllegalAccessException | javax.swing.UnsupportedLookAndFeelException ex) {
             java.util.logging.Logger.getLogger(MainWindow.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
+        ModerationCardFactory moderationCardFactory = new ModerationCardFactory(mainWindow);
 
         java.awt.EventQueue.invokeLater(() -> {
             GraphicsDevice device = mainWindow.getGraphicsEnvironment().getDefaultScreenDevice();
             device.setFullScreenWindow(mainWindow);
-            mainWindow.placeModerationCards();
+            moderationCardFactory.placeModerationCards();
 
             try {
                 mainWindow.setQRCodeLabel(qrCodeGenerator.StringToQRCodeToIcon(mainWindow.qrString.toString()));
@@ -151,30 +149,6 @@ public class MainWindow extends javax.swing.JFrame {
         mainWindow.getServer().createServer();
     }
 
-    //TODO: move to factory
-    private void placeModerationCards() {
-        
-        File moderationCardCacheFile = new File("./cache/" + meetingId + ".json");
-        final boolean cacheExists = moderationCardCacheFile.exists();
-        
-        if(cacheExists){
-            HashMap<Long, Point> cachedModerationCardPositions = jsonReader.parseCacheJson(moderationCardCacheFile);
-            moderationCardList.forEach((moderationCard) ->{
-                if(cachedModerationCardPositions.containsKey(moderationCard.getCardId())){
-                    Point point = cachedModerationCardPositions.get(moderationCard.getCardId());
-                    moderationCard.setX(point.x);
-                    moderationCard.setY(point.y);
-                }
-            });
-        }
-        
-        moderationCardList.forEach((moderationCard) -> {
-            moderationCard.setMainWindow(this);
-            getContentPane().add(moderationCard);
-            moderationCard.setBounds(moderationCard.getX(), moderationCard.getY(), moderationCard.getPreferredSize().width, moderationCard.getPreferredSize().height);
-            moderationCard.setModerationCardList(moderationCardList);
-        });
-    }
 
     public void setQRCodeLabel(Icon icon) {
         QRCode.setIcon(icon);
@@ -182,6 +156,14 @@ public class MainWindow extends javax.swing.JFrame {
 
     public Server getServer() {
         return server;
+    }
+    
+    public ArrayList<ModerationCard> getModerationCards(){
+        return this.moderationCards;
+    }
+    
+    public long getMeetingId(){
+        return meetingId;
     }
 
     public boolean isIsLineDrawn() {
