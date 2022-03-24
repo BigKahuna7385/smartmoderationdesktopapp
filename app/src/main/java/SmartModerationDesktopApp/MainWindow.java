@@ -23,6 +23,7 @@ public class MainWindow extends javax.swing.JFrame {
     private final JsonReader jsonReader;
     private final JsonWriter jsonWriter;
     private final ArrayList<ModerationCard> moderationCardList;
+    //TODO: fetch meeting ID in login process to load moderation cards
     private final long meetingId = 3570151905752727837L;
     private boolean isLineDrawn = false;
     private boolean hasLineDistance = false;
@@ -98,9 +99,7 @@ public class MainWindow extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void saveButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_saveButtonActionPerformed
-        System.out.println("Button clicked");
         jsonWriter.saveMeetingStatus(meetingId, moderationCardList);
-        System.out.println("Json Created");
     }//GEN-LAST:event_saveButtonActionPerformed
 
     public static void main(String args[]) throws IOException {
