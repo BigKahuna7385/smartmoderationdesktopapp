@@ -14,8 +14,6 @@ public class ModerationCard extends javax.swing.JPanel {
 
     private final int MAGNETRANGE = 30;
     private final long cardId;
-    private final long meetingId;
-    private final String content;
     private final String backgroundColor;
     private final SnapDirectionChecker snapDirectionChecker;
     private int x;
@@ -32,8 +30,6 @@ public class ModerationCard extends javax.swing.JPanel {
     public ModerationCard(long cardId, long meetingId, String content, String backgroundColor) {
         initComponents();
         this.cardId = cardId;
-        this.meetingId = meetingId;
-        this.content = content;
         this.backgroundColor = backgroundColor;
         this.x = 0;
         this.y = 0;
@@ -168,7 +164,6 @@ public class ModerationCard extends javax.swing.JPanel {
         } else {
             mainWindow.getLineDrawer().clearLine();
         }
-
         setLocation(x, y);
     }
 
@@ -224,10 +219,6 @@ public class ModerationCard extends javax.swing.JPanel {
 
     public long getCardId() {
         return cardId;
-    }
-
-    public String getContent() {
-        return content;
     }
 
     public String getColor() {

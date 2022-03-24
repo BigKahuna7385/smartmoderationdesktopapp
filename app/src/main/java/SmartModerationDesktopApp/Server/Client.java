@@ -11,12 +11,18 @@ import java.util.stream.Collectors;
 
 public class Client {
 
+    private final LoginInformation loginInformation;
+
+    public Client(LoginInformation loginInformation) {
+        this.loginInformation = loginInformation;
+    }
+
     public String getModerationCards() throws IOException {
         OkHttpClient client = new OkHttpClient().newBuilder()
                 .build();
 
         Request request = new Request.Builder()
-                .url("http://127.0.0.1:8000/moderationcards")
+                .url("http://" + loginInformation.getAndroidIpAddress() + ":" + loginInformation.getAndroidPort() + "/moderationcards")
                 .method("GET", null)
                 .build();
 
@@ -24,9 +30,8 @@ public class Client {
             Response response = client.newCall(request).execute();
             return response.body().string();
         } catch (ConnectException ex) {
-            BufferedReader br = new BufferedReader(new FileReader("./src/testFiles/ModerationCardsTestSet.json"));            
+            BufferedReader br = new BufferedReader(new FileReader("./src/testFiles/ModerationCardsTestSet.json"));
             return br.lines().collect(Collectors.joining());
         }
-
     }
 }

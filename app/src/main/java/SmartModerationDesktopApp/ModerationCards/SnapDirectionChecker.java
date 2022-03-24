@@ -111,5 +111,4 @@ public class SnapDirectionChecker {
     private boolean isUnder(ModerationCard movingCard, ModerationCard magneticCard) {
         return movingCard.getBounds().y > magneticCard.getBounds().y + magneticCard.getBounds().height;
     }
-
 }

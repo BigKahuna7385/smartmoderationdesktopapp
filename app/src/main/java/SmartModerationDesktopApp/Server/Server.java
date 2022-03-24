@@ -83,7 +83,7 @@ public class Server {
                     }
                     try {
                         mainWindow.processLogin(sb.toString());
-                    } catch (ParseException ex) {
+                    } catch (ParseException | IOException ex) {
                         Logger.getLogger(Server.class.getName()).log(Level.SEVERE, null, ex);
                     }
                 }
@@ -106,7 +106,6 @@ public class Server {
                     System.out.println(ia.getCanonicalHostName());
                     if (ia.getHostAddress().contains("192.168.") || ia.getHostAddress().contains("172.")) {
                         return ia;
-
                     }
                 }
             }
@@ -127,5 +126,4 @@ public class Server {
     public String getApiKey() {
         return apiKey;
     }
-
 }

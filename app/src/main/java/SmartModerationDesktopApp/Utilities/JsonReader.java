@@ -1,6 +1,7 @@
 package SmartModerationDesktopApp.Utilities;
 
 import SmartModerationDesktopApp.ModerationCards.ModerationCard;
+import SmartModerationDesktopApp.Server.LoginInformation;
 import java.awt.Point;
 import java.io.File;
 import java.io.FileReader;
@@ -13,8 +14,7 @@ import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
 public class JsonReader {
-
-    //TODO: Functionality to load existing moderation cards based on meeting id
+    
     public ArrayList<ModerationCard> parseModerationCardJson(String inputJson) {
         ArrayList<ModerationCard> moderationCardList = new ArrayList();
 
@@ -61,13 +61,12 @@ public class JsonReader {
         } catch (ParseException | IOException ex) {
         }
         return cachedModerationCardPositions;
-
     }
 
-    public long readLoginInformationJson(String loginInformationJson) throws ParseException {
+    public LoginInformation readLoginInformationJson(String loginInformationJson) throws ParseException {
         JSONParser jsonParser = new JSONParser();
         JSONObject jsonObject = (JSONObject) jsonParser.parse(loginInformationJson);
-        long meetingId = (long) jsonObject.get("meetingId");
-        return meetingId;
+        long port = (long) jsonObject.get("port");
+        return new LoginInformation((long) jsonObject.get("meetingId"), (String) jsonObject.get("ipAddress"), Integer.toString((int) port));
     }
 }
