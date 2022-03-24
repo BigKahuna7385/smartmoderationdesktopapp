@@ -35,6 +35,8 @@ public class ModerationCard extends javax.swing.JPanel {
         this.meetingId = meetingId;
         this.content = content;
         this.backgroundColor = backgroundColor;
+        this.x = 0;
+        this.y = 0;
         setBackground(Color.decode(backgroundColor));
         jScrollPane.getViewport().setOpaque(false);
         centerText();

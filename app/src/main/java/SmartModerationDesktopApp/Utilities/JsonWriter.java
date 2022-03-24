@@ -17,11 +17,12 @@ public class JsonWriter {
         for (ModerationCard card: moderationCards) {
             JSONObject cardJSON = new JSONObject();
             cardJSON.put("cardId", card.getCardId());
-            cardJSON.put("content", card.getContent());
-            cardJSON.put("color", card.getColor());
-            cardJSON.put("meetingId", meetingID);
-            cardJSON.put("positionX", card.getX());
-            cardJSON.put("positionY", card.getY());
+            JSONArray cardPositions = new JSONArray();
+            JSONObject position = new JSONObject();
+            position.put("positionX", card.getX());
+            position.put("positionY", card.getY());
+            cardPositions.add(position);
+            cardJSON.put("positions", cardPositions);
             cardsArray.add(cardJSON);
         }
         
@@ -35,5 +36,6 @@ public class JsonWriter {
         } catch (IOException ex) {
             ex.printStackTrace();
         }
+        
     }
 }

@@ -11,6 +11,8 @@ import java.awt.BasicStroke;
 import java.awt.Graphics2D;
 import java.awt.GraphicsDevice;
 import java.awt.GraphicsEnvironment;
+import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
@@ -148,6 +150,14 @@ public class MainWindow extends javax.swing.JFrame {
     //TODO: move to factory
     //TODO: Add logic if moderation cards are loaded from cache
     private void placeModerationCards() {
+        
+        File moderationCardCacheFile = new File("./cache/" + meetingId + ".json");
+        final boolean cacheExists = moderationCardCacheFile.exists();
+        
+        if(cacheExists){
+            
+        }
+        
         moderationCardList.forEach((moderationCard) -> {
             moderationCard.setMainWindow(this);
             moderationCard.setX(0);
