@@ -18,9 +18,10 @@ import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import javax.swing.Icon;
+import org.json.simple.parser.ParseException;
 
 public class MainWindow extends javax.swing.JFrame {
-
+    
     private final Server server;
     private final Client client;
     private final JsonReader jsonReader;
@@ -29,15 +30,15 @@ public class MainWindow extends javax.swing.JFrame {
     private final GraphicsEnvironment graphicsEnvironment;
     private final ArrayList<ModerationCard> moderationCardList;
     //TODO: fetch meeting ID in login process to load moderation cards
-    private final long meetingId = 3570151905752727837L;
+    private long meetingId = 3570151905752727837L;
     private boolean isLineDrawn = false;
     private boolean hasLineDistance = false;
     private StringBuilder qrString;
-
+    
     public MainWindow() {
         setExtendedState(MAXIMIZED_BOTH);
         client = new Client();
-        server = new Server();
+        server = new Server(this);
         jsonReader = new JsonReader();
         jsonWriter = new JsonWriter();
         lineDrawer = new LineDrawer(this);
@@ -45,7 +46,7 @@ public class MainWindow extends javax.swing.JFrame {
         graphicsEnvironment = GraphicsEnvironment.getLocalGraphicsEnvironment();
         initComponents();
     }
-
+    
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
@@ -108,15 +109,15 @@ public class MainWindow extends javax.swing.JFrame {
     private void saveButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_saveButtonActionPerformed
         jsonWriter.saveMeetingStatus(meetingId, moderationCardList);
     }//GEN-LAST:event_saveButtonActionPerformed
-
+    
     public static void main(String args[]) throws IOException {
         MainWindow mainWindow = new MainWindow();
 
         //TODO: move to login procedure
         mainWindow.moderationCardList.addAll(mainWindow.jsonReader.parseModerationCardJson(mainWindow.client.getModerationCards()));
-
+        
         QRCodeGenerator qrCodeGenerator = new QRCodeGenerator();
-
+        
         if (mainWindow.getServer().getIpAddressAndPortAsString() != null) {
             mainWindow.qrString = new StringBuilder(mainWindow.getServer().getIpAddressAndPortAsString());
             mainWindow.qrString.append("\n");
@@ -125,7 +126,7 @@ public class MainWindow extends javax.swing.JFrame {
         } else {
             mainWindow.qrString = new StringBuilder("No server setup possible");
         }
-
+        
         try {
             for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
                 if ("Nimbus".equals(info.getName())) {
@@ -136,18 +137,18 @@ public class MainWindow extends javax.swing.JFrame {
         } catch (ClassNotFoundException | InstantiationException | IllegalAccessException | javax.swing.UnsupportedLookAndFeelException ex) {
             java.util.logging.Logger.getLogger(MainWindow.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
-
+        
         java.awt.EventQueue.invokeLater(() -> {
             GraphicsDevice device = mainWindow.getGraphicsEnvironment().getDefaultScreenDevice();
             device.setFullScreenWindow(mainWindow);
             mainWindow.placeModerationCards();
-
+            
             try {
                 mainWindow.setQRCodeLabel(qrCodeGenerator.StringToQRCodeToIcon(mainWindow.qrString.toString()));
             } catch (UnsupportedEncodingException | WriterException ex) {
             }
         });
-
+        
         mainWindow.getServer().createServer();
     }
 
@@ -157,10 +158,10 @@ public class MainWindow extends javax.swing.JFrame {
         File moderationCardCacheFile = new File("./cache/" + meetingId + ".json");
         final boolean cacheExists = moderationCardCacheFile.exists();
         
-        if(cacheExists){
+        if (cacheExists) {
             HashMap<Long, Point> cachedModerationCardPositions = jsonReader.parseCacheJson(moderationCardCacheFile);
-            moderationCardList.forEach((moderationCard) ->{
-                if(cachedModerationCardPositions.containsKey(moderationCard.getCardId())){
+            moderationCardList.forEach((moderationCard) -> {
+                if (cachedModerationCardPositions.containsKey(moderationCard.getCardId())) {
                     Point point = cachedModerationCardPositions.get(moderationCard.getCardId());
                     moderationCard.setX(point.x);
                     moderationCard.setY(point.y);
@@ -175,37 +176,41 @@ public class MainWindow extends javax.swing.JFrame {
             moderationCard.setModerationCardList(moderationCardList);
         });
     }
-
+    
     public void setQRCodeLabel(Icon icon) {
         QRCode.setIcon(icon);
     }
-
+    
     public Server getServer() {
         return server;
     }
-
+    
     public boolean isIsLineDrawn() {
         return isLineDrawn;
     }
-
+    
     public boolean isHasLineDistance() {
         return hasLineDistance;
     }
-
+    
     public void setHasLineDistance(boolean hasLineDistance) {
         this.hasLineDistance = hasLineDistance;
     }
-
+    
     public void setIsLineDrawn(boolean isLineDrawn) {
         this.isLineDrawn = isLineDrawn;
     }
-
+    
     public LineDrawer getLineDrawer() {
         return lineDrawer;
     }
-
+    
     public GraphicsEnvironment getGraphicsEnvironment() {
         return graphicsEnvironment;
+    }
+    
+    public void setMeetingId(long meetingId) {
+        this.meetingId = meetingId;
     }
 
 
@@ -214,4 +219,10 @@ public class MainWindow extends javax.swing.JFrame {
     private javax.swing.JLabel QRCodeLabel;
     private javax.swing.JButton saveButton;
     // End of variables declaration//GEN-END:variables
+
+    public void processLogin(String loginString) throws ParseException {
+        setMeetingId(jsonReader.readLoginInformationJson(loginString));
+        QRCode.setVisible(false);
+        QRCodeLabel.setVisible(false);
+    }
 }

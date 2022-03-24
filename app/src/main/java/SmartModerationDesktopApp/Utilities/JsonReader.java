@@ -13,16 +13,15 @@ import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
 public class JsonReader {
-    
-    //TODO: Functionality to load existing moderation cards based on meeting id
 
+    //TODO: Functionality to load existing moderation cards based on meeting id
     public ArrayList<ModerationCard> parseModerationCardJson(String inputJson) {
         ArrayList<ModerationCard> moderationCardList = new ArrayList();
-        
+
         if (inputJson == null) {
             return moderationCardList;
         }
-        
+
         JSONParser jsonParser = new JSONParser();
         try {
             Object object = jsonParser.parse(inputJson);
@@ -39,10 +38,10 @@ public class JsonReader {
         }
         return moderationCardList;
     }
-    
+
     public HashMap<Long, Point> parseCacheJson(File inputJson) {
         HashMap<Long, Point> cachedModerationCardPositions = new HashMap<>();
-        
+
         try {
             JSONParser jsonParser = new JSONParser();
             FileReader fileReader = new FileReader(inputJson);
@@ -56,12 +55,19 @@ public class JsonReader {
                     JSONObject jsonPosition = (JSONObject) point;
                     long positionX = (long) jsonPosition.get("positionX");
                     long positionY = (long) jsonPosition.get("positionY");
-                    cachedModerationCardPositions.put(cardId, new Point((int)positionX, (int)positionY));
+                    cachedModerationCardPositions.put(cardId, new Point((int) positionX, (int) positionY));
                 }
             }
         } catch (ParseException | IOException ex) {
-        }        return cachedModerationCardPositions;
+        }
+        return cachedModerationCardPositions;
 
-        }    
-    
+    }
+
+    public long readLoginInformationJson(String loginInformationJson) throws ParseException {
+        JSONParser jsonParser = new JSONParser();
+        JSONObject jsonObject = (JSONObject) jsonParser.parse(loginInformationJson);
+        long meetingId = (long) jsonObject.get("meetingId");
+        return meetingId;
+    }
 }
