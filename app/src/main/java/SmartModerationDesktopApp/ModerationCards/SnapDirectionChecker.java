@@ -9,7 +9,7 @@ public class SnapDirectionChecker {
         boolean distancedMagnet = movingCard.isDistancedMagnet();
         ModerationCard returnModerationCard = movingCard.getMagneticCard();
         SnapDirections snapDirection = movingCard.getSnapDirection();
-        if (!isOver(movingCard, magneticCard) && !isUnder(magneticCard, magneticCard)) {
+        if (!isOver(movingCard, magneticCard) && !isUnder(movingCard, magneticCard)) {
             if (isAtRightBorderOfWithinRangeOf(movingCard, magneticCard, magnetRange, -magnetRange)) {
                 returnModerationCard = magneticCard;
                 snapDirection = WEST;
@@ -27,17 +27,17 @@ public class SnapDirectionChecker {
             }
         }
         if (!isLeftOf(movingCard, magneticCard) && !isRightOf(movingCard, magneticCard)) {
-            if (movingCard.getBounds().y < magneticCard.getY() + magneticCard.getBounds().height + magnetRange && movingCard.getBounds().y > magneticCard.getY() + magneticCard.getBounds().height - magnetRange) {
+            if (isToTheTopBorderWithinMagnetrange(movingCard, magneticCard, magnetRange, -magnetRange)) {
                 returnModerationCard = magneticCard;
                 snapDirection = SOUTH;
-            } else if (movingCard.getBounds().y < magneticCard.getY() + magneticCard.getBounds().height + 2 * magnetRange && movingCard.getBounds().y > magneticCard.getY() + magneticCard.getBounds().height + magnetRange) {
+            } else if (isToTheTopBorderWithinMagnetrange(movingCard, magneticCard, 2 * magnetRange, magnetRange)) {
                 returnModerationCard = magneticCard;
                 distancedMagnet = true;
                 snapDirection = SOUTH;
-            } else if (movingCard.getBounds().y + magneticCard.getBounds().height - magnetRange < magneticCard.getY() && movingCard.getBounds().y + magneticCard.getBounds().height + magnetRange > magneticCard.getY()) {
+            } else if (isToTheBottomBorderWithinMagnetrange(movingCard, magneticCard, -magnetRange, magnetRange)) {
                 returnModerationCard = magneticCard;
                 snapDirection = NORTH;
-            } else if (movingCard.getBounds().y + magneticCard.getBounds().height + magnetRange < magneticCard.getY() && movingCard.getBounds().y + magneticCard.getBounds().height + 2 * magnetRange > magneticCard.getY()) {
+            } else if (isToTheBottomBorderWithinMagnetrange(movingCard, magneticCard, magnetRange, 2 * magnetRange)) {
                 returnModerationCard = magneticCard;
                 distancedMagnet = true;
                 snapDirection = NORTH;
@@ -70,6 +70,30 @@ public class SnapDirectionChecker {
 
     private boolean isAtLeftBorderOfWithinRangeOf(ModerationCard movingCard, ModerationCard magneticCard, int magnetStart, int magnetEnd) {
         return isToTheLeftBorderLeftOfMagnetrange(movingCard, magneticCard, magnetStart) && isToTheLeftBorderRightOfMagnetrange(movingCard, magneticCard, magnetEnd);
+    }
+
+    private boolean isToTheTopBorderBelowMagnetrange(ModerationCard movingCard, ModerationCard magneticCard, int magnetRange) {
+        return movingCard.getBounds().y < magneticCard.getY() + magneticCard.getBounds().height + magnetRange;
+    }
+
+    private boolean isToTheTopBorderAboveMagnetrange(ModerationCard movingCard, ModerationCard magneticCard, int magnetRange) {
+        return movingCard.getBounds().y >= magneticCard.getY() + magneticCard.getBounds().height + magnetRange;
+    }
+
+    private boolean isToTheTopBorderWithinMagnetrange(ModerationCard movingCard, ModerationCard magneticCard, int magnetStart, int magnetEnd) {
+        return isToTheTopBorderBelowMagnetrange(movingCard, magneticCard, magnetStart) && isToTheTopBorderAboveMagnetrange(movingCard, magneticCard, magnetEnd);
+    }
+
+    private boolean isToTheBottomBorderBelowMagnetrange(ModerationCard movingCard, ModerationCard magneticCard, int magnetRange) {
+        return movingCard.getBounds().y + magneticCard.getBounds().height + magnetRange < magneticCard.getY();
+    }
+
+    private boolean isToTheBottomBorderAboveMagnetrange(ModerationCard movingCard, ModerationCard magneticCard, int magnetRange) {
+        return movingCard.getBounds().y + magneticCard.getBounds().height + magnetRange > magneticCard.getY();
+    }
+
+    private boolean isToTheBottomBorderWithinMagnetrange(ModerationCard movingCard, ModerationCard magneticCard, int magnetStart, int magnetEnd) {
+        return isToTheBottomBorderBelowMagnetrange(movingCard, magneticCard, magnetStart) && isToTheBottomBorderAboveMagnetrange(movingCard, magneticCard, magnetEnd);
     }
 
     private boolean isRightOf(ModerationCard movingCard, ModerationCard magneticCard) {
