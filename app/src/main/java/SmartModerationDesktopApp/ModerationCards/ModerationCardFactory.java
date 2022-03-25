@@ -48,5 +48,7 @@ public class ModerationCardFactory {
             moderationCard.setBounds(moderationCard.getX(), moderationCard.getY(), moderationCard.getPreferredSize().width, moderationCard.getPreferredSize().height);
             moderationCard.setModerationCardList(moderationCards);
         }
+        mainWindow.revalidate();
+        mainWindow.repaint();
     }
 }

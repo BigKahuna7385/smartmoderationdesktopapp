@@ -6,6 +6,7 @@ import java.awt.Color;
 import java.awt.Point;
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;
+import javax.swing.JTextPane;
 import javax.swing.text.SimpleAttributeSet;
 import javax.swing.text.StyleConstants;
 import javax.swing.text.StyledDocument;
@@ -29,15 +30,17 @@ public class ModerationCard extends javax.swing.JPanel {
 
     public ModerationCard(long cardId, long meetingId, String content, String backgroundColor) {
         initComponents();
-        this.cardId = cardId;
-        this.backgroundColor = backgroundColor;
         this.x = 0;
         this.y = 0;
+        this.cardId = cardId;
+        this.backgroundColor = backgroundColor;
+        snapDirectionChecker = new SnapDirectionChecker();
         setBackground(Color.decode(backgroundColor));
         jScrollPane.getViewport().setOpaque(false);
-        centerText();
+        jScrollPane.setViewportBorder(null);
+        moderationCardTextBody.setBackground(new Color(0, 0, 0, 0));
         moderationCardTextBody.setText(content);
-        snapDirectionChecker = new SnapDirectionChecker();
+        centerText();
     }
 
     @SuppressWarnings("unchecked")
@@ -149,14 +152,14 @@ public class ModerationCard extends javax.swing.JPanel {
 
         if (x < 0) {
             x = 0;
-        } else if (x > mainWindow.getGraphicsEnvironment().getDefaultScreenDevice().getFullScreenWindow().getWidth() - getPreferredSize().width) {
-            x = mainWindow.getGraphicsEnvironment().getDefaultScreenDevice().getFullScreenWindow().getWidth() - getPreferredSize().width;
+        } else if (x > mainWindow.getWidth() - getPreferredSize().width) {
+            x = mainWindow.getWidth() - getPreferredSize().width;
         }
 
         if (y < 0) {
             y = 0;
-        } else if (y > mainWindow.getGraphicsEnvironment().getDefaultScreenDevice().getFullScreenWindow().getHeight() - getPreferredSize().height) {
-            y = mainWindow.getGraphicsEnvironment().getDefaultScreenDevice().getFullScreenWindow().getHeight() - getBounds().height;
+        } else if (y > mainWindow.getHeight() - getPreferredSize().height) {
+            y = mainWindow.getHeight() - getBounds().height;
         }
         isCardMagnetic();
         if (snapTo(magneticCard)) {
@@ -215,6 +218,10 @@ public class ModerationCard extends javax.swing.JPanel {
         SimpleAttributeSet center = new SimpleAttributeSet();
         StyleConstants.setAlignment(center, StyleConstants.ALIGN_CENTER);
         doc.setParagraphAttributes(0, doc.getLength(), center, false);
+    }
+
+    private void centerTextVertically() {
+
     }
 
     public long getCardId() {
