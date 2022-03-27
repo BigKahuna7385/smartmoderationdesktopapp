@@ -14,6 +14,7 @@ public class ModerationCard extends javax.swing.JPanel {
     
     private final int MAGNETRANGE = 30;
     private final long cardId;
+    private final String content;
     private final String backgroundColor;
     private final SnapDirectionChecker snapDirectionChecker;
     private int x;
@@ -33,13 +34,11 @@ public class ModerationCard extends javax.swing.JPanel {
         this.y = 0;
         this.cardId = cardId;
         this.backgroundColor = backgroundColor;
+        this.content = content;
         snapDirectionChecker = new SnapDirectionChecker();
         setBackground(Color.decode(backgroundColor));
-        jScrollPane.getViewport().setOpaque(false);
-        jScrollPane.setViewportBorder(null);
-        moderationCardTextBody.setEditorKit(new MyEditorKit());
-        moderationCardTextBody.setBackground(new Color(0, 0, 0, 0));
-        moderationCardTextBody.setText(content);
+        createOneColorBackground();
+        setCardContent(content);
         centerText();
     }
     
@@ -282,9 +281,30 @@ public class ModerationCard extends javax.swing.JPanel {
     public void setSnapDirection(SnapDirections snapDirection) {
         this.snapDirection = snapDirection;
     }
+    
+    public String getContent() {
+        return content;
+    }
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JScrollPane jScrollPane;
     private javax.swing.JTextPane moderationCardTextBody;
     // End of variables declaration//GEN-END:variables
+
+    public void updateProperties(ModerationCard moderationCard) {
+        setCardContent(moderationCard.getContent());
+        setBackground(moderationCard.getBackground());      
+    }
+    
+    private void setCardContent(String content) {
+        moderationCardTextBody.setText(content);
+    }
+    
+    private void createOneColorBackground() {
+        jScrollPane.getViewport().setOpaque(false);
+        jScrollPane.setViewportBorder(null);
+        moderationCardTextBody.setEditorKit(new MyEditorKit());
+        moderationCardTextBody.setBackground(new Color(0, 0, 0, 0));
+    }
 }

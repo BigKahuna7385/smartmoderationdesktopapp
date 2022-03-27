@@ -16,19 +16,20 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class Server implements ServerObservable {
-
+    
     static final int PORT = 8080;
     private static InetAddress ipAddress;
     static final boolean VERBOSE = true;
     private final String apiKey;
     private ServerObserver observer;
-
+    
     public Server() {
-        apiKey = UUID.randomUUID().toString();
+        //apiKey = UUID.randomUUID().toString();
+        apiKey = "Test";
         System.out.println("apiKey:" + apiKey);
         ipAddress = getIpAddress();
     }
-
+    
     public void createServer() {
         try {
             HttpServer server = HttpServer.create(new InetSocketAddress(8080), 0);
@@ -40,7 +41,7 @@ public class Server implements ServerObservable {
                     sb.append((char) i);
                 }
                 System.out.println("hm: " + sb.toString());
-
+                
                 String response = " <html>\n"
                         + "<body>\n"
                         + "\n"
@@ -57,6 +58,7 @@ public class Server implements ServerObservable {
                     os.write(response.getBytes());
                 }
             });
+            
             server.createContext("/login", (HttpExchange t) -> {
                 StringBuilder sb = new StringBuilder();
                 String requestMethod = t.getRequestMethod();
@@ -71,16 +73,77 @@ public class Server implements ServerObservable {
                 } else {
                     InputStream ios = t.getRequestBody();
                     int i;
-                    while ((i = ios.read()) != -1) {
-                        sb.append((char) i);
-                    }
-                    System.out.println("meetingJson: " + sb.toString());
                     String response = "OK";
-                    t.sendResponseHeaders(200, response.length());
+                    switch (requestMethod) {
+                        case "POST":
+                            while ((i = ios.read()) != -1) {
+                                sb.append((char) i);
+                            }
+                            System.out.println("meetingJson: " + sb.toString());
+                            t.sendResponseHeaders(200, response.length());
+                            try ( OutputStream os = t.getResponseBody()) {
+                                os.write(response.getBytes());
+                            }
+                            login(sb.toString());
+                            break;
+                        default:
+                            throw new AssertionError();
+                    }
+                }
+            });
+            
+            server.createContext("/moderationcard", (HttpExchange t) -> {
+                StringBuilder sb = new StringBuilder();
+                String requestMethod = t.getRequestMethod();
+                System.out.println("Method: " + requestMethod);
+                Headers headers = t.getRequestHeaders();
+                if (!headers.containsKey("Authorization") || !headers.getFirst("Authorization").equals("Bearer " + apiKey)) {
+                    String response = "Missing or incorrect Authorization";
+                    t.sendResponseHeaders(401, response.length());
                     try ( OutputStream os = t.getResponseBody()) {
                         os.write(response.getBytes());
                     }
-                    login(sb.toString());
+                } else {
+                    InputStream ios = t.getRequestBody();
+                    int i;
+                    String response = "OK";
+                    switch (requestMethod) {
+                        case "POST":
+                            while ((i = ios.read()) != -1) {
+                                sb.append((char) i);
+                            }
+                            System.out.println("Update Moderation Card JSON: " + sb.toString());
+                            t.sendResponseHeaders(200, response.length());
+                            try ( OutputStream os = t.getResponseBody()) {
+                                os.write(response.getBytes());
+                            }
+                            updateModerationCard(sb.toString());
+                            break;
+                        case "PUT":
+                            while ((i = ios.read()) != -1) {
+                                sb.append((char) i);
+                            }
+                            System.out.println("Put Moderation Card JSON: : " + sb.toString());
+                            t.sendResponseHeaders(200, response.length());
+                            try ( OutputStream os = t.getResponseBody()) {
+                                os.write(response.getBytes());
+                            }
+                            putModerationCard(sb.toString());
+                            break;
+                        case "DELETE":
+                            while ((i = ios.read()) != -1) {
+                                sb.append((char) i);
+                            }
+                            System.out.println("Delete Moderation Card JSON: : " + sb.toString());
+                            t.sendResponseHeaders(200, response.length());
+                            try ( OutputStream os = t.getResponseBody()) {
+                                os.write(response.getBytes());
+                            }
+                            deleteModerationCard(sb.toString());
+                            break;
+                        default:
+                            throw new AssertionError();
+                    }                   
                 }
             });
             server.setExecutor(null);
@@ -88,7 +151,7 @@ public class Server implements ServerObservable {
         } catch (IOException e) {
         }
     }
-
+    
     private InetAddress getIpAddress() {
         Enumeration en;
         try {
@@ -110,41 +173,41 @@ public class Server implements ServerObservable {
         }
         return null;
     }
-
+    
     public String getIpAddressAndPortAsString() {
         if (ipAddress == null) {
             return null;
         }
         return ipAddress.getCanonicalHostName() + ":" + PORT;
     }
-
+    
     public String getApiKey() {
         return apiKey;
     }
-
+    
     @Override
     public void initObserver(ServerObserver observer) {
         this.observer = observer;
     }
-
+    
     @Override
     public void login(String message) {
         this.observer.receiveLogin(message);
     }
-
+    
     @Override
     public void putModerationCard(String message) {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+        this.observer.receivePutModerationCard(message);
     }
-
+    
     @Override
     public void deleteModerationCard(String message) {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+        this.observer.receiveDeleteModerationCard(message);
     }
-
+    
     @Override
     public void updateModerationCard(String message) {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+        this.observer.receiveUpdateModerationCard(message);
     }
-
+    
 }
