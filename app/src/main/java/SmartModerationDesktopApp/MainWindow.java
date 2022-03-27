@@ -2,6 +2,7 @@ package SmartModerationDesktopApp;
 
 import SmartModerationDesktopApp.ModerationCards.ModerationCard;
 import SmartModerationDesktopApp.ModerationCards.ModerationCardFactory;
+import SmartModerationDesktopApp.Observer.ServerObserver;
 import SmartModerationDesktopApp.Server.Client;
 import SmartModerationDesktopApp.Server.LoginInformation;
 import SmartModerationDesktopApp.Server.Server;
@@ -20,8 +21,8 @@ import java.util.logging.Logger;
 import javax.swing.Icon;
 import org.json.simple.parser.ParseException;
 
-public class MainWindow extends javax.swing.JFrame {
-
+public class MainWindow extends javax.swing.JFrame implements ServerObserver {
+    
     private final Server server;
     private final JsonReader jsonReader;
     private final JsonWriter jsonWriter;
@@ -33,19 +34,19 @@ public class MainWindow extends javax.swing.JFrame {
     private long meetingId;
     private boolean isLineDrawn = false;
     private boolean hasLineDistance = false;
-
+    
     public MainWindow() {
+        initComponents();
         setExtendedState(MAXIMIZED_BOTH);
-        server = new Server(this);
+        server = new Server();        
         jsonReader = new JsonReader();
         jsonWriter = new JsonWriter();
         lineDrawer = new LineDrawer(this);
         moderationCards = new ArrayList<>();
         graphicsEnvironment = GraphicsEnvironment.getLocalGraphicsEnvironment();
         moderationCardFactory = new ModerationCardFactory(this);
-        initComponents();
     }
-
+    
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
@@ -110,9 +111,10 @@ public class MainWindow extends javax.swing.JFrame {
     private void saveButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_saveButtonActionPerformed
         jsonWriter.saveMeetingStatus(meetingId, moderationCards);
     }//GEN-LAST:event_saveButtonActionPerformed
-
+    
     public static void main(String args[]) throws IOException {
         MainWindow mainWindow = new MainWindow();
+        mainWindow.getServer().initObserver(mainWindow);
         QRCodeGenerator qrCodeGenerator = new QRCodeGenerator();
         try {
             for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
@@ -124,7 +126,7 @@ public class MainWindow extends javax.swing.JFrame {
         } catch (ClassNotFoundException | InstantiationException | IllegalAccessException | javax.swing.UnsupportedLookAndFeelException ex) {
             java.util.logging.Logger.getLogger(MainWindow.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
-
+        
         java.awt.EventQueue.invokeLater(() -> {
             GraphicsDevice device = mainWindow.getGraphicsEnvironment().getDefaultScreenDevice();
             device.setFullScreenWindow(mainWindow);
@@ -136,10 +138,10 @@ public class MainWindow extends javax.swing.JFrame {
                 Logger.getLogger(MainWindow.class.getName()).log(Level.SEVERE, null, ex);
             }
         });
-
+        
         mainWindow.getServer().createServer();
     }
-
+    
     public void processLogin(String loginString) throws ParseException, IOException {
         readLoginInformation(jsonReader.readLoginInformationJson(loginString));
         QRCode.setVisible(false);
@@ -147,52 +149,52 @@ public class MainWindow extends javax.swing.JFrame {
         moderationCards.addAll(jsonReader.parseModerationCardJson(client.getModerationCards()));
         moderationCardFactory.placeModerationCards();
     }
-
+    
     private void readLoginInformation(LoginInformation loginInformation) {
         setMeetingId(loginInformation.getMeetingId());
         client = new Client(loginInformation);
     }
-
+    
     public void setQRCodeLabel(Icon icon) {
         QRCode.setIcon(icon);
     }
-
+    
     public Server getServer() {
         return server;
     }
-
+    
     public ArrayList<ModerationCard> getModerationCards() {
         return this.moderationCards;
     }
-
+    
     public long getMeetingId() {
         return meetingId;
     }
-
+    
     public boolean isIsLineDrawn() {
         return isLineDrawn;
     }
-
+    
     public boolean isHasLineDistance() {
         return hasLineDistance;
     }
-
+    
     public void setHasLineDistance(boolean hasLineDistance) {
         this.hasLineDistance = hasLineDistance;
     }
-
+    
     public void setIsLineDrawn(boolean isLineDrawn) {
         this.isLineDrawn = isLineDrawn;
     }
-
+    
     public LineDrawer getLineDrawer() {
         return lineDrawer;
     }
-
+    
     public GraphicsEnvironment getGraphicsEnvironment() {
         return graphicsEnvironment;
     }
-
+    
     public void setMeetingId(long meetingId) {
         this.meetingId = meetingId;
     }
@@ -202,4 +204,29 @@ public class MainWindow extends javax.swing.JFrame {
     private javax.swing.JLabel QRCodeLabel;
     private javax.swing.JButton saveButton;
     // End of variables declaration//GEN-END:variables
+
+    @Override
+    public void receiveLogin(String message) {
+        try {
+            System.out.println("ReveiceLogin: " + message);
+            processLogin(message);
+        } catch (ParseException | IOException ex) {
+            Logger.getLogger(MainWindow.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+    
+    @Override
+    public void receivePutModerationCard(String message) {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
+    
+    @Override
+    public void receiveDeleteModerationCard(String message) {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
+    
+    @Override
+    public void receiveUpdateModerationCard(String message) {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
 }

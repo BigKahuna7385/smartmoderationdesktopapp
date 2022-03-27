@@ -1,6 +1,7 @@
 package SmartModerationDesktopApp.Server;
 
-import SmartModerationDesktopApp.MainWindow;
+import SmartModerationDesktopApp.Observer.ServerObservable;
+import SmartModerationDesktopApp.Observer.ServerObserver;
 import com.sun.net.httpserver.Headers;
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpServer;
@@ -13,21 +14,19 @@ import java.util.Enumeration;
 import java.util.UUID;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import org.json.simple.parser.ParseException;
 
-public class Server {
+public class Server implements ServerObservable {
 
     static final int PORT = 8080;
     private static InetAddress ipAddress;
     static final boolean VERBOSE = true;
     private final String apiKey;
-    private final MainWindow mainWindow;
+    private ServerObserver observer;
 
-    public Server(MainWindow mainWindow) {
+    public Server() {
         apiKey = UUID.randomUUID().toString();
         System.out.println("apiKey:" + apiKey);
         ipAddress = getIpAddress();
-        this.mainWindow = mainWindow;
     }
 
     public void createServer() {
@@ -81,11 +80,7 @@ public class Server {
                     try ( OutputStream os = t.getResponseBody()) {
                         os.write(response.getBytes());
                     }
-                    try {
-                        mainWindow.processLogin(sb.toString());
-                    } catch (ParseException | IOException ex) {
-                        Logger.getLogger(Server.class.getName()).log(Level.SEVERE, null, ex);
-                    }
+                    login(sb.toString());
                 }
             });
             server.setExecutor(null);
@@ -126,4 +121,30 @@ public class Server {
     public String getApiKey() {
         return apiKey;
     }
+
+    @Override
+    public void initObserver(ServerObserver observer) {
+        this.observer = observer;
+    }
+
+    @Override
+    public void login(String message) {
+        this.observer.receiveLogin(message);
+    }
+
+    @Override
+    public void putModerationCard(String message) {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
+
+    @Override
+    public void deleteModerationCard(String message) {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
+
+    @Override
+    public void updateModerationCard(String message) {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
+
 }
