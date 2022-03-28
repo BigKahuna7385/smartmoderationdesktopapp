@@ -14,7 +14,7 @@ import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
 public class JsonReader {
-    
+
     public ArrayList<ModerationCard> parseModerationCardJson(String inputJson) {
         ArrayList<ModerationCard> moderationCardList = new ArrayList();
 
@@ -37,6 +37,20 @@ public class JsonReader {
         } catch (ParseException e) {
         }
         return moderationCardList;
+    }
+
+    public ModerationCard parseSingleModerationCardJson(String inputJson) throws ParseException {
+
+        JSONParser jsonParser = new JSONParser();
+
+        Object object = jsonParser.parse(inputJson);
+        JSONObject meetingCard = (JSONObject) object;
+        JSONObject jsonObject = (JSONObject) meetingCard;
+        long cardId = (long) jsonObject.get("cardId");
+        String content = (String) jsonObject.get("content");
+        String color = (String) jsonObject.get("color");
+        long meetingId = (long) jsonObject.get("meetingId");
+        return new ModerationCard(cardId, meetingId, content, color);
     }
 
     public HashMap<Long, Point> parseCacheJson(File inputJson) {

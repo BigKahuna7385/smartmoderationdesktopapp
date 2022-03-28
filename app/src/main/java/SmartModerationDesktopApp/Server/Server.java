@@ -1,6 +1,7 @@
 package SmartModerationDesktopApp.Server;
 
-import SmartModerationDesktopApp.MainWindow;
+import SmartModerationDesktopApp.Observer.ServerObservable;
+import SmartModerationDesktopApp.Observer.ServerObserver;
 import com.sun.net.httpserver.Headers;
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpServer;
@@ -13,23 +14,22 @@ import java.util.Enumeration;
 import java.util.UUID;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import org.json.simple.parser.ParseException;
 
-public class Server {
-
+public class Server implements ServerObservable {
+    
     static final int PORT = 8080;
     private static InetAddress ipAddress;
     static final boolean VERBOSE = true;
     private final String apiKey;
-    private final MainWindow mainWindow;
-
-    public Server(MainWindow mainWindow) {
-        apiKey = UUID.randomUUID().toString();
+    private ServerObserver observer;
+    
+    public Server() {
+        //apiKey = UUID.randomUUID().toString();
+        apiKey = "Test";
         System.out.println("apiKey:" + apiKey);
         ipAddress = getIpAddress();
-        this.mainWindow = mainWindow;
     }
-
+    
     public void createServer() {
         try {
             HttpServer server = HttpServer.create(new InetSocketAddress(8080), 0);
@@ -41,7 +41,7 @@ public class Server {
                     sb.append((char) i);
                 }
                 System.out.println("hm: " + sb.toString());
-
+                
                 String response = " <html>\n"
                         + "<body>\n"
                         + "\n"
@@ -58,6 +58,7 @@ public class Server {
                     os.write(response.getBytes());
                 }
             });
+            
             server.createContext("/login", (HttpExchange t) -> {
                 StringBuilder sb = new StringBuilder();
                 String requestMethod = t.getRequestMethod();
@@ -72,20 +73,77 @@ public class Server {
                 } else {
                     InputStream ios = t.getRequestBody();
                     int i;
-                    while ((i = ios.read()) != -1) {
-                        sb.append((char) i);
-                    }
-                    System.out.println("meetingJson: " + sb.toString());
                     String response = "OK";
-                    t.sendResponseHeaders(200, response.length());
+                    switch (requestMethod) {
+                        case "POST":
+                            while ((i = ios.read()) != -1) {
+                                sb.append((char) i);
+                            }
+                            System.out.println("meetingJson: " + sb.toString());
+                            t.sendResponseHeaders(200, response.length());
+                            try ( OutputStream os = t.getResponseBody()) {
+                                os.write(response.getBytes());
+                            }
+                            login(sb.toString());
+                            break;
+                        default:
+                            throw new AssertionError();
+                    }
+                }
+            });
+            
+            server.createContext("/moderationcard", (HttpExchange t) -> {
+                StringBuilder sb = new StringBuilder();
+                String requestMethod = t.getRequestMethod();
+                System.out.println("Method: " + requestMethod);
+                Headers headers = t.getRequestHeaders();
+                if (!headers.containsKey("Authorization") || !headers.getFirst("Authorization").equals("Bearer " + apiKey)) {
+                    String response = "Missing or incorrect Authorization";
+                    t.sendResponseHeaders(401, response.length());
                     try ( OutputStream os = t.getResponseBody()) {
                         os.write(response.getBytes());
                     }
-                    try {
-                        mainWindow.processLogin(sb.toString());
-                    } catch (ParseException | IOException ex) {
-                        Logger.getLogger(Server.class.getName()).log(Level.SEVERE, null, ex);
-                    }
+                } else {
+                    InputStream ios = t.getRequestBody();
+                    int i;
+                    String response = "OK";
+                    switch (requestMethod) {
+                        case "POST":
+                            while ((i = ios.read()) != -1) {
+                                sb.append((char) i);
+                            }
+                            System.out.println("Update Moderation Card JSON: " + sb.toString());
+                            t.sendResponseHeaders(200, response.length());
+                            try ( OutputStream os = t.getResponseBody()) {
+                                os.write(response.getBytes());
+                            }
+                            updateModerationCard(sb.toString());
+                            break;
+                        case "PUT":
+                            while ((i = ios.read()) != -1) {
+                                sb.append((char) i);
+                            }
+                            System.out.println("Put Moderation Card JSON: : " + sb.toString());
+                            t.sendResponseHeaders(200, response.length());
+                            try ( OutputStream os = t.getResponseBody()) {
+                                os.write(response.getBytes());
+                            }
+                            putModerationCard(sb.toString());
+                            break;
+                        case "DELETE":
+                            while ((i = ios.read()) != -1) {
+                                sb.append((char) i);
+                            }
+                            System.out.println("Delete Moderation Card JSON: : " + sb.toString());
+                            t.sendResponseHeaders(200, response.length());
+                            try ( OutputStream os = t.getResponseBody()) {
+                                os.write(response.getBytes());
+                            }
+                            deleteModerationCard(sb.toString());
+                            break;
+                        default:
+                            throw new AssertionError();
+                    }                   
                 }
             });
             server.setExecutor(null);
@@ -93,7 +151,7 @@ public class Server {
         } catch (IOException e) {
         }
     }
-
+    
     private InetAddress getIpAddress() {
         Enumeration en;
         try {
@@ -115,15 +173,41 @@ public class Server {
         }
         return null;
     }
-
+    
     public String getIpAddressAndPortAsString() {
         if (ipAddress == null) {
             return null;
         }
         return ipAddress.getCanonicalHostName() + ":" + PORT;
     }
-
+    
     public String getApiKey() {
         return apiKey;
     }
+    
+    @Override
+    public void initObserver(ServerObserver observer) {
+        this.observer = observer;
+    }
+    
+    @Override
+    public void login(String message) {
+        this.observer.receiveLogin(message);
+    }
+    
+    @Override
+    public void putModerationCard(String message) {
+        this.observer.receivePutModerationCard(message);
+    }
+    
+    @Override
+    public void deleteModerationCard(String message) {
+        this.observer.receiveDeleteModerationCard(message);
+    }
+    
+    @Override
+    public void updateModerationCard(String message) {
+        this.observer.receiveUpdateModerationCard(message);
+    }
+    
 }
