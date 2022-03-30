@@ -12,6 +12,7 @@ public class SnapDirectionChecker {
         if (!isOver(movingCard, magneticCard) && !isUnder(movingCard, magneticCard)) {
             if (isAtRightBorderOfWithinRangeOf(movingCard, magneticCard, magnetRange, -magnetRange)) {
                 returnModerationCard = magneticCard;
+                distancedMagnet = false;
                 snapDirection = WEST;
             } else if (isAtRightBorderOfWithinRangeOf(movingCard, magneticCard, 2 * magnetRange, magnetRange)) {
                 returnModerationCard = magneticCard;
@@ -19,6 +20,7 @@ public class SnapDirectionChecker {
                 snapDirection = WEST;
             } else if (isAtLeftBorderOfWithinRangeOf(movingCard, magneticCard, -magnetRange, magnetRange)) {
                 returnModerationCard = magneticCard;
+                distancedMagnet = false;
                 snapDirection = EAST;
             } else if (isAtLeftBorderOfWithinRangeOf(movingCard, magneticCard, magnetRange, 2 * magnetRange)) {
                 returnModerationCard = magneticCard;
