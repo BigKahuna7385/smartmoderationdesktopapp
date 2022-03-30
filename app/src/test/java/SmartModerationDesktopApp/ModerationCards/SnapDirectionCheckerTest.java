@@ -107,7 +107,7 @@ public class SnapDirectionCheckerTest {
 
     @Test
     public void testMovingCardOnTopOfMagneticCardWhenInsideCard() {
-        moderationCardMoving.setBounds(xPosition, yPosition - height + 5, height, width);
+        moderationCardMoving.setBounds(xPosition, yPosition - height - 5, height, width);
         moderationCardMagnetic.setBounds(xPosition, yPosition, height, width);
 
         snapDirectionChecker.setSnapDirectionBetween(moderationCardMoving, moderationCardMagnetic);
@@ -119,14 +119,14 @@ public class SnapDirectionCheckerTest {
 
     @Test
     public void testMovingCardOnTopOfMagneticCard() {
-        moderationCardMoving.setBounds(xPosition, yPosition - 2 * height - 5, height, width);
+        moderationCardMoving.setBounds(xPosition, yPosition - height - 5, height, width);
         moderationCardMagnetic.setBounds(xPosition, yPosition, height, width);
 
         snapDirectionChecker.setSnapDirectionBetween(moderationCardMoving, moderationCardMagnetic);
 
         assertNotNull(moderationCardMoving.getMagneticCard());
-        assertFalse(moderationCardMoving.isDistancedMagnet());
         assertEquals(SOUTH, moderationCardMoving.getSnapDirection());
+        assertFalse(moderationCardMoving.isDistancedMagnet());
     }
 
     @Test
@@ -138,8 +138,8 @@ public class SnapDirectionCheckerTest {
 
         //assertTrue(isInsideVertically(moderationCardMoving, moderationCardMagnetic));
         assertNotNull(moderationCardMoving.getMagneticCard());
-        assertTrue(moderationCardMoving.isDistancedMagnet());
         assertEquals(SOUTH, moderationCardMoving.getSnapDirection());
+        assertTrue(moderationCardMoving.isDistancedMagnet());
     }
 
     @Test
@@ -150,8 +150,8 @@ public class SnapDirectionCheckerTest {
         snapDirectionChecker.setSnapDirectionBetween(moderationCardMoving, moderationCardMagnetic);
 
         assertNotNull(moderationCardMoving.getMagneticCard());
+        assertEquals(NORTH, moderationCardMoving.getSnapDirection());
         assertFalse(moderationCardMoving.isDistancedMagnet());
-        assertEquals(SOUTH, moderationCardMoving.getSnapDirection());
     }
 
     @Test
@@ -162,8 +162,8 @@ public class SnapDirectionCheckerTest {
         snapDirectionChecker.setSnapDirectionBetween(moderationCardMoving, moderationCardMagnetic);
 
         assertNotNull(moderationCardMoving.getMagneticCard());
+        assertEquals(NORTH, moderationCardMoving.getSnapDirection());
         assertFalse(moderationCardMoving.isDistancedMagnet());
-        assertEquals(SOUTH, moderationCardMoving.getSnapDirection());
     }
 
     @Test
@@ -175,8 +175,8 @@ public class SnapDirectionCheckerTest {
 
         //assertTrue(isInsideVertically(moderationCardMoving, moderationCardMagnetic));
         assertNotNull(moderationCardMoving.getMagneticCard());
+        assertEquals(NORTH, moderationCardMoving.getSnapDirection());
         assertTrue(moderationCardMoving.isDistancedMagnet());
-        assertEquals(SOUTH, moderationCardMoving.getSnapDirection());
     }
 
 }

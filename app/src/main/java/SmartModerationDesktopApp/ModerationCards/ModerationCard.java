@@ -183,10 +183,10 @@ public class ModerationCard extends javax.swing.JPanel {
                     x = magneticCard.x - getBounds().width - distance;
                     break;
                 case SOUTH:
-                    y = magneticCard.y + magneticCard.getBounds().height + distance;
+                    y = magneticCard.y - getBounds().height - distance;
                     break;
                 case NORTH:
-                    y = magneticCard.y - getBounds().height - distance;
+                    y = magneticCard.y + magneticCard.getBounds().height + distance;
                     break;
                 default:
                     throw new AssertionError();
