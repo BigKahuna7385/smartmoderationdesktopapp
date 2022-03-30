@@ -42,7 +42,6 @@ public class JsonWriter {
         loginInformation.put("ipAddess", server.getIpAddressString());
         loginInformation.put("port", Server.getPORT());
         loginInformation.put("apiKey", server.getApiKey());
-        System.out.println("JSON login string: " + loginInformation.toJSONString());
         return loginInformation.toJSONString();
     }
 }
