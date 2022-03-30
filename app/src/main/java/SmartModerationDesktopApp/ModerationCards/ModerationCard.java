@@ -6,6 +6,7 @@ import java.awt.Color;
 import java.awt.Point;
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;
+import javax.swing.JTextPane;
 import javax.swing.text.SimpleAttributeSet;
 import javax.swing.text.StyleConstants;
 import javax.swing.text.StyledDocument;
@@ -293,11 +294,11 @@ public class ModerationCard extends javax.swing.JPanel {
     }
 
     public void updateProperties(ModerationCard moderationCard) {
-        setCardContent(moderationCard.getContent());
+        setCardContent(moderationCard.getContent());        
         setBackground(moderationCard.getBackground());
     }
 
-    private void setCardContent(String content) {
+    private void setCardContent(String content) {     
         moderationCardTextBody.setText(content);
     }
 
@@ -305,4 +306,8 @@ public class ModerationCard extends javax.swing.JPanel {
     private javax.swing.JScrollPane jScrollPane;
     private javax.swing.JTextPane moderationCardTextBody;
     // End of variables declaration//GEN-END:variables
+
+    public JTextPane getModerationCardTextBody() {
+        return moderationCardTextBody;
+    }
 }
