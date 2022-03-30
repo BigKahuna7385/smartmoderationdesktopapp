@@ -217,7 +217,7 @@ public class ModerationCard extends javax.swing.JPanel {
         SimpleAttributeSet center = new SimpleAttributeSet();
         StyleConstants.setAlignment(center, StyleConstants.ALIGN_CENTER);
         doc.setParagraphAttributes(0, doc.getLength(), center, false);
-    }   
+    }
 
     private void createOneColorBackground() {
         jScrollPane.getViewport().setOpaque(false);
@@ -291,8 +291,8 @@ public class ModerationCard extends javax.swing.JPanel {
     public String getContent() {
         return content;
     }
-    
-        public void updateProperties(ModerationCard moderationCard) {
+
+    public void updateProperties(ModerationCard moderationCard) {
         setCardContent(moderationCard.getContent());
         setBackground(moderationCard.getBackground());
     }
