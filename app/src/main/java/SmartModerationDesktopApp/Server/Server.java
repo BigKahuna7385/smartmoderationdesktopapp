@@ -16,20 +16,20 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class Server implements ServerObservable {
-    
+
     static final int PORT = 8080;
     private static InetAddress ipAddress;
     static final boolean VERBOSE = true;
     private final String apiKey;
     private ServerObserver observer;
-    
+
     public Server() {
-        //apiKey = UUID.randomUUID().toString();
-        apiKey = "Test";
+        apiKey = UUID.randomUUID().toString();
+        //apiKey = "Test";
         System.out.println("apiKey:" + apiKey);
         ipAddress = getIpAddress();
     }
-    
+
     public void createServer() {
         try {
             HttpServer server = HttpServer.create(new InetSocketAddress(8080), 0);
@@ -41,7 +41,7 @@ public class Server implements ServerObservable {
                     sb.append((char) i);
                 }
                 System.out.println("hm: " + sb.toString());
-                
+
                 String response = " <html>\n"
                         + "<body>\n"
                         + "\n"
@@ -58,7 +58,7 @@ public class Server implements ServerObservable {
                     os.write(response.getBytes());
                 }
             });
-            
+
             server.createContext("/login", (HttpExchange t) -> {
                 StringBuilder sb = new StringBuilder();
                 String requestMethod = t.getRequestMethod();
@@ -79,7 +79,7 @@ public class Server implements ServerObservable {
                             while ((i = ios.read()) != -1) {
                                 sb.append((char) i);
                             }
-                            System.out.println("meetingJson: " + sb.toString());
+                            System.out.println("Login POST");
                             t.sendResponseHeaders(200, response.length());
                             try ( OutputStream os = t.getResponseBody()) {
                                 os.write(response.getBytes());
@@ -91,7 +91,7 @@ public class Server implements ServerObservable {
                     }
                 }
             });
-            
+
             server.createContext("/moderationcard", (HttpExchange t) -> {
                 StringBuilder sb = new StringBuilder();
                 String requestMethod = t.getRequestMethod();
@@ -143,7 +143,7 @@ public class Server implements ServerObservable {
                             break;
                         default:
                             throw new AssertionError();
-                    }                   
+                    }
                 }
             });
             server.setExecutor(null);
@@ -151,8 +151,8 @@ public class Server implements ServerObservable {
         } catch (IOException e) {
         }
     }
-    
-    private InetAddress getIpAddress() {
+
+    public InetAddress getIpAddress() {
         Enumeration en;
         try {
             en = NetworkInterface.getNetworkInterfaces();
@@ -161,8 +161,8 @@ public class Server implements ServerObservable {
                 Enumeration ee = ni.getInetAddresses();
                 while (ee.hasMoreElements()) {
                     InetAddress ia = (InetAddress) ee.nextElement();
-                    System.out.println(ia.getCanonicalHostName());
                     if (ia.getHostAddress().contains("192.168.") || ia.getHostAddress().contains("172.")) {
+                        System.out.println(ia.getCanonicalHostName());
                         return ia;
                     }
                 }
@@ -173,41 +173,45 @@ public class Server implements ServerObservable {
         }
         return null;
     }
-    
-    public String getIpAddressAndPortAsString() {
+
+    public String getIpAddressString() {
         if (ipAddress == null) {
             return null;
         }
-        return ipAddress.getCanonicalHostName() + ":" + PORT;
+        return ipAddress.getCanonicalHostName();
     }
-    
+
+    public static int getPORT() {
+        return PORT;
+    }    
+
     public String getApiKey() {
         return apiKey;
     }
-    
+
     @Override
     public void initObserver(ServerObserver observer) {
         this.observer = observer;
     }
-    
+
     @Override
     public void login(String message) {
         this.observer.receiveLogin(message);
     }
-    
+
     @Override
     public void putModerationCard(String message) {
         this.observer.receivePutModerationCard(message);
     }
-    
+
     @Override
     public void deleteModerationCard(String message) {
         this.observer.receiveDeleteModerationCard(message);
     }
-    
+
     @Override
     public void updateModerationCard(String message) {
         this.observer.receiveUpdateModerationCard(message);
     }
-    
+
 }

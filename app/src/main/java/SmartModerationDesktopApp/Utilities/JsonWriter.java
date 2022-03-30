@@ -1,6 +1,7 @@
 package SmartModerationDesktopApp.Utilities;
 
 import SmartModerationDesktopApp.ModerationCards.ModerationCard;
+import SmartModerationDesktopApp.Server.Server;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -9,11 +10,11 @@ import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
 public class JsonWriter {
-    
-    public void saveMeetingStatus(long meetingID, ArrayList<ModerationCard> moderationCards){
-        
+
+    public void saveMeetingStatus(long meetingID, ArrayList<ModerationCard> moderationCards) {
+
         JSONArray cardsArray = new JSONArray();
-        for (ModerationCard card: moderationCards) {
+        for (ModerationCard card : moderationCards) {
             JSONObject cardJSON = new JSONObject();
             cardJSON.put("cardId", card.getCardId());
             JSONArray cardPositions = new JSONArray();
@@ -24,15 +25,24 @@ public class JsonWriter {
             cardJSON.put("positions", cardPositions);
             cardsArray.add(cardJSON);
         }
-        
+
         File directory = new File("./cache");
-        if (!directory.exists()){
+        if (!directory.exists()) {
             directory.mkdir();
         }
-        try (FileWriter fileWriter = new FileWriter("./cache/" + meetingID + ".json")) {
-            fileWriter.write(cardsArray.toJSONString()); 
+        try ( FileWriter fileWriter = new FileWriter("./cache/" + meetingID + ".json")) {
+            fileWriter.write(cardsArray.toJSONString());
             fileWriter.close();
         } catch (IOException ex) {
-        }        
+        }
+    }
+
+    public String getLoginInformationJson(Server server) {
+        JSONObject loginInformation = new JSONObject();
+        loginInformation.put("ipAddess", server.getIpAddressString());
+        loginInformation.put("port", Server.getPORT());
+        loginInformation.put("apiKey", server.getApiKey());
+        System.out.println("JSON login string: " + loginInformation.toJSONString());
+        return loginInformation.toJSONString();
     }
 }
