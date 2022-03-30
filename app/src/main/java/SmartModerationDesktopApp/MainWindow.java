@@ -143,7 +143,7 @@ public class MainWindow extends javax.swing.JFrame implements ServerObserver {
         mainWindow.getServer().createServer();
     }
 
-    public void processLogin(String loginString) throws ParseException, IOException {
+    private void processLogin(String loginString) throws ParseException, IOException {
         readLoginInformation(jsonReader.readLoginInformationJson(loginString));
         QRCode.setVisible(false);
         QRCodeLabel.setVisible(false);
