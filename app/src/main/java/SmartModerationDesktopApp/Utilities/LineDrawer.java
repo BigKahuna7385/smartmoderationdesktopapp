@@ -39,12 +39,12 @@ public class LineDrawer {
                 endPoint.setLocation(magneticCard.getBounds().x + magneticCard.getBounds().width + distance, mainWindow.getContentPane().getMaximumSize().height);
                 break;
             case SOUTH:
-                startPoint.setLocation(0, magneticCard.getY() - distance);
-                endPoint.setLocation(mainWindow.getContentPane().getMaximumSize().width, magneticCard.getY() - distance);
+                startPoint.setLocation(0, magneticCard.getBounds().y - distance);
+                endPoint.setLocation(mainWindow.getContentPane().getMaximumSize().width, magneticCard.getBounds().y - distance);
                 break;
             case NORTH:
-                startPoint.setLocation(0, magneticCard.getY() + magneticCard.getBounds().height + distance);
-                endPoint.setLocation(mainWindow.getContentPane().getMaximumSize().width, magneticCard.getY() + magneticCard.getBounds().height + distance);
+                startPoint.setLocation(0, magneticCard.getBounds().y + magneticCard.getBounds().height + distance);
+                endPoint.setLocation(mainWindow.getContentPane().getMaximumSize().width, magneticCard.getBounds().y + magneticCard.getBounds().height + distance);
                 break;
         }
         g2d.drawLine(startPoint.x, startPoint.y, endPoint.x, endPoint.y);
@@ -68,5 +68,5 @@ public class LineDrawer {
 
     public Point getEndPoint() {
         return endPoint;
-    }    
+    }
 }

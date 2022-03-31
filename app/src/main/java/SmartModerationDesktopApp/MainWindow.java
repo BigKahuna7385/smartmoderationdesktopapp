@@ -147,7 +147,7 @@ public class MainWindow extends javax.swing.JFrame implements ServerObserver {
     }
     
     private void processLogin(String loginString) throws ParseException, IOException {
-        readLoginInformation(jsonReader.readLoginInformationJson(loginString));
+        readLoginInformation(jsonReader.readLoginInformationJson(loginString));        
         QRCode.setVisible(false);
         QRCodeLabel.setVisible(false);
         moderationCards.addAll(jsonReader.parseModerationCardJson(client.getModerationCards()));
