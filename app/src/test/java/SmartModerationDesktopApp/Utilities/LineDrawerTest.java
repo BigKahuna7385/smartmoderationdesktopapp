@@ -22,7 +22,7 @@ public class LineDrawerTest {
     static int yPosition;
     static int xPosition;
     static int MAGNETICDISTANCE;
-
+    /*
     @BeforeAll
     public static void setUp() {
         mainWindow = new MainWindow();
@@ -93,5 +93,5 @@ public class LineDrawerTest {
         assertTrue(mainWindow.getLineDrawer().getEndPoint().x == mainWindow.getContentPane().getMaximumSize().width);
         assertTrue(mainWindow.getLineDrawer().getEndPoint().y == yPosition - MAGNETICDISTANCE);
     }
-
+     */
 }
