@@ -213,5 +213,4 @@ public class Server implements ServerObservable {
     public void updateModerationCard(String message) {
         this.observer.receiveUpdateModerationCard(message);
     }
-
 }
