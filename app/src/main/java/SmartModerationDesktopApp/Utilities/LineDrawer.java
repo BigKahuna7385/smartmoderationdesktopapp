@@ -68,10 +68,5 @@ public class LineDrawer {
 
     public Point getEndPoint() {
         return endPoint;
-    }
-
-    public MainWindow getMainWindow() {
-        return mainWindow;
     }    
-    
 }
