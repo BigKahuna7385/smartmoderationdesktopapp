@@ -133,8 +133,11 @@ public class MainWindow extends javax.swing.JFrame implements ServerObserver {
             device.setFullScreenWindow(mainWindow);
             mainWindow.setVisible(true);
             try {
-                mainWindow.setQRCodeLabel(qrCodeGenerator.createLoginQRCode(mainWindow));
-            } catch (WriterException ex) {
+                try {
+                    mainWindow.setQRCodeLabel(qrCodeGenerator.createLoginQRCode(mainWindow));
+                } catch (WriterException ex) {
+                    Logger.getLogger(MainWindow.class.getName()).log(Level.SEVERE, null, ex);
+                }
             } catch (UnsupportedEncodingException ex) {
                 Logger.getLogger(MainWindow.class.getName()).log(Level.SEVERE, null, ex);
             }
@@ -200,6 +203,10 @@ public class MainWindow extends javax.swing.JFrame implements ServerObserver {
     public void setMeetingId(long meetingId) {
         this.meetingId = meetingId;
     }
+
+    public JsonWriter getJsonWriter() {
+        return jsonWriter;
+    }    
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel QRCode;
