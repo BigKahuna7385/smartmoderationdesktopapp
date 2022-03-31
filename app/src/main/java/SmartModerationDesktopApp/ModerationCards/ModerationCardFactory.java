@@ -1,6 +1,5 @@
 package SmartModerationDesktopApp.ModerationCards;
 
-import SmartModerationDesktopApp.MainWindow;
 import SmartModerationDesktopApp.Utilities.JsonReader;
 import java.awt.Point;
 import java.io.File;
@@ -46,5 +45,9 @@ public class ModerationCardFactory {
             }
             moderationCard.setBounds(moderationCard.getX(), moderationCard.getY(), moderationCard.getPreferredSize().width, moderationCard.getPreferredSize().height);
             moderationCard.setModerationCardList(moderationCards);
+    }
+    
+    public ArrayList<ModerationCard> getModerationCards(){
+        return moderationCards;
     }
 }
