@@ -22,8 +22,8 @@ public class JsonReader {
             return moderationCardList;
         }
 
-        JSONParser jsonParser = new JSONParser();
         try {
+            JSONParser jsonParser = new JSONParser();
             Object object = jsonParser.parse(inputJson);
             JSONArray meetingCards = (JSONArray) object;
             for (Object meetingCard : meetingCards) {

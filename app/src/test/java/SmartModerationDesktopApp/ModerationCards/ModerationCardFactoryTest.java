@@ -3,12 +3,8 @@ package SmartModerationDesktopApp.ModerationCards;
 
 import java.io.File;
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Paths;
-import static java.nio.file.StandardCopyOption.REPLACE_EXISTING;
 import java.util.ArrayList;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import org.apache.commons.io.FileUtils;
 import org.junit.jupiter.api.AfterEach;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -37,16 +33,13 @@ public class ModerationCardFactoryTest {
         moderationCards.add(moderationCard3);
         moderationCardFactory = new ModerationCardFactory(moderationCards, 1234567890l);
         file = new File("./cache/1234567890.json");
-        Files.copy(Paths.get("./src/test/resources/cardCacheTestSet.json"), Paths.get("./cache/1234567890.json"), REPLACE_EXISTING );
+        FileUtils.copyFile(new File("./src/test/resources/cardCacheTestSet.json"), file);
     }
     
-    @AfterEach
-    public void cleanUp(){
-        
-    }
 
     @Test
     public void testLoadModerationCardPositionsFromCache() throws IOException {
+        
         moderationCardFactory.loadModerationCardPositionsFromCache();
         assertNotNull(moderationCardFactory.getModerationCards());
         assertEquals(moderationCards.size(), 3);
@@ -60,7 +53,29 @@ public class ModerationCardFactoryTest {
 
     @Test
     public void testSetFanout() {
-        
+        for (ModerationCard moderationCard: moderationCards){
+            moderationCardFactory.setFanout(moderationCard);
+        }
+        assertEquals(moderationCards.get(0).getX(), 0);
+        assertEquals(moderationCards.get(0).getY(), 0);
+        assertEquals(moderationCards.get(1).getX(), 15);
+        assertEquals(moderationCards.get(1).getY(), 15);
+        assertEquals(moderationCards.get(2).getX(), 30);
+        assertEquals(moderationCards.get(2).getY(), 30);
+    }
+    
+    @Test
+    public void testSetFanoutIfCardPositionIsSet() {
+        for (ModerationCard moderationCard: moderationCards){
+            moderationCard.setX(50);
+            moderationCardFactory.setFanout(moderationCard);
+        }
+        assertEquals(moderationCards.get(0).getX(), 50);
+        assertEquals(moderationCards.get(0).getY(), 0);
+        assertEquals(moderationCards.get(1).getX(), 50);
+        assertEquals(moderationCards.get(1).getY(), 0);
+        assertEquals(moderationCards.get(2).getX(), 50);
+        assertEquals(moderationCards.get(2).getY(), 0);
     }
     
 }
