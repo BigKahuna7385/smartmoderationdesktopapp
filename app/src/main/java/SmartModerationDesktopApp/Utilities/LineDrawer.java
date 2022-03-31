@@ -72,7 +72,6 @@ public class LineDrawer {
 
     public MainWindow getMainWindow() {
         return mainWindow;
-    }
-    
+    }    
     
 }

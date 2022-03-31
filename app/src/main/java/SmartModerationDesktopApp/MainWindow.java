@@ -139,13 +139,7 @@ public class MainWindow extends javax.swing.JFrame implements ServerObserver {
                 Logger.getLogger(MainWindow.class.getName()).log(Level.SEVERE, null, ex);
             }
         });
-        
-        mainWindow.processLogin("{\n"
-                + "    \"meetingId\": 3570151905752727837,\n"
-                + "    \"ipAddress\": \"127.0.0.1\",\n"
-                + "    \"port\": 8000\n"
-                + "}");
-        
+                
         mainWindow.getServer().createServer();
     }
     
