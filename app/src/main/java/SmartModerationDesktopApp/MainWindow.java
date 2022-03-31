@@ -29,7 +29,7 @@ public class MainWindow extends javax.swing.JFrame implements ServerObserver {
     private final LineDrawer lineDrawer;
     private final GraphicsEnvironment graphicsEnvironment;
     private final ArrayList<ModerationCard> moderationCards;
-    private final ModerationCardFactory moderationCardFactory;
+    private ModerationCardFactory moderationCardFactory;
     private Client client;
     private long meetingId;
     private boolean isLineDrawn = false;
@@ -45,7 +45,6 @@ public class MainWindow extends javax.swing.JFrame implements ServerObserver {
         lineDrawer = new LineDrawer(this);
         moderationCards = new ArrayList<>();
         graphicsEnvironment = GraphicsEnvironment.getLocalGraphicsEnvironment();
-        moderationCardFactory = new ModerationCardFactory(this);
     }
     
     @SuppressWarnings("unchecked")
@@ -142,7 +141,6 @@ public class MainWindow extends javax.swing.JFrame implements ServerObserver {
                 Logger.getLogger(MainWindow.class.getName()).log(Level.SEVERE, null, ex);
             }
         });
-                
         mainWindow.getServer().createServer();
     }
     
@@ -150,9 +148,21 @@ public class MainWindow extends javax.swing.JFrame implements ServerObserver {
         readLoginInformation(jsonReader.readLoginInformationJson(loginString));
         QRCode.setVisible(false);
         QRCodeLabel.setVisible(false);
-        moderationCards.addAll(jsonReader.parseModerationCardJson(client.getModerationCards()));
-        moderationCardFactory.placeModerationCards();
         isClientLoggedIn = true;
+        initializeModerationCards();
+    }
+    
+    private void initializeModerationCards() throws IOException{
+        moderationCards.addAll(jsonReader.parseModerationCardJson(client.getModerationCards()));
+        moderationCardFactory = new ModerationCardFactory(moderationCards, meetingId);
+        moderationCardFactory.loadModerationCardPositionsFromCache();
+        for (ModerationCard moderationCard : moderationCards) {
+            moderationCard.setMainWindow(this);
+            getContentPane().add(moderationCard);
+            moderationCardFactory.setFanout(moderationCard);
+        }
+        revalidate();
+        repaint(); 
     }
     
     private void readLoginInformation(LoginInformation loginInformation) {
@@ -233,7 +243,7 @@ public class MainWindow extends javax.swing.JFrame implements ServerObserver {
         try {
             System.out.println("Try to put new moderation card.");
             moderationCards.add(jsonReader.parseSingleModerationCardJson(message));
-            moderationCardFactory.placeModerationCards();
+            moderationCardFactory.loadModerationCardPositionsFromCache();
         } catch (ParseException ex) {
             Logger.getLogger(MainWindow.class.getName()).log(Level.SEVERE, null, ex);
         }
