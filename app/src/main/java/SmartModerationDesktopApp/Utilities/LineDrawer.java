@@ -61,4 +61,18 @@ public class LineDrawer {
         mainWindow.repaint();
         mainWindow.setIsLineDrawn(false);
     }
+
+    public Point getStartPoint() {
+        return startPoint;
+    }
+
+    public Point getEndPoint() {
+        return endPoint;
+    }
+
+    public MainWindow getMainWindow() {
+        return mainWindow;
+    }
+    
+    
 }

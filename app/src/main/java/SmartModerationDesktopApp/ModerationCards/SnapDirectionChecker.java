@@ -84,7 +84,7 @@ public class SnapDirectionChecker {
         return movingCard.getBounds().y >= magneticCard.getBounds().y + magneticCard.getBounds().height + magnetRange;
     }
 
-    boolean isToTheTopBorderWithinMagnetrange(ModerationCard movingCard, ModerationCard magneticCard, int magnetStart, int magnetEnd) {
+    private boolean isToTheTopBorderWithinMagnetrange(ModerationCard movingCard, ModerationCard magneticCard, int magnetStart, int magnetEnd) {
         return isToTheTopBorderBelowMagnetrange(movingCard, magneticCard, magnetStart) && isToTheTopBorderAboveMagnetrange(movingCard, magneticCard, magnetEnd);
     }
 
@@ -100,19 +100,19 @@ public class SnapDirectionChecker {
         return isToTheBottomBorderBelowMagnetrange(movingCard, magneticCard, magnetStart) && isToTheBottomBorderAboveMagnetrange(movingCard, magneticCard, magnetEnd);
     }
 
-    public boolean isRightOf(ModerationCard movingCard, ModerationCard magneticCard) {
+    private boolean isRightOf(ModerationCard movingCard, ModerationCard magneticCard) {
         return movingCard.getBounds().x > magneticCard.getBounds().x + magneticCard.getBounds().width;
     }
 
-    public boolean isLeftOf(ModerationCard movingCard, ModerationCard magneticCard) {
+    private boolean isLeftOf(ModerationCard movingCard, ModerationCard magneticCard) {
         return movingCard.getBounds().x + movingCard.getBounds().width < magneticCard.getBounds().x;
     }
 
-    public boolean isOver(ModerationCard movingCard, ModerationCard magneticCard) {
+    private boolean isOver(ModerationCard movingCard, ModerationCard magneticCard) {
         return movingCard.getBounds().y + movingCard.getBounds().height < magneticCard.getBounds().y;
     }
 
-    public boolean isUnder(ModerationCard movingCard, ModerationCard magneticCard) {
+    private boolean isUnder(ModerationCard movingCard, ModerationCard magneticCard) {
         return movingCard.getBounds().y > magneticCard.getBounds().y + magneticCard.getBounds().height;
     }
 }
