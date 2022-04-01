@@ -11,7 +11,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.BeforeAll;
 
 public class LineDrawerTest {
-
+/*
     static MainWindow mainWindow;
     static ModerationCard moderationCardMoving;
     static ModerationCard moderationCardMagnetic;
@@ -93,5 +93,5 @@ public class LineDrawerTest {
         assertTrue(mainWindow.getLineDrawer().getEndPoint().x == mainWindow.getContentPane().getMaximumSize().width);
         assertTrue(mainWindow.getLineDrawer().getEndPoint().y == yPosition - MAGNETICDISTANCE);
     }
-     
+     */
 }
