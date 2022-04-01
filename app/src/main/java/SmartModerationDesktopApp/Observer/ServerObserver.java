@@ -6,7 +6,7 @@ public interface ServerObserver<T extends ServerObservable> {
 
     public void receivePutModerationCard(String message);
 
-    public void receiveDeleteModerationCard(String message);
+    public void receiveDeleteModerationCard(long cardId);
 
     public void receiveUpdateModerationCard(String message);
 

@@ -28,7 +28,7 @@ public class ModerationCard extends javax.swing.JPanel {
     private SnapDirections snapDirection;
     private ArrayList<ModerationCard> moderationCardList;
 
-    public ModerationCard(long cardId, long meetingId, String content, String backgroundColor) {
+    public ModerationCard(long cardId, long meetingId, String content, String backgroundColor, String fontColor) {
         initComponents();
         this.x = 0;
         this.y = 0;
@@ -37,6 +37,7 @@ public class ModerationCard extends javax.swing.JPanel {
         this.content = content;
         snapDirectionChecker = new SnapDirectionChecker();
         setBackground(Color.decode(backgroundColor));
+        setForeground(Color.decode(fontColor));
         createOneColorBackground();
         setCardContent(content);
         centerText();

@@ -39,7 +39,7 @@ public class JsonWriter {
 
     public String getLoginInformationJson(Server server) {
         JSONObject loginInformation = new JSONObject();
-        loginInformation.put("ipAddess", server.getIpAddressString());
+        loginInformation.put("ipAddress", server.getIpAddressString());
         loginInformation.put("port", Server.getPORT());
         loginInformation.put("apiKey", server.getApiKey());
         return loginInformation.toJSONString();

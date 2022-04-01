@@ -8,7 +8,7 @@ public interface ServerObservable {
 
     void putModerationCard(String message);
 
-    void deleteModerationCard(String message);
+    void deleteModerationCard(long cardId);
 
     void updateModerationCard(String message);
 }

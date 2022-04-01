@@ -92,7 +92,7 @@ public class Server implements ServerObservable {
                 }
             });
 
-            server.createContext("/moderationcard", (HttpExchange t) -> {
+            server.createContext("/moderationcards", (HttpExchange t) -> {
                 StringBuilder sb = new StringBuilder();
                 String requestMethod = t.getRequestMethod();
                 System.out.println("Method: " + requestMethod);
@@ -131,15 +131,13 @@ public class Server implements ServerObservable {
                             putModerationCard(sb.toString());
                             break;
                         case "DELETE":
-                            while ((i = ios.read()) != -1) {
-                                sb.append((char) i);
-                            }
-                            System.out.println("Delete Moderation Card JSON: : " + sb.toString());
+                            String cardId = t.getRequestURI().getQuery().substring("cardId=".length());
+                            System.out.println("Delete Moderation Card JSON: " + cardId);                         
+                            deleteModerationCard( Long.parseLong(cardId));
                             t.sendResponseHeaders(200, response.length());
                             try ( OutputStream os = t.getResponseBody()) {
                                 os.write(response.getBytes());
                             }
-                            deleteModerationCard(sb.toString());
                             break;
                         default:
                             throw new AssertionError();
@@ -162,7 +160,7 @@ public class Server implements ServerObservable {
                 while (ee.hasMoreElements()) {
                     InetAddress ia = (InetAddress) ee.nextElement();
                     if (ia.getHostAddress().contains("192.168.") || ia.getHostAddress().contains("172.")) {
-                        System.out.println(ia.getCanonicalHostName());
+                        System.out.println(ia.getHostAddress());
                         return ia;
                     }
                 }
@@ -178,12 +176,12 @@ public class Server implements ServerObservable {
         if (ipAddress == null) {
             return null;
         }
-        return ipAddress.getCanonicalHostName();
+        return ipAddress.getHostAddress();
     }
 
     public static int getPORT() {
         return PORT;
-    }    
+    }
 
     public String getApiKey() {
         return apiKey;
@@ -205,8 +203,8 @@ public class Server implements ServerObservable {
     }
 
     @Override
-    public void deleteModerationCard(String message) {
-        this.observer.receiveDeleteModerationCard(message);
+    public void deleteModerationCard(long cardId) {
+        this.observer.receiveDeleteModerationCard(cardId);
     }
 
     @Override
