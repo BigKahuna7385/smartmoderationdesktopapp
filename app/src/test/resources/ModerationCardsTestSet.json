@@ -1,18 +1,19 @@
-[{
-        "cardId": 2624659524793748349,
-        "content": "Lawand ist doof",
-        "color": "#E91E63",
-        "meetingId": 3570151905752727837
-    },
-    {
-        "cardId": 2760337309490495595,
-        "content": "Daniel ist doof",
-        "color": "#673AB7",
-        "meetingId": 3570151905752727837
-    },
-    {
-        "cardId": 3239753487134706863,
-        "content": "Daniel ist doch nicht doof",
-        "color": "#8BC34A",
-        "meetingId": 3570151905752727837
-    }]
+{
+    "meetingId": 2145752493690473242,
+    "moderationCards": [{
+            "cardId": 1164845262799520113,
+            "content": "testetst",
+            "backgroundColor": "#673AB7",
+            "fontColor": "#FFFFFF"
+        }, {
+            "cardId": 6599522553032296570,
+            "content": "test",
+            "backgroundColor": "#673AB7",
+            "fontColor": "#FFFFFF"
+        }, {
+            "cardId": 8716934582346075052,
+            "content": "logintest",
+            "backgroundColor": "#FFC107",
+            "fontColor": "#FFFFFF"
+        }]
+}

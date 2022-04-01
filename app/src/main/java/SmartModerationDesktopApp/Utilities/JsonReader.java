@@ -16,8 +16,7 @@ import org.json.simple.parser.ParseException;
 public class JsonReader {
 
     public ArrayList<ModerationCard> parseModerationCardJson(String inputJson) {
-        ArrayList<ModerationCard> moderationCardList = new ArrayList();
-        System.out.println(inputJson);
+        ArrayList<ModerationCard> moderationCardList = new ArrayList();    
         if (inputJson == null) {
             return moderationCardList;
         }
@@ -42,7 +41,7 @@ public class JsonReader {
     }
 
     public ModerationCard parseSingleModerationCardJson(String inputJson) throws ParseException {
-
+        System.out.println(inputJson);
         JSONParser jsonParser = new JSONParser();
 
         Object object = jsonParser.parse(inputJson);
