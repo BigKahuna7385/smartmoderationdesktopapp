@@ -31,9 +31,9 @@ public class JsonReaderTest {
         BufferedReader br = new BufferedReader(new FileReader(new File("./src/test/resources/SingleModerationCardTestSet.json")));
         ModerationCard moderationCard = jsonReader.parseSingleModerationCardJson(br.lines().collect(Collectors.joining()));
         assertNotNull(moderationCard);
-        assertEquals(moderationCard.getContent(), "Lawand ist doof");
-        assertEquals(moderationCard.getColor(), "#E91E63");
-        assertEquals(moderationCard.getCardId(), 2624659524793748349l);
+        assertEquals(moderationCard.getContent(), "logintest");
+        assertEquals(moderationCard.getColor(), "#FFC107");
+        assertEquals(moderationCard.getCardId(), 8716934582346075052L);
     }
 
     @Test
@@ -42,17 +42,18 @@ public class JsonReaderTest {
         ArrayList<ModerationCard> moderationCards = jsonReader.parseModerationCardJson(br.lines().collect(Collectors.joining()));
         assertNotNull(moderationCards);
         assertTrue(moderationCards.size() == 3);
-        assertEquals(moderationCards.get(0).getContent(), "Lawand ist doof");
-        assertEquals(moderationCards.get(0).getColor(), "#E91E63");
-        assertEquals(moderationCards.get(0).getCardId(), 2624659524793748349l);
+        assertEquals(moderationCards.get(0).getContent(), "testetst");
+        assertEquals(moderationCards.get(0).getColor(), "#673AB7");
+        assertEquals(moderationCards.get(0).getCardId(), 1164845262799520113L);
 
-        assertEquals(moderationCards.get(1).getContent(), "Daniel ist doof");
+        assertEquals(moderationCards.get(1).getContent(), "test");
         assertEquals(moderationCards.get(1).getColor(), "#673AB7");
-        assertEquals(moderationCards.get(1).getCardId(), 2760337309490495595l);
+        assertEquals(moderationCards.get(1).getCardId(), 6599522553032296570L);
 
-        assertEquals(moderationCards.get(2).getContent(), "Daniel ist doch nicht doof");
-        assertEquals(moderationCards.get(2).getColor(), "#8BC34A");
-        assertEquals(moderationCards.get(2).getCardId(), 3239753487134706863l);
+        assertEquals(moderationCards.get(2).getContent(), "logintest");
+        assertEquals(moderationCards.get(2).getColor(), "#FFC107");
+        assertEquals(moderationCards.get(2).getCardId(), 8716934582346075052L);      
+     
     }
 
     @Test

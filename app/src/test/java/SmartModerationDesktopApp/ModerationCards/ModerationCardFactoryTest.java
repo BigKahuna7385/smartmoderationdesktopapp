@@ -1,4 +1,3 @@
-
 package SmartModerationDesktopApp.ModerationCards;
 
 import java.io.File;
@@ -14,20 +13,18 @@ import static org.junit.jupiter.api.Assertions.fail;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.BeforeEach;
 
-
 public class ModerationCardFactoryTest {
-    
+
     private ModerationCardFactory moderationCardFactory;
     private ArrayList<ModerationCard> moderationCards;
     private File file;
-    
-    
+
     @BeforeEach
-    public void setUp() throws IOException{
+    public void setUp() throws IOException {
         moderationCards = new ArrayList<>();
-        ModerationCard moderationCard1 = new ModerationCard(2624659524793748349L, 1234567890l, "content", "#E91E63");
-        ModerationCard moderationCard2 = new ModerationCard(2760337309490495595L, 1234567890l, "content", "#E91E64");
-        ModerationCard moderationCard3 = new ModerationCard(3239753487134706863L, 1234567890l, "content", "#E91E65");
+        ModerationCard moderationCard1 = new ModerationCard(2624659524793748349L, 1234567890l, "content", "#E91E63", "#FFFFFF");
+        ModerationCard moderationCard2 = new ModerationCard(2760337309490495595L, 1234567890l, "content", "#E91E64", "#FFFFFF");
+        ModerationCard moderationCard3 = new ModerationCard(3239753487134706863L, 1234567890l, "content", "#E91E65", "#FFFFFF");
         moderationCards.add(moderationCard1);
         moderationCards.add(moderationCard2);
         moderationCards.add(moderationCard3);
@@ -35,11 +32,10 @@ public class ModerationCardFactoryTest {
         file = new File("./cache/1234567890.json");
         FileUtils.copyFile(new File("./src/test/resources/cardCacheTestSet.json"), file);
     }
-    
 
     @Test
     public void testLoadModerationCardPositionsFromCache() throws IOException {
-        
+
         moderationCardFactory.loadModerationCardPositionsFromCache();
         assertNotNull(moderationCardFactory.getModerationCards());
         assertEquals(moderationCards.size(), 3);
@@ -53,7 +49,7 @@ public class ModerationCardFactoryTest {
 
     @Test
     public void testSetFanout() {
-        for (ModerationCard moderationCard: moderationCards){
+        for (ModerationCard moderationCard : moderationCards) {
             moderationCardFactory.setFanout(moderationCard);
         }
         assertEquals(moderationCards.get(0).getX(), 0);
@@ -63,10 +59,10 @@ public class ModerationCardFactoryTest {
         assertEquals(moderationCards.get(2).getX(), 30);
         assertEquals(moderationCards.get(2).getY(), 30);
     }
-    
+
     @Test
     public void testSetFanoutIfCardPositionIsSet() {
-        for (ModerationCard moderationCard: moderationCards){
+        for (ModerationCard moderationCard : moderationCards) {
             moderationCard.setX(50);
             moderationCardFactory.setFanout(moderationCard);
         }
@@ -77,5 +73,5 @@ public class ModerationCardFactoryTest {
         assertEquals(moderationCards.get(2).getX(), 50);
         assertEquals(moderationCards.get(2).getY(), 0);
     }
-    
+
 }

@@ -16,8 +16,7 @@ import org.json.simple.parser.ParseException;
 public class JsonReader {
 
     public ArrayList<ModerationCard> parseModerationCardJson(String inputJson) {
-        ArrayList<ModerationCard> moderationCardList = new ArrayList();
-
+        ArrayList<ModerationCard> moderationCardList = new ArrayList();    
         if (inputJson == null) {
             return moderationCardList;
         }
@@ -25,14 +24,16 @@ public class JsonReader {
         try {
             JSONParser jsonParser = new JSONParser();
             Object object = jsonParser.parse(inputJson);
-            JSONArray meetingCards = (JSONArray) object;
+            JSONObject meetingCardJson = (JSONObject) object;
+            long meetingId = (long) meetingCardJson.get("meetingId");
+            JSONArray meetingCards = (JSONArray) meetingCardJson.get("moderationCards");
             for (Object meetingCard : meetingCards) {
                 JSONObject jsonObject = (JSONObject) meetingCard;
                 long cardId = (long) jsonObject.get("cardId");
                 String content = (String) jsonObject.get("content");
-                String color = (String) jsonObject.get("color");
-                long meetingId = (long) jsonObject.get("meetingId");
-                moderationCardList.add(new ModerationCard(cardId, meetingId, content, color));
+                String backgroundColor = (String) jsonObject.get("backgroundColor");
+                String fontColor = (String) jsonObject.get("fontColor");
+                moderationCardList.add(new ModerationCard(cardId, meetingId, content, backgroundColor, fontColor));
             }
         } catch (ParseException e) {
         }
@@ -40,7 +41,7 @@ public class JsonReader {
     }
 
     public ModerationCard parseSingleModerationCardJson(String inputJson) throws ParseException {
-
+        System.out.println(inputJson);
         JSONParser jsonParser = new JSONParser();
 
         Object object = jsonParser.parse(inputJson);
@@ -48,9 +49,10 @@ public class JsonReader {
         JSONObject jsonObject = (JSONObject) meetingCard;
         long cardId = (long) jsonObject.get("cardId");
         String content = (String) jsonObject.get("content");
-        String color = (String) jsonObject.get("color");
+        String backgroundColor = (String) jsonObject.get("backgroundColor");
+        String fontColor = (String) jsonObject.get("fontColor");
         long meetingId = (long) jsonObject.get("meetingId");
-        return new ModerationCard(cardId, meetingId, content, color);
+        return new ModerationCard(cardId, meetingId, content, backgroundColor, fontColor);
     }
 
     public HashMap<Long, Point> parseCacheJson(File inputJson) {
