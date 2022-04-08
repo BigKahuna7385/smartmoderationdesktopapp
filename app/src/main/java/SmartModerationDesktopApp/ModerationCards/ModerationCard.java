@@ -1,7 +1,7 @@
 package SmartModerationDesktopApp.ModerationCards;
 
 import static SmartModerationDesktopApp.ModerationCards.SnapDirections.*;
-import SmartModerationDesktopApp.MainWindow;
+import SmartModerationDesktopApp.MainWindow.MainWindow;
 import java.awt.Color;
 import java.awt.Point;
 import java.awt.event.MouseEvent;

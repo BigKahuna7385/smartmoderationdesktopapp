@@ -1,6 +1,6 @@
 package SmartModerationDesktopApp.Utilities;
 
-import SmartModerationDesktopApp.MainWindow;
+import SmartModerationDesktopApp.MainWindow.MainWindow;
 import SmartModerationDesktopApp.ModerationCards.ModerationCard;
 import java.awt.BasicStroke;
 import java.awt.Graphics2D;
@@ -23,11 +23,16 @@ public class LineDrawer {
             clearLine();
             mainWindow.setHasLineDistance(movingCard.isDistancedMagnet());
         }
-
         Graphics2D g2d = (Graphics2D) mainWindow.getGraphics();
         float dashPhase = 0f;
         float dash[] = {5.0f, 5.0f};
         g2d.setStroke(new BasicStroke(1.5f, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND, 1.5f, dash, dashPhase));
+        setStartAndEndPoint(movingCard, magneticCard);
+        g2d.drawLine(startPoint.x, startPoint.y, endPoint.x, endPoint.y);
+        mainWindow.setIsLineDrawn(true);
+    }
+
+    public void setStartAndEndPoint(ModerationCard movingCard, ModerationCard magneticCard) {
         int distance = mainWindow.isHasLineDistance() ? magneticCard.getMAGNETRANGE() : 0;
         switch (movingCard.getSnapDirection()) {
             case EAST:
@@ -47,8 +52,6 @@ public class LineDrawer {
                 endPoint.setLocation(mainWindow.getContentPane().getMaximumSize().width, magneticCard.getBounds().y + magneticCard.getBounds().height + distance);
                 break;
         }
-        g2d.drawLine(startPoint.x, startPoint.y, endPoint.x, endPoint.y);
-        mainWindow.setIsLineDrawn(true);
     }
 
     public void clearLine() {

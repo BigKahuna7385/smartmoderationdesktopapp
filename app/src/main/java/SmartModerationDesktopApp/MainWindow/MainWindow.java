@@ -1,4 +1,4 @@
-package SmartModerationDesktopApp;
+package SmartModerationDesktopApp.MainWindow;
 
 import SmartModerationDesktopApp.ModerationCards.ModerationCard;
 import SmartModerationDesktopApp.ModerationCards.ModerationCardFactory;
@@ -9,12 +9,8 @@ import SmartModerationDesktopApp.Server.Server;
 import SmartModerationDesktopApp.Utilities.JsonReader;
 import SmartModerationDesktopApp.Utilities.JsonWriter;
 import SmartModerationDesktopApp.Utilities.LineDrawer;
-import SmartModerationDesktopApp.Utilities.QRCodeGenerator;
-import com.google.zxing.WriterException;
-import java.awt.GraphicsDevice;
 import java.awt.GraphicsEnvironment;
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -112,38 +108,6 @@ public class MainWindow extends javax.swing.JFrame implements ServerObserver {
         jsonWriter.saveMeetingStatus(meetingId, moderationCards);
     }//GEN-LAST:event_saveButtonActionPerformed
 
-    public static void main(String args[]) throws IOException, ParseException {
-        MainWindow mainWindow = new MainWindow();
-        mainWindow.getServer().initObserver(mainWindow);
-        QRCodeGenerator qrCodeGenerator = new QRCodeGenerator();
-        try {
-            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
-                if ("Nimbus".equals(info.getName())) {
-                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
-                    break;
-                }
-            }
-        } catch (ClassNotFoundException | InstantiationException | IllegalAccessException | javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(MainWindow.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        }
-
-        java.awt.EventQueue.invokeLater(() -> {
-            GraphicsDevice device = mainWindow.getGraphicsEnvironment().getDefaultScreenDevice();
-            device.setFullScreenWindow(mainWindow);
-            mainWindow.setVisible(true);
-            try {
-                try {
-                    mainWindow.setQRCodeLabel(qrCodeGenerator.createLoginQRCode(mainWindow));
-                } catch (WriterException ex) {
-                    Logger.getLogger(MainWindow.class.getName()).log(Level.SEVERE, null, ex);
-                }
-            } catch (UnsupportedEncodingException ex) {
-                Logger.getLogger(MainWindow.class.getName()).log(Level.SEVERE, null, ex);
-            }
-        });
-        mainWindow.getServer().createServer();
-    }
-
     private void processLogin(String loginString) throws ParseException, IOException {
         readLoginInformation(jsonReader.readLoginInformationJson(loginString));
         QRCode.setVisible(false);
@@ -168,6 +132,75 @@ public class MainWindow extends javax.swing.JFrame implements ServerObserver {
     private void readLoginInformation(LoginInformation loginInformation) {
         setMeetingId(loginInformation.getMeetingId());
         client = new Client(loginInformation);
+    }
+
+    @Override
+    public void receiveLogin(String message) {
+        try {
+            System.out.println("ReveiceLogin: " + message);
+            processLogin(message);
+        } catch (ParseException | IOException ex) {
+            Logger.getLogger(MainWindow.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+
+    @Override
+    public void receivePutModerationCard(String message) {
+        if (!isClientLoggedIn) {
+            System.out.println("Client not logged in!");
+            return;
+        }
+        try {
+            System.out.println("Try to put new moderation card.");
+            System.out.println("Message: " + message);
+            ModerationCard moderationCard = jsonReader.parseSingleModerationCardJson(message);
+            moderationCards.add(moderationCard);
+            getContentPane().add(moderationCard);
+            moderationCardFactory.setFanout(moderationCard);
+        } catch (ParseException ex) {
+            Logger.getLogger(MainWindow.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        revalidate();
+        repaint();
+    }
+
+    @Override
+    public void receiveDeleteModerationCard(long cardId) {
+        if (!isClientLoggedIn) {
+            System.out.println("Client not logged in!");
+            return;
+        }
+        System.out.println("Try to delete moderation card.");
+        for (ModerationCard moderationCard : moderationCards) {
+            if (moderationCard.getCardId() == cardId) {
+                System.out.println("Found card to delete.");
+                moderationCards.remove(moderationCard);
+                getContentPane().remove(moderationCard);
+                break;
+            }
+        }
+        revalidate();
+        repaint();
+    }
+
+    @Override
+    public void receiveUpdateModerationCard(String message) {
+        if (!isClientLoggedIn) {
+            return;
+        }
+        try {
+            ModerationCard tempModerationCard = jsonReader.parseSingleModerationCardJson(message);
+            for (ModerationCard moderationCard : moderationCards) {
+                if (moderationCard.getCardId() == tempModerationCard.getCardId()) {
+                    moderationCard.updateProperties(tempModerationCard);
+                    break;
+                }
+            }
+        } catch (ParseException ex) {
+            Logger.getLogger(MainWindow.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        revalidate();
+        repaint();
     }
 
     public void setQRCodeLabel(Icon icon) {
@@ -223,74 +256,4 @@ public class MainWindow extends javax.swing.JFrame implements ServerObserver {
     private javax.swing.JLabel QRCodeLabel;
     private javax.swing.JButton saveButton;
     // End of variables declaration//GEN-END:variables
-
-    @Override
-    public void receiveLogin(String message) {
-        try {
-            System.out.println("ReveiceLogin: " + message);
-            processLogin(message);
-        } catch (ParseException | IOException ex) {
-            Logger.getLogger(MainWindow.class.getName()).log(Level.SEVERE, null, ex);
-        }
-    }
-
-    @Override
-    public void receivePutModerationCard(String message) {
-        if (!isClientLoggedIn) {
-            System.out.println("Client not logged in!");
-            return;
-        }
-        try {
-            System.out.println("Try to put new moderation card.");
-            System.out.println("Message: " + message);
-            ModerationCard moderationCard = jsonReader.parseSingleModerationCardJson(message);
-            moderationCards.add(moderationCard);
-            getContentPane().add(moderationCard);
-            moderationCardFactory.setFanout(moderationCard);
-        } catch (ParseException ex) {
-            Logger.getLogger(MainWindow.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        revalidate();
-        repaint();
-    }
-
-    @Override
-    public void receiveDeleteModerationCard(long cardId) {
-
-        if (!isClientLoggedIn) {
-            System.out.println("Client not logged in!");
-            return;
-        }
-        System.out.println("Try to delete moderation card.");
-        for (ModerationCard moderationCard : moderationCards) {
-            if (moderationCard.getCardId() == cardId) {
-                System.out.println("Found card to delete.");
-                moderationCards.remove(moderationCard);
-                getContentPane().remove(moderationCard);
-                break;
-            }
-        }
-        revalidate();
-        repaint();
-    }
-
-    @Override
-    public void receiveUpdateModerationCard(String message) {
-        if (!isClientLoggedIn) {
-            return;
-        }
-        try {
-            ModerationCard tempModerationCard = jsonReader.parseSingleModerationCardJson(message);
-            for (ModerationCard moderationCard : moderationCards) {
-                if (moderationCard.getCardId() == tempModerationCard.getCardId()) {
-                    moderationCard.updateProperties(tempModerationCard);
-                    break;
-                }
-            }
-        } catch (ParseException ex) {
-            Logger.getLogger(MainWindow.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        revalidate();
-        repaint();
-    }
 }
