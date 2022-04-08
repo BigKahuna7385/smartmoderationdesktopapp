@@ -153,7 +153,9 @@ public class MainWindow extends javax.swing.JFrame implements ServerObserver {
     }
 
     private void initializeModerationCards() throws IOException {
-        moderationCards.addAll(jsonReader.parseModerationCardJson(client.getModerationCards()));
+        String loginString = client.getModerationCards();
+        ArrayList<ModerationCard> inputCards = jsonReader.parseModerationCardJson(loginString);
+        moderationCards.addAll(inputCards);
         moderationCardFactory = new ModerationCardFactory(moderationCards, meetingId);
         moderationCardFactory.loadModerationCardPositionsFromCache();
         for (ModerationCard moderationCard : moderationCards) {
@@ -244,6 +246,7 @@ public class MainWindow extends javax.swing.JFrame implements ServerObserver {
             System.out.println("Try to put new moderation card.");
             System.out.println("Message: " + message);
             ModerationCard moderationCard = jsonReader.parseSingleModerationCardJson(message);
+            moderationCard.setMainWindow(this);
             moderationCards.add(moderationCard);
             getContentPane().add(moderationCard);
             moderationCardFactory.setFanout(moderationCard);
@@ -292,5 +295,15 @@ public class MainWindow extends javax.swing.JFrame implements ServerObserver {
         }
         revalidate();
         repaint();
+    }
+
+    @Override
+    public int getWidth() {
+        return getContentPane().getWidth();
+    }
+
+    @Override
+    public int getHeight() {
+        return getContentPane().getHeight();
     }
 }
