@@ -1,6 +1,6 @@
 package SmartModerationDesktopApp.Utilities;
 
-import SmartModerationDesktopApp.MainWindow;
+import SmartModerationDesktopApp.MainWindow.MainWindow;
 import com.google.zxing.BarcodeFormat;
 import com.google.zxing.MultiFormatWriter;
 import com.google.zxing.WriterException;
