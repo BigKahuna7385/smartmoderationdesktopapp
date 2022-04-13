@@ -33,44 +33,12 @@ public class Server implements ServerObservable {
     public void createServer() {
         try {
             HttpServer server = HttpServer.create(new InetSocketAddress(8080), 0);
-            server.createContext("/", (HttpExchange t) -> {
-                StringBuilder sb = new StringBuilder();
-                InputStream ios = t.getRequestBody();
-                int i;
-                while ((i = ios.read()) != -1) {
-                    sb.append((char) i);
-                }
-                System.out.println("hm: " + sb.toString());
-
-                String response = " <html>\n"
-                        + "<body>\n"
-                        + "\n"
-                        + "<form action=\"http://localhost:8000\" method=\"post\">\n"
-                        + "input: <input type=\"text\" name=\"input\"><br>\n"
-                        + "input2: <input type=\"text\" name=\"input2\"><br>\n"
-                        + "<input type=\"submit\">\n"
-                        + "</form>\n"
-                        + "\n"
-                        + "</body>\n"
-                        + "</html> ";
-                t.sendResponseHeaders(200, response.length());
-                try ( OutputStream os = t.getResponseBody()) {
-                    os.write(response.getBytes());
-                }
-            });
 
             server.createContext("/login", (HttpExchange t) -> {
                 StringBuilder sb = new StringBuilder();
                 String requestMethod = t.getRequestMethod();
                 System.out.println("Method: " + requestMethod);
-                Headers headers = t.getRequestHeaders();
-                if (!headers.containsKey("Authorization") || !headers.getFirst("Authorization").equals("Bearer " + apiKey)) {
-                    String response = "Missing or incorrect Authorization";
-                    t.sendResponseHeaders(401, response.length());
-                    try ( OutputStream os = t.getResponseBody()) {
-                        os.write(response.getBytes());
-                    }
-                } else {
+                if (checkAuthorization(t)) {
                     InputStream ios = t.getRequestBody();
                     int i;
                     String response = "OK";
@@ -96,14 +64,7 @@ public class Server implements ServerObservable {
                 StringBuilder sb = new StringBuilder();
                 String requestMethod = t.getRequestMethod();
                 System.out.println("Method: " + requestMethod);
-                Headers headers = t.getRequestHeaders();
-                if (!headers.containsKey("Authorization") || !headers.getFirst("Authorization").equals("Bearer " + apiKey)) {
-                    String response = "Missing or incorrect Authorization";
-                    t.sendResponseHeaders(401, response.length());
-                    try ( OutputStream os = t.getResponseBody()) {
-                        os.write(response.getBytes());
-                    }
-                } else {
+                if (checkAuthorization(t)) {
                     InputStream ios = t.getRequestBody();
                     int i;
                     String response = "OK";
@@ -132,8 +93,8 @@ public class Server implements ServerObservable {
                             break;
                         case "DELETE":
                             String cardId = t.getRequestURI().getQuery().substring("cardId=".length());
-                            System.out.println("Delete Moderation Card JSON: " + cardId);                         
-                            deleteModerationCard( Long.parseLong(cardId));
+                            System.out.println("Delete Moderation Card JSON: " + cardId);
+                            deleteModerationCard(Long.parseLong(cardId));
                             t.sendResponseHeaders(200, response.length());
                             try ( OutputStream os = t.getResponseBody()) {
                                 os.write(response.getBytes());
@@ -148,6 +109,19 @@ public class Server implements ServerObservable {
             server.start();
         } catch (IOException e) {
         }
+    }
+
+    private boolean checkAuthorization(HttpExchange t) throws IOException {
+        Headers headers = t.getRequestHeaders();
+        if (!headers.containsKey("Authorization") || !headers.getFirst("Authorization").equals("Bearer " + apiKey)) {
+            String response = "Missing or incorrect Authorization";
+            t.sendResponseHeaders(401, response.length());
+            try ( OutputStream os = t.getResponseBody()) {
+                os.write(response.getBytes());
+            }
+            return false;
+        }
+        return true;
     }
 
     public InetAddress getIpAddress() {
