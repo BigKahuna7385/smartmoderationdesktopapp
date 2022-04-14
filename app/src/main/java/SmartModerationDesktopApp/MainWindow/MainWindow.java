@@ -141,6 +141,7 @@ public class MainWindow extends javax.swing.JFrame implements ServerObserver {
             readLoginInformation(message);
             QRCode.setVisible(false);
             QRCodeLabel.setVisible(false);
+            quickGuide.setVisible(false);
             initializeModerationCards();
         } catch (ParseException | IOException ex) {
             Logger.getLogger(MainWindow.class.getName()).log(Level.SEVERE, null, ex);
