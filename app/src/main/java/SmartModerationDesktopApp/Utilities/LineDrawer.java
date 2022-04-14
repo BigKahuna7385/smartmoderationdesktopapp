@@ -11,17 +11,21 @@ public class LineDrawer {
     private final MainWindow mainWindow;
     private final Point startPoint;
     private final Point endPoint;
+    private boolean isLineDrawn;
+    private boolean hasLineDistance;
 
     public LineDrawer(MainWindow mainWindow) {
         this.mainWindow = mainWindow;
+        isLineDrawn = false;
+        hasLineDistance = false;
         startPoint = new Point();
         endPoint = new Point();
     }
 
     public void drawDottedLineBetween(ModerationCard movingCard, ModerationCard magneticCard) {
-        if (movingCard.isDistancedMagnet() != mainWindow.isHasLineDistance()) {
+        if (movingCard.isDistancedMagnet() != hasLineDistance) {
             clearLine();
-            mainWindow.setHasLineDistance(movingCard.isDistancedMagnet());
+            hasLineDistance = movingCard.isDistancedMagnet();
         }
         Graphics2D g2d = (Graphics2D) mainWindow.getGraphics();
         float dashPhase = 0f;
@@ -29,11 +33,11 @@ public class LineDrawer {
         g2d.setStroke(new BasicStroke(1.5f, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND, 1.5f, dash, dashPhase));
         setStartAndEndPoint(movingCard, magneticCard);
         g2d.drawLine(startPoint.x, startPoint.y, endPoint.x, endPoint.y);
-        mainWindow.setIsLineDrawn(true);
+        isLineDrawn = true;
     }
 
     public void setStartAndEndPoint(ModerationCard movingCard, ModerationCard magneticCard) {
-        int distance = mainWindow.isHasLineDistance() ? magneticCard.getMAGNETRANGE() : 0;
+        int distance = hasLineDistance ? magneticCard.getMAGNETRANGE() : 0;
         switch (movingCard.getSnapDirection()) {
             case EAST:
                 startPoint.setLocation(magneticCard.getBounds().x - distance, 0);
@@ -55,14 +59,14 @@ public class LineDrawer {
     }
 
     public void clearLine() {
-        if (!mainWindow.isIsLineDrawn()) {
+        if (!isLineDrawn) {
             return;
         }
         Graphics2D g2d = (Graphics2D) mainWindow.getGraphics();
         g2d.clearRect(startPoint.x, startPoint.y, endPoint.x, endPoint.y);
         mainWindow.revalidate();
         mainWindow.repaint();
-        mainWindow.setIsLineDrawn(false);
+        isLineDrawn = false;
     }
 
     public Point getStartPoint() {
