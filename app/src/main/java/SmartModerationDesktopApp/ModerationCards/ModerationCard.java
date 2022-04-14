@@ -8,7 +8,6 @@ import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 import javax.swing.JTextPane;
 import javax.swing.text.SimpleAttributeSet;
-import javax.swing.text.Style;
 import javax.swing.text.StyleConstants;
 import javax.swing.text.StyledDocument;
 
@@ -35,11 +34,24 @@ public class ModerationCard extends javax.swing.JPanel {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        jPopupMenu = new javax.swing.JPopupMenu();
+        menuItemDelete = new javax.swing.JMenuItem();
         jScrollPane = new javax.swing.JScrollPane();
         moderationCardTextBody = new javax.swing.JTextPane();
 
+        menuItemDelete.setBackground(new java.awt.Color(255, 0, 0));
+        menuItemDelete.setForeground(new java.awt.Color(255, 0, 51));
+        menuItemDelete.setText("delete");
+        menuItemDelete.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                menuItemDeleteActionPerformed(evt);
+            }
+        });
+        jPopupMenu.add(menuItemDelete);
+
         setBackground(new java.awt.Color(153, 153, 255));
         setToolTipText("Click to drag card");
+        setComponentPopupMenu(jPopupMenu);
         setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
         setPreferredSize(new java.awt.Dimension(200, 200));
         addMouseMotionListener(new java.awt.event.MouseMotionAdapter() {
@@ -57,6 +69,7 @@ public class ModerationCard extends javax.swing.JPanel {
         });
 
         jScrollPane.setBorder(null);
+        jScrollPane.setInheritsPopupMenu(true);
         jScrollPane.setOpaque(false);
 
         moderationCardTextBody.setEditable(false);
@@ -64,6 +77,7 @@ public class ModerationCard extends javax.swing.JPanel {
         moderationCardTextBody.setFont(new java.awt.Font("Segoe UI", 0, 24)); // NOI18N
         moderationCardTextBody.setEnabled(false);
         moderationCardTextBody.setFocusable(false);
+        moderationCardTextBody.setInheritsPopupMenu(true);
         moderationCardTextBody.setOpaque(false);
         moderationCardTextBody.addMouseMotionListener(new java.awt.event.MouseMotionAdapter() {
             public void mouseDragged(java.awt.event.MouseEvent evt) {
@@ -123,6 +137,10 @@ public class ModerationCard extends javax.swing.JPanel {
     private void moderationCardTextBodyMouseReleased(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_moderationCardTextBodyMouseReleased
         cardReleased(evt);
     }//GEN-LAST:event_moderationCardTextBodyMouseReleased
+
+    private void menuItemDeleteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuItemDeleteActionPerformed
+        MainWindow.getInstance().sendDeleteModerationCard(moderationCardData.getCardId());
+    }//GEN-LAST:event_menuItemDeleteActionPerformed
 
     private void cardClicked(java.awt.event.MouseEvent evt) {
         pressed = evt;
@@ -271,7 +289,9 @@ public class ModerationCard extends javax.swing.JPanel {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JPopupMenu jPopupMenu;
     private javax.swing.JScrollPane jScrollPane;
+    private javax.swing.JMenuItem menuItemDelete;
     private javax.swing.JTextPane moderationCardTextBody;
     // End of variables declaration//GEN-END:variables
 

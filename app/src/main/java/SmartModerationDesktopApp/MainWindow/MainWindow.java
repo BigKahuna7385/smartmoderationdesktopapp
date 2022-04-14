@@ -109,7 +109,7 @@ public class MainWindow extends javax.swing.JFrame implements ServerObserver {
     }//GEN-LAST:event_quickGuideActionPerformed
 
     private void formWindowClosing(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowClosing
-      moderationCardsController.saveMeetingStatus();
+        moderationCardsController.saveMeetingStatus();
     }//GEN-LAST:event_formWindowClosing
 
     private void initializeModerationCards() throws IOException {
@@ -159,6 +159,14 @@ public class MainWindow extends javax.swing.JFrame implements ServerObserver {
         repaint();
     }
 
+    public void sendDeleteModerationCard(long cardId) {
+        if (client.deleteModerationCard(cardId)){
+        moderationCardsController.deleteModerationCard(cardId);
+        }        
+        revalidate();
+        repaint();
+    }
+
     public void setQRCodeLabel(Icon icon) {
         QRCode.setIcon(icon);
     }
@@ -179,6 +187,7 @@ public class MainWindow extends javax.swing.JFrame implements ServerObserver {
         ImageIcon icon = new ImageIcon(getClass().getClassLoader().getResource("smartModerationIcon.png"));
         setIconImage(icon.getImage());
     }
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel QRCode;

@@ -7,6 +7,8 @@ import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
 import java.net.ConnectException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
 public class Client {
@@ -39,5 +41,28 @@ public class Client {
             BufferedReader br = new BufferedReader(new FileReader("./src/testFiles/ModerationCardsTestSet.json"));
             return br.lines().collect(Collectors.joining());
         }
+    }
+
+    public boolean deleteModerationCard(long cardId) {
+        OkHttpClient client = new OkHttpClient().newBuilder()
+                .build();
+
+        Request request = new Request.Builder()
+                .url("http://" + loginInformation.getAndroidIpAddress() + ":" + loginInformation.getAndroidPort() + "/moderationcard/" + cardId)
+                .method("DELETE", null)
+                .build();
+
+        System.out.println("Request URL: " + request.url());
+
+        try {
+            System.out.println("Moderation card deletion");
+            Response response = client.newCall(request).execute();
+            System.out.println("Response: " + response);
+            return true;
+        } catch (ConnectException ex) {
+        } catch (IOException ex) {
+            Logger.getLogger(Client.class.getName()).log(Level.SEVERE, null, ex);
+        }
+           return false;
     }
 }
