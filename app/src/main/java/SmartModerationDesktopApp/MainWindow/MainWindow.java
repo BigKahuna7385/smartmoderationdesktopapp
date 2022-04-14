@@ -127,21 +127,21 @@ public class MainWindow extends javax.swing.JFrame implements ServerObserver {
 
     @Override
     public void receivePutModerationCard(String message) {
-        moderationCardsController.receivePutModerationCard(message);
+        moderationCardsController.putModerationCard(message);
         revalidate();
         repaint();
     }
 
     @Override
     public void receiveDeleteModerationCard(long cardId) {
-        moderationCardsController.receiveDeleteModerationCard(cardId);
+        moderationCardsController.deleteModerationCard(cardId);
         revalidate();
         repaint();
     }
 
     @Override
     public void receiveUpdateModerationCard(String message) {
-        moderationCardsController.receiveUpdateModerationCard(message);
+        moderationCardsController.updateModerationCard(message);
         revalidate();
         repaint();
     }

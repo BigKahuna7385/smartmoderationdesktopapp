@@ -44,7 +44,7 @@ public class ModerationCardsController {
         this.meetingId = meetingId;
     }
 
-    public void receivePutModerationCard(String message) {
+    public void putModerationCard(String message) {
         try {
             System.out.println("Try to put new moderation card.");
             System.out.println("Message: " + message);
@@ -57,7 +57,7 @@ public class ModerationCardsController {
         }
     }
 
-    public void receiveDeleteModerationCard(long cardId) {
+    public void deleteModerationCard(long cardId) {
         System.out.println("Try to delete moderation card.");
         for (ModerationCard moderationCard : moderationCards) {
             if (moderationCard.getCardId() == cardId) {
@@ -69,7 +69,7 @@ public class ModerationCardsController {
         }
     }
 
-    public void receiveUpdateModerationCard(String message) {
+    public void updateModerationCard(String message) {
         try {
             ModerationCard tempModerationCard = jsonModerationCardParser.parseSingleModerationCardJson(message);
             for (ModerationCard moderationCard : moderationCards) {
