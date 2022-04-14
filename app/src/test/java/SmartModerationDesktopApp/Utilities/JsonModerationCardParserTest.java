@@ -1,7 +1,6 @@
 
 import SmartModerationDesktopApp.ModerationCards.ModerationCard;
-import SmartModerationDesktopApp.Server.LoginInformation;
-import SmartModerationDesktopApp.Utilities.JsonReader;
+import SmartModerationDesktopApp.Utilities.JsonModerationCardParser;
 import java.awt.Point;
 import java.io.BufferedReader;
 import java.io.File;
@@ -17,19 +16,19 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.BeforeAll;
 
-public class JsonReaderTest {
+public class JsonModerationCardParserTest {
 
-    static JsonReader jsonReader;
+    static JsonModerationCardParser jsonModerationCardParser;
 
     @BeforeAll
     public static void setUp() {
-        jsonReader = new JsonReader();
+        jsonModerationCardParser = new JsonModerationCardParser();       
     }
 
     @Test
     public void parseSingleModerationCardJsonTest() throws FileNotFoundException, ParseException {
         BufferedReader br = new BufferedReader(new FileReader(new File("./src/test/resources/SingleModerationCardTestSet.json")));
-        ModerationCard moderationCard = jsonReader.parseSingleModerationCardJson(br.lines().collect(Collectors.joining()));
+        ModerationCard moderationCard = jsonModerationCardParser.parseSingleModerationCardJson(br.lines().collect(Collectors.joining()));
         assertNotNull(moderationCard);
         assertEquals(moderationCard.getContent(), "logintest");
         assertEquals(moderationCard.getColor(), "#FFC107");
@@ -39,7 +38,7 @@ public class JsonReaderTest {
     @Test
     public void parseModerationCardsJsonTest() throws FileNotFoundException, ParseException {
         BufferedReader br = new BufferedReader(new FileReader(new File("./src/test/resources/ModerationCardsTestSet.json")));
-        ArrayList<ModerationCard> moderationCards = jsonReader.parseModerationCardJson(br.lines().collect(Collectors.joining()));
+        ArrayList<ModerationCard> moderationCards = jsonModerationCardParser.parseModerationCardJson(br.lines().collect(Collectors.joining()));
         assertNotNull(moderationCards);
         assertTrue(moderationCards.size() == 3);
         assertEquals(moderationCards.get(0).getContent(), "testetst");
@@ -57,18 +56,8 @@ public class JsonReaderTest {
     }
 
     @Test
-    public void parseLoginJsonTest() throws FileNotFoundException, ParseException {
-        BufferedReader br = new BufferedReader(new FileReader(new File("./src/test/resources/LoginTest.json")));
-        LoginInformation loginInformation = jsonReader.readLoginInformationJson(br.lines().collect(Collectors.joining()));
-        assertNotNull(loginInformation);
-        assertEquals(loginInformation.getAndroidIpAddress(), "127.0.0.1");
-        assertEquals(loginInformation.getMeetingId(), 3570151905752727837l);
-        assertEquals(loginInformation.getAndroidPort(), "8000");
-    }
-
-    @Test
     public void parseCacheJsonTest() throws FileNotFoundException {
-        HashMap<Long, Point> cardCache = jsonReader.parseCacheJson(new File("./src/test/resources/cardCacheTestSet.json"));
+        HashMap<Long, Point> cardCache = jsonModerationCardParser.parseCacheJson(new File("./src/test/resources/cardCacheTestSet.json"));
         assertNotNull(cardCache);
         assertEquals(cardCache.get(2624659524793748349l), new Point(1238, 295));
         assertEquals(cardCache.get(2760337309490495595l), new Point(402, 561));

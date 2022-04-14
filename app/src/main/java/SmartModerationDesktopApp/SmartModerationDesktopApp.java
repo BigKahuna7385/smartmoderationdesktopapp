@@ -2,7 +2,6 @@ package SmartModerationDesktopApp;
 
 import SmartModerationDesktopApp.MainWindow.MainWindow;
 import SmartModerationDesktopApp.Server.Server;
-import SmartModerationDesktopApp.Utilities.JsonReader;
 import SmartModerationDesktopApp.Utilities.JsonWriter;
 import SmartModerationDesktopApp.Utilities.QRCodeGenerator;
 import com.google.zxing.WriterException;
@@ -14,12 +13,14 @@ import java.util.logging.Logger;
 public class SmartModerationDesktopApp {
 
     public static void main(String[] args) {
-        MainWindow mainWindow = new MainWindow();
+
+        QRCodeGenerator qrCodeGenerator = new QRCodeGenerator();
+        JsonWriter jsonWriter = new JsonWriter();
+        MainWindow mainWindow = MainWindow.getInstance();
+
         Server server = new Server();
         server.initObserver(mainWindow);
-        QRCodeGenerator qrCodeGenerator = new QRCodeGenerator();
-        JsonReader jsonReader = new JsonReader();
-        JsonWriter jsonWriter = new JsonWriter();
+
         try {
             for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
                 if ("Nimbus".equals(info.getName())) {
@@ -45,6 +46,7 @@ public class SmartModerationDesktopApp {
                 Logger.getLogger(MainWindow.class.getName()).log(Level.SEVERE, null, ex);
             }
         });
+
         server.createServer();
     }
 }

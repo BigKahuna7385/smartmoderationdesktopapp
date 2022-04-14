@@ -1,19 +1,20 @@
 package SmartModerationDesktopApp.Server;
 
-import SmartModerationDesktopApp.Utilities.JsonReader;
+import SmartModerationDesktopApp.Utilities.JsonLoginParser;
+
 import org.json.simple.parser.ParseException;
 
 public class LoginController {
 
     private LoginInformation loginInformation;
-    private final JsonReader jsonReader;
+    private final JsonLoginParser jsonLoginParser;
 
     public LoginController() {
-        jsonReader = new JsonReader();
+        jsonLoginParser = new JsonLoginParser();
     }
 
     public void readLoginInformation(String loginString) throws ParseException {
-        loginInformation = jsonReader.readLoginInformationJson(loginString);
+        loginInformation = jsonLoginParser.readLoginInformationJson(loginString);
     }
 
     public LoginInformation getLoginInformation() {

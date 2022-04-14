@@ -19,15 +19,15 @@ public class Client {
 
     public String getModerationCards() throws IOException {
 
-        //String emulatorAddress = "http://127.0.0.1:8001/";
+        String emulatorAddress = "http://127.0.0.1:8001/";
         OkHttpClient client = new OkHttpClient().newBuilder()
                 .build();
 
         Request request = new Request.Builder()
-                .url("http://" + loginInformation.getAndroidIpAddress() + ":" + loginInformation.getAndroidPort() + "/moderationcards")
+                .url(emulatorAddress + "moderationcards")
                 .method("GET", null)
                 .build();
-        //        .url(emulatorAddress + "moderationcards")
+        //        .url("http://" + loginInformation.getAndroidIpAddress() + ":" + loginInformation.getAndroidPort() + "/moderationcards")
 
         System.out.println("Request URL: " + request.url());
 

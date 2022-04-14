@@ -1,7 +1,7 @@
 package SmartModerationDesktopApp.ModerationCards;
 
 import SmartModerationDesktopApp.MainWindow.MainWindow;
-import SmartModerationDesktopApp.Utilities.JsonReader;
+import SmartModerationDesktopApp.Utilities.JsonModerationCardParser;
 import SmartModerationDesktopApp.Utilities.JsonWriter;
 import java.util.ArrayList;
 import java.util.logging.Level;
@@ -11,19 +11,18 @@ import org.json.simple.parser.ParseException;
 public class ModerationCardsController {
 
     private final ArrayList<ModerationCard> moderationCards;
-    private final MainWindow mainWindow;
+
 
     private ModerationCardFactory moderationCardFactory;
-    private final JsonReader jsonReader;
+    private final JsonModerationCardParser jsonModerationCardParser;
     private final JsonWriter jsonWriter;
 
     private long meetingId;
 
-    public ModerationCardsController(MainWindow mainWindow) {
+    public ModerationCardsController() {
         moderationCards = new ArrayList<>();
-        jsonReader = new JsonReader();
-        jsonWriter = new JsonWriter();
-        this.mainWindow = mainWindow;
+        jsonModerationCardParser = new JsonModerationCardParser();
+        jsonWriter = new JsonWriter();       
     }
 
     public ArrayList<ModerationCard> getModerationCards() {
@@ -31,14 +30,13 @@ public class ModerationCardsController {
     }
 
     public void initializeModerationCards(String moderationCardsString) {
-        ArrayList<ModerationCard> inputCards = jsonReader.parseModerationCardJson(moderationCardsString);
+        ArrayList<ModerationCard> inputCards = jsonModerationCardParser.parseModerationCardJson(moderationCardsString);
         moderationCards.addAll(inputCards);
         moderationCardFactory = new ModerationCardFactory(moderationCards, meetingId);
         moderationCardFactory.loadModerationCardPositionsFromCache();
         for (ModerationCard moderationCard : moderationCards) {
             moderationCardFactory.setFanout(moderationCard);
-            moderationCard.setMainWindow(mainWindow);
-            mainWindow.getContentPane().add(moderationCard);
+            MainWindow.getInstance().getContentPane().add(moderationCard);
         }
     }
 
@@ -46,35 +44,34 @@ public class ModerationCardsController {
         this.meetingId = meetingId;
     }
 
-    public void receivePutModerationCard(String message) {
+    public void putModerationCard(String message) {
         try {
             System.out.println("Try to put new moderation card.");
             System.out.println("Message: " + message);
-            ModerationCard moderationCard = jsonReader.parseSingleModerationCardJson(message);
-            moderationCard.setMainWindow(mainWindow);
+            ModerationCard moderationCard = jsonModerationCardParser.parseSingleModerationCardJson(message);     
             moderationCards.add(moderationCard);
-            mainWindow.getContentPane().add(moderationCard);
+            MainWindow.getInstance().getContentPane().add(moderationCard);
             moderationCardFactory.setFanout(moderationCard);
         } catch (ParseException ex) {
             Logger.getLogger(MainWindow.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 
-    public void receiveDeleteModerationCard(long cardId) {
+    public void deleteModerationCard(long cardId) {
         System.out.println("Try to delete moderation card.");
         for (ModerationCard moderationCard : moderationCards) {
             if (moderationCard.getCardId() == cardId) {
                 System.out.println("Found card to delete.");
                 moderationCards.remove(moderationCard);
-                mainWindow.getContentPane().remove(moderationCard);
+                MainWindow.getInstance().getContentPane().remove(moderationCard);
                 break;
             }
         }
     }
 
-    public void receiveUpdateModerationCard(String message) {
+    public void updateModerationCard(String message) {
         try {
-            ModerationCard tempModerationCard = jsonReader.parseSingleModerationCardJson(message);
+            ModerationCard tempModerationCard = jsonModerationCardParser.parseSingleModerationCardJson(message);
             for (ModerationCard moderationCard : moderationCards) {
                 if (moderationCard.getCardId() == tempModerationCard.getCardId()) {
                     moderationCard.updateProperties(tempModerationCard);

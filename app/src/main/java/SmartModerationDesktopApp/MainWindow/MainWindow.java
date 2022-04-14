@@ -15,18 +15,24 @@ import org.json.simple.parser.ParseException;
 public class MainWindow extends javax.swing.JFrame implements ServerObserver {
 
     private final LineDrawer lineDrawer;
-    private final GraphicsEnvironment graphicsEnvironment;
-    private final ModerationCardsController moderationCardsController;
     private final LoginController loginController;
+    private final ModerationCardsController moderationCardsController;
+    private static MainWindow mainWindow;
     private Client client;
 
     public MainWindow() {
         initComponents();
         setExtendedState(MAXIMIZED_BOTH);
-        lineDrawer = new LineDrawer(this);
+        lineDrawer = new LineDrawer();
         loginController = new LoginController();
-        moderationCardsController = new ModerationCardsController(this);
-        graphicsEnvironment = GraphicsEnvironment.getLocalGraphicsEnvironment();
+        moderationCardsController = new ModerationCardsController();
+    }
+
+    public static MainWindow getInstance() {
+        if (mainWindow == null) {
+            mainWindow = new MainWindow();
+        }
+        return mainWindow;
     }
 
     @SuppressWarnings("unchecked")
@@ -121,21 +127,21 @@ public class MainWindow extends javax.swing.JFrame implements ServerObserver {
 
     @Override
     public void receivePutModerationCard(String message) {
-        moderationCardsController.receivePutModerationCard(message);
+        moderationCardsController.putModerationCard(message);
         revalidate();
         repaint();
     }
 
     @Override
     public void receiveDeleteModerationCard(long cardId) {
-        moderationCardsController.receiveDeleteModerationCard(cardId);
+        moderationCardsController.deleteModerationCard(cardId);
         revalidate();
         repaint();
     }
 
     @Override
     public void receiveUpdateModerationCard(String message) {
-        moderationCardsController.receiveUpdateModerationCard(message);
+        moderationCardsController.updateModerationCard(message);
         revalidate();
         repaint();
     }
@@ -149,11 +155,11 @@ public class MainWindow extends javax.swing.JFrame implements ServerObserver {
     }
 
     public GraphicsEnvironment getGraphicsEnvironment() {
-        return graphicsEnvironment;
+        return GraphicsEnvironment.getLocalGraphicsEnvironment();
     }
 
     public void setMeetingId(long meetingId) {
-        this.moderationCardsController.setMeetingId(meetingId);    
+        this.moderationCardsController.setMeetingId(meetingId);
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
