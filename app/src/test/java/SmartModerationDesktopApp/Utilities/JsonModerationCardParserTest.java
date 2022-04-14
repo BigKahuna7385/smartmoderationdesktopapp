@@ -1,6 +1,5 @@
 
 import SmartModerationDesktopApp.ModerationCards.ModerationCard;
-import SmartModerationDesktopApp.Server.LoginInformation;
 import SmartModerationDesktopApp.Utilities.JsonModerationCardParser;
 import java.awt.Point;
 import java.io.BufferedReader;
