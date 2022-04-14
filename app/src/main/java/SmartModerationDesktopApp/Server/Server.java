@@ -1,119 +1,134 @@
 package SmartModerationDesktopApp.Server;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.PrintWriter;
+import SmartModerationDesktopApp.Observer.ServerObservable;
+import SmartModerationDesktopApp.Observer.ServerObserver;
+import com.sun.net.httpserver.Headers;
+import com.sun.net.httpserver.HttpExchange;
+import com.sun.net.httpserver.HttpServer;
+import java.io.*;
 import java.net.InetAddress;
+import java.net.InetSocketAddress;
 import java.net.NetworkInterface;
-import java.net.ServerSocket;
-import java.net.Socket;
 import java.net.SocketException;
-import java.util.Date;
 import java.util.Enumeration;
-import java.util.StringTokenizer;
 import java.util.UUID;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-public class Server implements Runnable {
+public final class Server implements ServerObservable {
 
-    static final int PORT = 8080;
-    private static InetAddress ipAddress;
-    static final boolean VERBOSE = true;
-    private Socket connect;
-    private final String contentType = "text/plain";
+    private final static int PORT = 8080;
     private final String apiKey;
+    private final InetAddress ipAddress;
+    private ServerObserver observer;
+    private boolean clientLoggedIn = false;
 
     public Server() {
         apiKey = UUID.randomUUID().toString();
+        System.out.println("apiKey:" + apiKey);
         ipAddress = getIpAddress();
     }
 
     public void createServer() {
         try {
-            ServerSocket serverConnect = new ServerSocket(PORT);
-            System.out.println(serverConnect.getInetAddress().getHostAddress() + ":" + serverConnect.getLocalPort());
-            System.out.println("Server started.\nListening for connections on port : " + PORT + " ...\n");
-            while (true) {
-                connect = serverConnect.accept();
+            HttpServer server = HttpServer.create(new InetSocketAddress(8080), 0);
 
-                if (VERBOSE) {
-                    System.out.println("Connecton opened. (" + new Date() + ")");
+            server.createContext("/login", (HttpExchange t) -> {
+                StringBuilder sb = new StringBuilder();
+                String requestMethod = t.getRequestMethod();
+                System.out.println("Method: " + requestMethod);
+                if (checkAuthorization(t)) {
+                    InputStream ios = t.getRequestBody();
+                    int i;
+                    switch (requestMethod) {
+                        case "POST":
+                            while ((i = ios.read()) != -1) {
+                                sb.append((char) i);
+                            }
+                            System.out.println("Login POST");
+                            clientLoggedIn = true;
+                            login(sb.toString());
+                            break;
+                        default:
+                            throw new AssertionError();
+                    }
+                    sendResponse(t);
                 }
-                Thread thread = new Thread(this);
-                thread.start();
-            }
+            });
+
+            server.createContext("/moderationcards", (HttpExchange t) -> {
+                StringBuilder sb = new StringBuilder();
+                String requestMethod = t.getRequestMethod();
+                System.out.println("Method: " + requestMethod);
+                if (checkAuthorization(t) && clientLoggedIn(t)) {
+                    InputStream ios = t.getRequestBody();
+                    int i;
+                    switch (requestMethod) {
+                        case "POST":
+                            while ((i = ios.read()) != -1) {
+                                sb.append((char) i);
+                            }
+                            System.out.println("Update Moderation Card JSON: " + sb.toString());
+                            updateModerationCard(sb.toString());
+                            break;
+                        case "PUT":
+                            while ((i = ios.read()) != -1) {
+                                sb.append((char) i);
+                            }
+                            System.out.println("Put Moderation Card JSON: : " + sb.toString());
+                            putModerationCard(sb.toString());
+                            break;
+                        case "DELETE":
+                            String cardId = t.getRequestURI().getQuery().substring("cardId=".length());
+                            System.out.println("Delete Moderation Card JSON: " + cardId);
+                            deleteModerationCard(Long.parseLong(cardId));
+                            break;
+                        default:
+                            throw new AssertionError();
+                    }
+                    sendResponse(t);
+                }
+            });
+            server.setExecutor(null);
+            server.start();
         } catch (IOException e) {
-            System.err.println("Server Connection error : " + e.getMessage());
         }
     }
 
-    @Override
-    public void run() {
-        BufferedReader in = null;
-        PrintWriter out = null;
-
-        try {
-            in = new BufferedReader(new InputStreamReader(connect.getInputStream()));
-            out = new PrintWriter(connect.getOutputStream());
-            String input = in.readLine();
-
-            if (input == null) {
-                return;
+    private boolean checkAuthorization(HttpExchange t) throws IOException {
+        Headers headers = t.getRequestHeaders();
+        if (!headers.containsKey("Authorization") || !headers.getFirst("Authorization").equals("Bearer " + apiKey)) {
+            String response = "Missing or incorrect Authorization";
+            t.sendResponseHeaders(401, response.length());
+            try ( OutputStream os = t.getResponseBody()) {
+                os.write(response.getBytes());
             }
-            StringTokenizer parse = new StringTokenizer(input);
-            String method = parse.nextToken().toUpperCase();
+            return false;
+        }
+        return true;
+    }
 
-            if (method.equals("GET")) {
-                System.out.println(input);
-                System.out.println(in.readLine());
-                System.out.println(in.readLine());
-                System.out.println(in.readLine());
-                System.out.println(in.readLine());
-                System.out.println(in.readLine());
-                System.out.println(in.readLine());
-
-                out.println("HTTP/1.1 200 OK");
-                out.println("Server: Java HTTP Server from SSaurel : 1.0");
-                out.println("Date: " + new Date());
-                out.println("Content-type: " + contentType);
-                out.println();
-                out.print("Body");
-                out.flush();
-
-            } else {
-                if (VERBOSE) {
-                    System.out.println("501 Not Implemented : " + method + " method.");
-                }
-
-                String contentMimeType = "text/html";
-                out.println("HTTP/1.1 501 Not Implemented");
-                out.println("Server: Java HTTP Server from SSaurel : 1.0");
-                out.println("Date: " + new Date());
-                out.println("Content-type: " + contentMimeType);
-                out.println();
-                out.flush();
-
+    private boolean clientLoggedIn(HttpExchange t) throws IOException {
+        if (!clientLoggedIn) {
+            String response = "Session not logged in, please try to log in again.";
+            t.sendResponseHeaders(401, response.length());
+            try ( OutputStream os = t.getResponseBody()) {
+                os.write(response.getBytes());
             }
-        } catch (IOException ioe) {
-            System.err.println("Server error : " + ioe);
-        } finally {
-            try {
-                in.close();
-                out.close();
-                connect.close();
-            } catch (IOException e) {
-                System.err.println("Error closing stream : " + e.getMessage());
-            }
+            return false;
+        }
+        return true;
+    }
 
-            if (VERBOSE) {
-                System.out.println("Connection closed.\n");
-            }
+    private void sendResponse(HttpExchange t) throws IOException {
+        String response = "OK";
+        t.sendResponseHeaders(200, response.length());
+        try ( OutputStream os = t.getResponseBody()) {
+            os.write(response.getBytes());
         }
     }
 
-    private InetAddress getIpAddress() {
+    public InetAddress getIpAddress() {
         Enumeration en;
         try {
             en = NetworkInterface.getNetworkInterfaces();
@@ -122,27 +137,56 @@ public class Server implements Runnable {
                 Enumeration ee = ni.getInetAddresses();
                 while (ee.hasMoreElements()) {
                     InetAddress ia = (InetAddress) ee.nextElement();
-                    System.out.println(ia.getCanonicalHostName());
                     if (ia.getHostAddress().contains("192.168.") || ia.getHostAddress().contains("172.")) {
+                        System.out.println(ia.getHostAddress());
                         return ia;
                     }
                 }
             }
         } catch (SocketException ex) {
-            Logger.getLogger(Server.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(Server.class
+                    .getName()).log(Level.SEVERE, null, ex);
         }
         return null;
     }
 
-    public String getIpAddressAndPortAsString() {
+    public String getIpAddressString() {
         if (ipAddress == null) {
             return null;
         }
-        return ipAddress.getCanonicalHostName() + ":" + PORT;
+        return ipAddress.getHostAddress();
+    }
+
+    public static int getPORT() {
+        return PORT;
     }
 
     public String getApiKey() {
         return apiKey;
     }
-    
+
+    @Override
+    public void initObserver(ServerObserver observer) {
+        this.observer = observer;
+    }
+
+    @Override
+    public void login(String message) {
+        this.observer.receiveLogin(message);
+    }
+
+    @Override
+    public void putModerationCard(String message) {
+        this.observer.receivePutModerationCard(message);
+    }
+
+    @Override
+    public void deleteModerationCard(long cardId) {
+        this.observer.receiveDeleteModerationCard(cardId);
+    }
+
+    @Override
+    public void updateModerationCard(String message) {
+        this.observer.receiveUpdateModerationCard(message);
+    }
 }
