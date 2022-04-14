@@ -44,7 +44,7 @@ public class SmartModerationDesktopApp {
                 }
             } catch (UnsupportedEncodingException ex) {
                 Logger.getLogger(MainWindow.class.getName()).log(Level.SEVERE, null, ex);
-            }
+            }         
         });
 
         server.createServer();
