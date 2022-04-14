@@ -4,16 +4,19 @@
             "cardId": 1164845262799520113,
             "content": "testetst",
             "backgroundColor": "#673AB7",
-            "fontColor": "#FFFFFF"
+            "fontColor": "#FFFFFF",
+            "author:":"Test_Author"
         }, {
             "cardId": 6599522553032296570,
             "content": "test",
             "backgroundColor": "#673AB7",
-            "fontColor": "#FFFFFF"
+            "fontColor": "#FFFFFF",
+            "author:":"Test_Author"
         }, {
             "cardId": 8716934582346075052,
             "content": "logintest",
             "backgroundColor": "#FFC107",
-            "fontColor": "#FFFFFF"
+            "fontColor": "#FFFFFF",
+            "author:":"Test_Author"
         }]
 }

@@ -3,5 +3,6 @@
     "meetingId": 2145752493690473242,
     "content": "logintest",
     "backgroundColor": "#FFC107",
-    "fontColor": "#FFFFFF"
+    "fontColor": "#FFFFFF",
+    "author:":"Test_Author"
 }

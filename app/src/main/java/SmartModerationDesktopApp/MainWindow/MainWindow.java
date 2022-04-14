@@ -7,12 +7,17 @@ import SmartModerationDesktopApp.Utilities.LineDrawer;
 import SmartModerationDesktopApp.Server.LoginController;
 import SmartModerationDesktopApp.Tutorial.Tutorial;
 import java.awt.GraphicsEnvironment;
+import java.awt.event.ActionEvent;
 import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javafx.event.EventHandler;
+import javafx.scene.control.Alert;
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import org.json.simple.parser.ParseException;
+import javafx.scene.control.Alert.AlertType;
+import javax.swing.JOptionPane;
 
 public class MainWindow extends javax.swing.JFrame implements ServerObserver {
 
@@ -134,6 +139,10 @@ public class MainWindow extends javax.swing.JFrame implements ServerObserver {
             quickGuide.setVisible(false);
             initializeModerationCards();
         } catch (ParseException | IOException ex) {
+            JOptionPane.showMessageDialog(this, "No connection to Android host device.");
+            QRCode.setVisible(true);
+            QRCodeLabel.setVisible(true);
+            quickGuide.setVisible(true);
             Logger.getLogger(MainWindow.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
@@ -160,9 +169,9 @@ public class MainWindow extends javax.swing.JFrame implements ServerObserver {
     }
 
     public void sendDeleteModerationCard(long cardId) {
-        if (client.deleteModerationCard(cardId)){
-        moderationCardsController.deleteModerationCard(cardId);
-        }        
+        if (client.deleteModerationCard(cardId)) {
+            moderationCardsController.deleteModerationCard(cardId);
+        }
         revalidate();
         repaint();
     }
