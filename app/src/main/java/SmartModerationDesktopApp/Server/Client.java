@@ -18,7 +18,6 @@ public class Client {
     }
 
     public String getModerationCards() throws IOException {
-
         //String emulatorAddress = "http://127.0.0.1:8001/";
         OkHttpClient client = new OkHttpClient().newBuilder()
                 .build();

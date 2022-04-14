@@ -1,7 +1,7 @@
 package SmartModerationDesktopApp.Utilities;
 
 import SmartModerationDesktopApp.ModerationCards.ModerationCard;
-import SmartModerationDesktopApp.Server.LoginInformation;
+import SmartModerationDesktopApp.ModerationCards.ModerationCardData;
 import java.awt.Point;
 import java.io.File;
 import java.io.FileReader;
@@ -13,7 +13,7 @@ import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
-public class JsonReader {
+public class JsonModerationCardParser {
 
     public ArrayList<ModerationCard> parseModerationCardJson(String inputJson) {
         ArrayList<ModerationCard> moderationCardList = new ArrayList();    
@@ -33,7 +33,7 @@ public class JsonReader {
                 String content = (String) jsonObject.get("content");
                 String backgroundColor = (String) jsonObject.get("backgroundColor");
                 String fontColor = (String) jsonObject.get("fontColor");
-                moderationCardList.add(new ModerationCard(cardId, meetingId, content, backgroundColor, fontColor));
+                moderationCardList.add(new ModerationCard(new ModerationCardData(cardId, meetingId, content, backgroundColor, fontColor)));
             }
         } catch (ParseException e) {
         }
@@ -52,7 +52,7 @@ public class JsonReader {
         String backgroundColor = (String) jsonObject.get("backgroundColor");
         String fontColor = (String) jsonObject.get("fontColor");
         long meetingId = (long) jsonObject.get("meetingId");
-        return new ModerationCard(cardId, meetingId, content, backgroundColor, fontColor);
+        return new ModerationCard(new ModerationCardData(cardId, meetingId, content, backgroundColor, fontColor));
     }
 
     public HashMap<Long, Point> parseCacheJson(File inputJson) {
@@ -77,12 +77,5 @@ public class JsonReader {
         } catch (ParseException | IOException ex) {
         }
         return cachedModerationCardPositions;
-    }
-
-    public LoginInformation readLoginInformationJson(String loginInformationJson) throws ParseException {
-        JSONParser jsonParser = new JSONParser();
-        JSONObject jsonObject = (JSONObject) jsonParser.parse(loginInformationJson);
-        long port = (long) jsonObject.get("port");
-        return new LoginInformation((long) jsonObject.get("meetingId"), (String) jsonObject.get("ipAddress"), Integer.toString((int) port));
     }
 }

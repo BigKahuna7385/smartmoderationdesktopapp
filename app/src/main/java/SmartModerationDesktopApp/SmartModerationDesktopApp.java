@@ -1,6 +1,8 @@
 package SmartModerationDesktopApp;
 
 import SmartModerationDesktopApp.MainWindow.MainWindow;
+import SmartModerationDesktopApp.Server.Server;
+import SmartModerationDesktopApp.Utilities.JsonWriter;
 import SmartModerationDesktopApp.Utilities.QRCodeGenerator;
 import com.google.zxing.WriterException;
 import java.awt.GraphicsDevice;
@@ -11,9 +13,14 @@ import java.util.logging.Logger;
 public class SmartModerationDesktopApp {
 
     public static void main(String[] args) {
-        MainWindow mainWindow = new MainWindow();
-        mainWindow.getServer().initObserver(mainWindow);
+
         QRCodeGenerator qrCodeGenerator = new QRCodeGenerator();
+        JsonWriter jsonWriter = new JsonWriter();
+        MainWindow mainWindow = MainWindow.getInstance();
+
+        Server server = new Server();
+        server.initObserver(mainWindow);
+
         try {
             for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
                 if ("Nimbus".equals(info.getName())) {
@@ -31,14 +38,15 @@ public class SmartModerationDesktopApp {
             mainWindow.setVisible(true);
             try {
                 try {
-                    mainWindow.setQRCodeLabel(qrCodeGenerator.createLoginQRCode(mainWindow));
+                    mainWindow.setQRCodeLabel(qrCodeGenerator.stringToQRCodeToIcon(jsonWriter.getLoginInformationJson(server)));
                 } catch (WriterException ex) {
                     Logger.getLogger(MainWindow.class.getName()).log(Level.SEVERE, null, ex);
                 }
             } catch (UnsupportedEncodingException ex) {
                 Logger.getLogger(MainWindow.class.getName()).log(Level.SEVERE, null, ex);
-            }
+            }         
         });
-        mainWindow.getServer().createServer();
+
+        server.createServer();
     }
 }

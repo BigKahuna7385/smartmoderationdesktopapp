@@ -8,41 +8,29 @@ import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 import javax.swing.JTextPane;
 import javax.swing.text.SimpleAttributeSet;
+import javax.swing.text.Style;
 import javax.swing.text.StyleConstants;
 import javax.swing.text.StyledDocument;
 
 public class ModerationCard extends javax.swing.JPanel {
-    
+
     private final int MAGNETRANGE = 30;
-    private final long cardId;
-    private final String content;
-    private final String backgroundColor;
+    private final ModerationCardData moderationCardData;
     private final SnapDirectionChecker snapDirectionChecker;
-    private int x;
-    private int y;
     private boolean distancedMagnet = false;
-    private Point location;
     private MouseEvent pressed;
-    private MainWindow mainWindow;
     private ModerationCard magneticCard;
     private SnapDirections snapDirection;
     private ArrayList<ModerationCard> moderationCardList;
-    
-    public ModerationCard(long cardId, long meetingId, String content, String backgroundColor, String fontColor) {
+
+    public ModerationCard(ModerationCardData moderationCardData) {
         initComponents();
-        this.x = 0;
-        this.y = 0;
-        this.cardId = cardId;
-        this.backgroundColor = backgroundColor;
-        this.content = content;
+        setLocation(0, 0);
         snapDirectionChecker = new SnapDirectionChecker();
-        setBackground(Color.decode(backgroundColor));
-        setForeground(Color.decode(fontColor));
-        createOneColorBackground();
-        setCardContent(content);
-        centerText();
+        this.moderationCardData = moderationCardData;
+        drawModerationCardData();
     }
-    
+
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
@@ -135,68 +123,69 @@ public class ModerationCard extends javax.swing.JPanel {
     private void moderationCardTextBodyMouseReleased(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_moderationCardTextBodyMouseReleased
         cardReleased(evt);
     }//GEN-LAST:event_moderationCardTextBodyMouseReleased
-    
+
     private void cardClicked(java.awt.event.MouseEvent evt) {
         pressed = evt;
         setCursor(new java.awt.Cursor(java.awt.Cursor.MOVE_CURSOR));
     }
-    
+
     private void cardDragged(java.awt.event.MouseEvent evt) {
-        location = getLocation(location);
+        Point location = getLocation();
         if (pressed == null) {
             pressed = evt;
         }
         int dX = evt.getX() - pressed.getX();
         int dY = evt.getY() - pressed.getY();
-        x = location.x + dX;
-        y = location.y + dY;
-        
+        int x = location.x + dX;
+        int y = location.y + dY;
+
         if (x < 0) {
             x = 0;
-        } else if (x > mainWindow.getWidth() - getPreferredSize().width) {
-            x = mainWindow.getWidth() - getPreferredSize().width;
+        } else if (x > MainWindow.getInstance().getWidth() - getPreferredSize().width) {
+            x = MainWindow.getInstance().getWidth() - getPreferredSize().width;
         }
-        
+
         if (y < 0) {
             y = 0;
-        } else if (y > mainWindow.getHeight() - getPreferredSize().height) {
-            y = mainWindow.getHeight() - getBounds().height;
+        } else if (y > MainWindow.getInstance().getHeight() - getPreferredSize().height) {
+            y = MainWindow.getInstance().getHeight() - getBounds().height;
         }
         isCardMagnetic();
         if (snapTo(magneticCard)) {
-            mainWindow.getLineDrawer().drawDottedLineBetween(this, magneticCard);
+            MainWindow.getInstance().getLineDrawer().drawDottedLineBetween(this, magneticCard);
         } else {
-            mainWindow.getLineDrawer().clearLine();
+            MainWindow.getInstance().getLineDrawer().clearLine();
         }
         setLocation(x, y);
     }
-    
+
     private void cardReleased(java.awt.event.MouseEvent evt) {
         setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
+        int x = getLocation().x;
+        int y = getLocation().y;
         if (magneticCard != null) {
-            //dockedModerationCardList.add(magneticCard);
             int distance = isDistancedMagnet() ? MAGNETRANGE : 0;
             switch (snapDirection) {
                 case WEST:
-                    x = magneticCard.x + magneticCard.getBounds().width + distance;
+                    x = magneticCard.getLocation().x + magneticCard.getBounds().width + distance;
                     break;
                 case EAST:
-                    x = magneticCard.x - getBounds().width - distance;
+                    x = magneticCard.getLocation().x - getBounds().width - distance;
                     break;
                 case SOUTH:
-                    y = magneticCard.y - getBounds().height - distance;
+                    y = magneticCard.getLocation().y - getBounds().height - distance;
                     break;
                 case NORTH:
-                    y = magneticCard.y + magneticCard.getBounds().height + distance;
+                    y = magneticCard.getLocation().y + magneticCard.getBounds().height + distance;
                     break;
                 default:
                     throw new AssertionError();
             }
             setLocation(x, y);
         }
-        mainWindow.getLineDrawer().clearLine();
+        MainWindow.getInstance().getLineDrawer().clearLine();
     }
-    
+
     private void isCardMagnetic() {
         distancedMagnet = false;
         magneticCard = null;
@@ -204,7 +193,7 @@ public class ModerationCard extends javax.swing.JPanel {
             snapDirectionChecker.setSnapDirectionBetween(this, moderationCard);
         }
     }
-    
+
     private boolean snapTo(ModerationCard cardMagnetic) {
         if (cardMagnetic == null) {
             magneticCard = null;
@@ -213,93 +202,71 @@ public class ModerationCard extends javax.swing.JPanel {
         magneticCard = cardMagnetic;
         return true;
     }
-    
+
     private void centerText() {
         StyledDocument doc = moderationCardTextBody.getStyledDocument();
         SimpleAttributeSet center = new SimpleAttributeSet();
         StyleConstants.setAlignment(center, StyleConstants.ALIGN_CENTER);
         doc.setParagraphAttributes(0, doc.getLength(), center, false);
     }
-    
+
     private void createOneColorBackground() {
         jScrollPane.getViewport().setOpaque(false);
         jScrollPane.setViewportBorder(null);
         moderationCardTextBody.setEditorKit(new MyEditorKit());
         moderationCardTextBody.setBackground(new Color(0, 0, 0, 0));
     }
-    
+
     public long getCardId() {
-        return cardId;
+        return moderationCardData.getCardId();
     }
-    
+
     public String getColor() {
-        return backgroundColor;
+        return moderationCardData.getBackgroundColor();
     }
-    
-    @Override
-    public int getX() {
-        return x;
-    }
-    
-    public void setX(int x) {
-        this.x = x;
-    }
-    
-    @Override
-    public int getY() {
-        return y;
-    }
-    
-    public void setY(int y) {
-        this.y = y;
-    }
-    
-    public void setMainWindow(MainWindow mainWindow) {
-        this.mainWindow = mainWindow;
-    }
-    
+
     public void setModerationCardList(ArrayList<ModerationCard> moderationCardList) {
         this.moderationCardList = moderationCardList;
     }
-    
+
     public SnapDirections getSnapDirection() {
         return snapDirection;
     }
-    
+
     public boolean isDistancedMagnet() {
         return distancedMagnet;
     }
-    
+
     public int getMAGNETRANGE() {
         return MAGNETRANGE;
     }
-    
+
     public void setMagneticCard(ModerationCard magneticCard) {
         this.magneticCard = magneticCard;
     }
-    
+
     public ModerationCard getMagneticCard() {
         return magneticCard;
     }
-    
+
     public void setDistancedMagnet(boolean distancedMagnet) {
         this.distancedMagnet = distancedMagnet;
     }
-    
+
     public void setSnapDirection(SnapDirections snapDirection) {
         this.snapDirection = snapDirection;
     }
-    
+
     public String getContent() {
-        return content;
+        return moderationCardData.getContent();
     }
-    
+
     public void updateProperties(ModerationCard moderationCard) {
-        setCardContent(moderationCard.getContent());        
+        setCardContent(moderationCard.getContent());
         setBackground(moderationCard.getBackground());
     }
-    
-    private void setCardContent(String content) {        
+
+    private void setCardContent(String content) {
         moderationCardTextBody.setText(content);
     }
 
@@ -310,5 +277,13 @@ public class ModerationCard extends javax.swing.JPanel {
 
     public JTextPane getModerationCardTextBody() {
         return moderationCardTextBody;
+    }
+
+    private void drawModerationCardData() {
+        setBackground(Color.decode(moderationCardData.getBackgroundColor()));
+        moderationCardTextBody.setDisabledTextColor(Color.decode(moderationCardData.getFontColor()));
+        createOneColorBackground();
+        setCardContent(moderationCardData.getContent());
+        centerText();
     }
 }
