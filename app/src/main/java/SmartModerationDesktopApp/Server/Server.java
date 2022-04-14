@@ -15,17 +15,16 @@ import java.util.UUID;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-public class Server implements ServerObservable {
+public final class Server implements ServerObservable {
 
-    static final int PORT = 8080;
-    private static InetAddress ipAddress;
-    static final boolean VERBOSE = true;
+    private final static int PORT = 8080;
     private final String apiKey;
+    private final InetAddress ipAddress;
     private ServerObserver observer;
+    private boolean clientLoggedIn = false;
 
     public Server() {
         apiKey = UUID.randomUUID().toString();
-        //apiKey = "Test";
         System.out.println("apiKey:" + apiKey);
         ipAddress = getIpAddress();
     }
@@ -41,22 +40,19 @@ public class Server implements ServerObservable {
                 if (checkAuthorization(t)) {
                     InputStream ios = t.getRequestBody();
                     int i;
-                    String response = "OK";
                     switch (requestMethod) {
                         case "POST":
                             while ((i = ios.read()) != -1) {
                                 sb.append((char) i);
                             }
                             System.out.println("Login POST");
-                            t.sendResponseHeaders(200, response.length());
-                            try ( OutputStream os = t.getResponseBody()) {
-                                os.write(response.getBytes());
-                            }
+                            clientLoggedIn = true;
                             login(sb.toString());
                             break;
                         default:
                             throw new AssertionError();
                     }
+                    sendResponse(t);
                 }
             });
 
@@ -64,20 +60,15 @@ public class Server implements ServerObservable {
                 StringBuilder sb = new StringBuilder();
                 String requestMethod = t.getRequestMethod();
                 System.out.println("Method: " + requestMethod);
-                if (checkAuthorization(t)) {
+                if (checkAuthorization(t) && clientLoggedIn(t)) {
                     InputStream ios = t.getRequestBody();
                     int i;
-                    String response = "OK";
                     switch (requestMethod) {
                         case "POST":
                             while ((i = ios.read()) != -1) {
                                 sb.append((char) i);
                             }
                             System.out.println("Update Moderation Card JSON: " + sb.toString());
-                            t.sendResponseHeaders(200, response.length());
-                            try ( OutputStream os = t.getResponseBody()) {
-                                os.write(response.getBytes());
-                            }
                             updateModerationCard(sb.toString());
                             break;
                         case "PUT":
@@ -85,24 +76,17 @@ public class Server implements ServerObservable {
                                 sb.append((char) i);
                             }
                             System.out.println("Put Moderation Card JSON: : " + sb.toString());
-                            t.sendResponseHeaders(200, response.length());
-                            try ( OutputStream os = t.getResponseBody()) {
-                                os.write(response.getBytes());
-                            }
                             putModerationCard(sb.toString());
                             break;
                         case "DELETE":
                             String cardId = t.getRequestURI().getQuery().substring("cardId=".length());
                             System.out.println("Delete Moderation Card JSON: " + cardId);
                             deleteModerationCard(Long.parseLong(cardId));
-                            t.sendResponseHeaders(200, response.length());
-                            try ( OutputStream os = t.getResponseBody()) {
-                                os.write(response.getBytes());
-                            }
                             break;
                         default:
                             throw new AssertionError();
                     }
+                    sendResponse(t);
                 }
             });
             server.setExecutor(null);
@@ -122,6 +106,26 @@ public class Server implements ServerObservable {
             return false;
         }
         return true;
+    }
+
+    private boolean clientLoggedIn(HttpExchange t) throws IOException {
+        if (!clientLoggedIn) {
+            String response = "Session not logged in, please try to log in again.";
+            t.sendResponseHeaders(401, response.length());
+            try ( OutputStream os = t.getResponseBody()) {
+                os.write(response.getBytes());
+            }
+            return false;
+        }
+        return true;
+    }
+
+    private void sendResponse(HttpExchange t) throws IOException {
+        String response = "OK";
+        t.sendResponseHeaders(200, response.length());
+        try ( OutputStream os = t.getResponseBody()) {
+            os.write(response.getBytes());
+        }
     }
 
     public InetAddress getIpAddress() {
