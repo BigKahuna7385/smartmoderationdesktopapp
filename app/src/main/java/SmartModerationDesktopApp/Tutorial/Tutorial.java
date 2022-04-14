@@ -11,7 +11,8 @@ public class Tutorial extends javax.swing.JFrame {
     public Tutorial() {
         initComponents();
         Icon tutorial = new ImageIcon(getClass().getClassLoader().getResource("tutorial.gif"));
-        tutorialGif.setIcon(tutorial);        
+        tutorialGif.setIcon(tutorial);
+        setIcon();
         centerFrame();
     }
 
@@ -28,6 +29,11 @@ public class Tutorial extends javax.swing.JFrame {
         setLocation(screenWidth / 2 - getBounds().width / 2, screenHeight / 2 - getBounds().height / 2);
     }
 
+    private void setIcon() {
+        ImageIcon icon = new ImageIcon(getClass().getClassLoader().getResource("smartModerationIcon.png"));
+        setIconImage(icon.getImage());
+    }
+
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
@@ -37,6 +43,7 @@ public class Tutorial extends javax.swing.JFrame {
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("Login Quick Guide");
         setAlwaysOnTop(true);
+        setIconImage(getIconImage());
         setPreferredSize(new java.awt.Dimension(350, 710));
         setResizable(false);
 

@@ -11,31 +11,33 @@ import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.Icon;
+import javax.swing.ImageIcon;
 import org.json.simple.parser.ParseException;
 
 public class MainWindow extends javax.swing.JFrame implements ServerObserver {
-    
+
     private final LineDrawer lineDrawer;
     private final LoginController loginController;
     private final ModerationCardsController moderationCardsController;
     private static MainWindow mainWindow;
     private Client client;
-    
+
     public MainWindow() {
         initComponents();
         setExtendedState(MAXIMIZED_BOTH);
         lineDrawer = new LineDrawer();
         loginController = new LoginController();
         moderationCardsController = new ModerationCardsController();
+        setIcon();
     }
-    
+
     public static MainWindow getInstance() {
         if (mainWindow == null) {
             mainWindow = new MainWindow();
         }
         return mainWindow;
     }
-    
+
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
@@ -119,19 +121,19 @@ public class MainWindow extends javax.swing.JFrame implements ServerObserver {
         Tutorial tutorial = Tutorial.getInstance();
         tutorial.setVisible(true);
     }//GEN-LAST:event_quickGuideActionPerformed
-    
+
     private void initializeModerationCards() throws IOException {
         moderationCardsController.initializeModerationCards(client.getModerationCards());
         revalidate();
         repaint();
     }
-    
+
     private void readLoginInformation(String loginInformation) throws ParseException {
         loginController.readLoginInformation(loginInformation);
         setMeetingId(loginController.getMeetingId());
         client = new Client(loginController.getLoginInformation());
     }
-    
+
     @Override
     public void receiveLogin(String message) {
         try {
@@ -144,42 +146,47 @@ public class MainWindow extends javax.swing.JFrame implements ServerObserver {
             Logger.getLogger(MainWindow.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
-    
+
     @Override
     public void receivePutModerationCard(String message) {
         moderationCardsController.putModerationCard(message);
         revalidate();
         repaint();
     }
-    
+
     @Override
     public void receiveDeleteModerationCard(long cardId) {
         moderationCardsController.deleteModerationCard(cardId);
         revalidate();
         repaint();
     }
-    
+
     @Override
     public void receiveUpdateModerationCard(String message) {
         moderationCardsController.updateModerationCard(message);
         revalidate();
         repaint();
     }
-    
+
     public void setQRCodeLabel(Icon icon) {
         QRCode.setIcon(icon);
     }
-    
+
     public LineDrawer getLineDrawer() {
         return lineDrawer;
     }
-    
+
     public GraphicsEnvironment getGraphicsEnvironment() {
         return GraphicsEnvironment.getLocalGraphicsEnvironment();
     }
-    
+
     public void setMeetingId(long meetingId) {
         this.moderationCardsController.setMeetingId(meetingId);
+    }
+
+    private void setIcon() {
+        ImageIcon icon = new ImageIcon(getClass().getClassLoader().getResource("smartModerationIcon.png"));
+        setIconImage(icon.getImage());
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
@@ -188,4 +195,5 @@ public class MainWindow extends javax.swing.JFrame implements ServerObserver {
     private javax.swing.JButton quickGuide;
     private javax.swing.JButton saveButton;
     // End of variables declaration//GEN-END:variables
+
 }
