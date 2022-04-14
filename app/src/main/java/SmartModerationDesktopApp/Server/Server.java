@@ -64,6 +64,7 @@ public class Server implements ServerObservable {
                 String requestMethod = t.getRequestMethod();
                 System.out.println("Method: " + requestMethod);
                 Headers headers = t.getRequestHeaders();
+                System.out.println("Auth: " + apiKey + " | " + headers.getFirst("Authorization"));
                 if (!headers.containsKey("Authorization") || !headers.getFirst("Authorization").equals("Bearer " + apiKey)) {
                     String response = "Missing or incorrect Authorization";
                     t.sendResponseHeaders(401, response.length());

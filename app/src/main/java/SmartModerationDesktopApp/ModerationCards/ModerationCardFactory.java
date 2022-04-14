@@ -30,24 +30,22 @@ public class ModerationCardFactory {
             moderationCards.forEach((moderationCard) -> {
                 if (cachedModerationCardPositions.containsKey(moderationCard.getCardId())) {
                     Point point = cachedModerationCardPositions.get(moderationCard.getCardId());
-                    moderationCard.setX(point.x);
-                    moderationCard.setY(point.y);
+                    moderationCard.setLocation(point);
                 }
             });
         }
     }
-    
-    public void setFanout(ModerationCard moderationCard){
+
+    public void setFanout(ModerationCard moderationCard) {
         if (moderationCard.getX() == 0 && moderationCard.getY() == 0) {
-                moderationCard.setX(moderationCardOffset);
-                moderationCard.setY(moderationCardOffset);
-                moderationCardOffset += FANOUTDISTANCE;
-            }
-            moderationCard.setBounds(moderationCard.getX(), moderationCard.getY(), moderationCard.getPreferredSize().width, moderationCard.getPreferredSize().height);
-            moderationCard.setModerationCardList(moderationCards);
+            moderationCard.setLocation(moderationCardOffset, moderationCardOffset);
+            moderationCardOffset += FANOUTDISTANCE;
+        }
+        moderationCard.setBounds(moderationCard.getX(), moderationCard.getY(), moderationCard.getPreferredSize().width, moderationCard.getPreferredSize().height);
+        moderationCard.setModerationCardList(moderationCards);
     }
-    
-    public ArrayList<ModerationCard> getModerationCards(){
+
+    public ArrayList<ModerationCard> getModerationCards() {
         return moderationCards;
     }
 }

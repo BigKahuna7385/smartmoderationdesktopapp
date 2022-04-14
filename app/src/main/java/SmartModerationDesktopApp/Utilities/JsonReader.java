@@ -1,6 +1,7 @@
 package SmartModerationDesktopApp.Utilities;
 
 import SmartModerationDesktopApp.ModerationCards.ModerationCard;
+import SmartModerationDesktopApp.ModerationCards.ModerationCardData;
 import SmartModerationDesktopApp.Server.LoginInformation;
 import java.awt.Point;
 import java.io.File;
@@ -33,7 +34,7 @@ public class JsonReader {
                 String content = (String) jsonObject.get("content");
                 String backgroundColor = (String) jsonObject.get("backgroundColor");
                 String fontColor = (String) jsonObject.get("fontColor");
-                moderationCardList.add(new ModerationCard(cardId, meetingId, content, backgroundColor, fontColor));
+                moderationCardList.add(new ModerationCard(new ModerationCardData(cardId, meetingId, content, backgroundColor, fontColor)));
             }
         } catch (ParseException e) {
         }
@@ -52,7 +53,7 @@ public class JsonReader {
         String backgroundColor = (String) jsonObject.get("backgroundColor");
         String fontColor = (String) jsonObject.get("fontColor");
         long meetingId = (long) jsonObject.get("meetingId");
-        return new ModerationCard(cardId, meetingId, content, backgroundColor, fontColor);
+        return new ModerationCard(new ModerationCardData(cardId, meetingId, content, backgroundColor, fontColor));
     }
 
     public HashMap<Long, Point> parseCacheJson(File inputJson) {

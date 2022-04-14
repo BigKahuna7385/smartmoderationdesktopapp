@@ -11,7 +11,7 @@ import org.json.simple.parser.ParseException;
 public class ModerationCardsController {
 
     private final ArrayList<ModerationCard> moderationCards;
-    private final MainWindow mainWindow;
+
 
     private ModerationCardFactory moderationCardFactory;
     private final JsonReader jsonReader;
@@ -19,11 +19,10 @@ public class ModerationCardsController {
 
     private long meetingId;
 
-    public ModerationCardsController(MainWindow mainWindow) {
+    public ModerationCardsController() {
         moderationCards = new ArrayList<>();
         jsonReader = new JsonReader();
-        jsonWriter = new JsonWriter();
-        this.mainWindow = mainWindow;
+        jsonWriter = new JsonWriter();       
     }
 
     public ArrayList<ModerationCard> getModerationCards() {
@@ -37,8 +36,7 @@ public class ModerationCardsController {
         moderationCardFactory.loadModerationCardPositionsFromCache();
         for (ModerationCard moderationCard : moderationCards) {
             moderationCardFactory.setFanout(moderationCard);
-            moderationCard.setMainWindow(mainWindow);
-            mainWindow.getContentPane().add(moderationCard);
+            MainWindow.getInstance().getContentPane().add(moderationCard);
         }
     }
 
@@ -50,10 +48,9 @@ public class ModerationCardsController {
         try {
             System.out.println("Try to put new moderation card.");
             System.out.println("Message: " + message);
-            ModerationCard moderationCard = jsonReader.parseSingleModerationCardJson(message);
-            moderationCard.setMainWindow(mainWindow);
+            ModerationCard moderationCard = jsonReader.parseSingleModerationCardJson(message);     
             moderationCards.add(moderationCard);
-            mainWindow.getContentPane().add(moderationCard);
+            MainWindow.getInstance().getContentPane().add(moderationCard);
             moderationCardFactory.setFanout(moderationCard);
         } catch (ParseException ex) {
             Logger.getLogger(MainWindow.class.getName()).log(Level.SEVERE, null, ex);
@@ -66,7 +63,7 @@ public class ModerationCardsController {
             if (moderationCard.getCardId() == cardId) {
                 System.out.println("Found card to delete.");
                 moderationCards.remove(moderationCard);
-                mainWindow.getContentPane().remove(moderationCard);
+                MainWindow.getInstance().getContentPane().remove(moderationCard);
                 break;
             }
         }
