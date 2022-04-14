@@ -3,7 +3,6 @@ package SmartModerationDesktopApp.MainWindow;
 import SmartModerationDesktopApp.ModerationCards.ModerationCardsController;
 import SmartModerationDesktopApp.Observer.ServerObserver;
 import SmartModerationDesktopApp.Server.Client;
-import SmartModerationDesktopApp.Utilities.JsonWriter;
 import SmartModerationDesktopApp.Utilities.LineDrawer;
 import SmartModerationDesktopApp.Server.LoginController;
 import java.awt.GraphicsEnvironment;
@@ -15,21 +14,18 @@ import org.json.simple.parser.ParseException;
 
 public class MainWindow extends javax.swing.JFrame implements ServerObserver {
 
-    private final JsonWriter jsonWriter;
     private final LineDrawer lineDrawer;
     private final GraphicsEnvironment graphicsEnvironment;
     private final ModerationCardsController moderationCardsController;
     private final LoginController loginController;
     private Client client;
-    private long meetingId;
 
     public MainWindow() {
         initComponents();
         setExtendedState(MAXIMIZED_BOTH);
-        jsonWriter = new JsonWriter();
         lineDrawer = new LineDrawer(this);
-        moderationCardsController = new ModerationCardsController(this);
         loginController = new LoginController();
+        moderationCardsController = new ModerationCardsController(this);
         graphicsEnvironment = GraphicsEnvironment.getLocalGraphicsEnvironment();
     }
 
@@ -95,15 +91,8 @@ public class MainWindow extends javax.swing.JFrame implements ServerObserver {
     }// </editor-fold>//GEN-END:initComponents
 
     private void saveButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_saveButtonActionPerformed
-        jsonWriter.saveMeetingStatus(meetingId, moderationCardsController.getModerationCards());
+        moderationCardsController.saveMeetingStatus();
     }//GEN-LAST:event_saveButtonActionPerformed
-
-    private void processLogin(String loginString) throws ParseException, IOException {
-        readLoginInformation(loginString);
-        QRCode.setVisible(false);
-        QRCodeLabel.setVisible(false);
-        initializeModerationCards();
-    }
 
     private void initializeModerationCards() throws IOException {
         moderationCardsController.initializeModerationCards(client.getModerationCards());
@@ -121,7 +110,10 @@ public class MainWindow extends javax.swing.JFrame implements ServerObserver {
     public void receiveLogin(String message) {
         try {
             System.out.println("ReveiceLogin: " + message);
-            processLogin(message);
+            readLoginInformation(message);
+            QRCode.setVisible(false);
+            QRCodeLabel.setVisible(false);
+            initializeModerationCards();
         } catch (ParseException | IOException ex) {
             Logger.getLogger(MainWindow.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -152,10 +144,6 @@ public class MainWindow extends javax.swing.JFrame implements ServerObserver {
         QRCode.setIcon(icon);
     }
 
-    public long getMeetingId() {
-        return meetingId;
-    }
-    
     public LineDrawer getLineDrawer() {
         return lineDrawer;
     }
@@ -165,8 +153,7 @@ public class MainWindow extends javax.swing.JFrame implements ServerObserver {
     }
 
     public void setMeetingId(long meetingId) {
-        this.moderationCardsController.setMeetingId(meetingId);
-        this.meetingId = meetingId;
+        this.moderationCardsController.setMeetingId(meetingId);    
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

@@ -2,6 +2,7 @@ package SmartModerationDesktopApp.ModerationCards;
 
 import SmartModerationDesktopApp.MainWindow.MainWindow;
 import SmartModerationDesktopApp.Utilities.JsonReader;
+import SmartModerationDesktopApp.Utilities.JsonWriter;
 import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -14,11 +15,14 @@ public class ModerationCardsController {
 
     private ModerationCardFactory moderationCardFactory;
     private final JsonReader jsonReader;
+    private final JsonWriter jsonWriter;
+
     private long meetingId;
 
     public ModerationCardsController(MainWindow mainWindow) {
         moderationCards = new ArrayList<>();
         jsonReader = new JsonReader();
+        jsonWriter = new JsonWriter();
         this.mainWindow = mainWindow;
     }
 
@@ -80,6 +84,10 @@ public class ModerationCardsController {
         } catch (ParseException ex) {
             Logger.getLogger(MainWindow.class.getName()).log(Level.SEVERE, null, ex);
         }
+    }
+
+    public void saveMeetingStatus() {
+        jsonWriter.saveMeetingStatus(meetingId, moderationCards);
     }
 
 }
