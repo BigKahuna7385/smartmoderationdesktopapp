@@ -1,6 +1,6 @@
 package SmartModerationDesktopApp.ModerationCards;
 
-import SmartModerationDesktopApp.Utilities.JsonReader;
+import SmartModerationDesktopApp.Utilities.JsonModerationCardParser;
 import java.awt.Point;
 import java.io.File;
 import java.util.ArrayList;
@@ -9,15 +9,15 @@ import java.util.HashMap;
 public class ModerationCardFactory {
 
     private final int FANOUTDISTANCE = 15;
-    private final JsonReader jsonReader;
+    private final JsonModerationCardParser jsonModerationCardParser;
     private final ArrayList<ModerationCard> moderationCards;
     private final long meetingId;
     private int moderationCardOffset;
 
     public ModerationCardFactory(ArrayList<ModerationCard> moderationCards, long meetingId) {
-        this.jsonReader = new JsonReader();
         this.moderationCards = moderationCards;
         this.meetingId = meetingId;
+        jsonModerationCardParser = new JsonModerationCardParser();
         moderationCardOffset = 0;
     }
 
@@ -26,7 +26,7 @@ public class ModerationCardFactory {
         final boolean cacheExists = moderationCardCacheFile.exists();
 
         if (cacheExists) {
-            HashMap<Long, Point> cachedModerationCardPositions = jsonReader.parseCacheJson(moderationCardCacheFile);
+            HashMap<Long, Point> cachedModerationCardPositions = jsonModerationCardParser.parseCacheJson(moderationCardCacheFile);
             moderationCards.forEach((moderationCard) -> {
                 if (cachedModerationCardPositions.containsKey(moderationCard.getCardId())) {
                     Point point = cachedModerationCardPositions.get(moderationCard.getCardId());

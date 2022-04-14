@@ -1,7 +1,7 @@
 package SmartModerationDesktopApp.ModerationCards;
 
 import SmartModerationDesktopApp.MainWindow.MainWindow;
-import SmartModerationDesktopApp.Utilities.JsonReader;
+import SmartModerationDesktopApp.Utilities.JsonModerationCardParser;
 import SmartModerationDesktopApp.Utilities.JsonWriter;
 import java.util.ArrayList;
 import java.util.logging.Level;
@@ -14,14 +14,14 @@ public class ModerationCardsController {
 
 
     private ModerationCardFactory moderationCardFactory;
-    private final JsonReader jsonReader;
+    private final JsonModerationCardParser jsonModerationCardParser;
     private final JsonWriter jsonWriter;
 
     private long meetingId;
 
     public ModerationCardsController() {
         moderationCards = new ArrayList<>();
-        jsonReader = new JsonReader();
+        jsonModerationCardParser = new JsonModerationCardParser();
         jsonWriter = new JsonWriter();       
     }
 
@@ -30,7 +30,7 @@ public class ModerationCardsController {
     }
 
     public void initializeModerationCards(String moderationCardsString) {
-        ArrayList<ModerationCard> inputCards = jsonReader.parseModerationCardJson(moderationCardsString);
+        ArrayList<ModerationCard> inputCards = jsonModerationCardParser.parseModerationCardJson(moderationCardsString);
         moderationCards.addAll(inputCards);
         moderationCardFactory = new ModerationCardFactory(moderationCards, meetingId);
         moderationCardFactory.loadModerationCardPositionsFromCache();
@@ -48,7 +48,7 @@ public class ModerationCardsController {
         try {
             System.out.println("Try to put new moderation card.");
             System.out.println("Message: " + message);
-            ModerationCard moderationCard = jsonReader.parseSingleModerationCardJson(message);     
+            ModerationCard moderationCard = jsonModerationCardParser.parseSingleModerationCardJson(message);     
             moderationCards.add(moderationCard);
             MainWindow.getInstance().getContentPane().add(moderationCard);
             moderationCardFactory.setFanout(moderationCard);
@@ -71,7 +71,7 @@ public class ModerationCardsController {
 
     public void receiveUpdateModerationCard(String message) {
         try {
-            ModerationCard tempModerationCard = jsonReader.parseSingleModerationCardJson(message);
+            ModerationCard tempModerationCard = jsonModerationCardParser.parseSingleModerationCardJson(message);
             for (ModerationCard moderationCard : moderationCards) {
                 if (moderationCard.getCardId() == tempModerationCard.getCardId()) {
                     moderationCard.updateProperties(tempModerationCard);
