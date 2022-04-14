@@ -8,6 +8,7 @@ import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 import javax.swing.JTextPane;
 import javax.swing.text.SimpleAttributeSet;
+import javax.swing.text.Style;
 import javax.swing.text.StyleConstants;
 import javax.swing.text.StyledDocument;
 
@@ -280,7 +281,7 @@ public class ModerationCard extends javax.swing.JPanel {
 
     private void drawModerationCardData() {
         setBackground(Color.decode(moderationCardData.getBackgroundColor()));
-        setForeground(Color.decode(moderationCardData.getFontColor()));
+        moderationCardTextBody.setDisabledTextColor(Color.decode(moderationCardData.getFontColor()));
         createOneColorBackground();
         setCardContent(moderationCardData.getContent());
         centerText();
