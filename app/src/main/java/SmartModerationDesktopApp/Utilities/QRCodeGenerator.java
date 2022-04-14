@@ -16,12 +16,8 @@ public class QRCodeGenerator {
     private final int width = 400;
     private final int height = 400;
     
-    private ImageIcon StringToQRCodeToIcon(String data) throws WriterException, UnsupportedEncodingException {
+    public ImageIcon stringToQRCodeToIcon(String data) throws WriterException, UnsupportedEncodingException {
         BitMatrix matrix = new MultiFormatWriter().encode(new String(data.getBytes(charset), charset), BarcodeFormat.QR_CODE, width, height);
         return new ImageIcon(MatrixToImageWriter.toBufferedImage(matrix));
-    }
-    
-    public Icon createLoginQRCode(MainWindow mainWindow) throws WriterException, UnsupportedEncodingException {
-        return StringToQRCodeToIcon(mainWindow.getJsonWriter().getLoginInformationJson(mainWindow.getServer()));
     }
 }

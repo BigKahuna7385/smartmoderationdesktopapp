@@ -18,8 +18,7 @@ import javax.swing.Icon;
 import org.json.simple.parser.ParseException;
 
 public class MainWindow extends javax.swing.JFrame implements ServerObserver {
-
-    private final Server server;
+   
     private final JsonReader jsonReader;
     private final JsonWriter jsonWriter;
     private final LineDrawer lineDrawer;
@@ -34,8 +33,7 @@ public class MainWindow extends javax.swing.JFrame implements ServerObserver {
 
     public MainWindow() {
         initComponents();
-        setExtendedState(MAXIMIZED_BOTH);
-        server = new Server();
+        setExtendedState(MAXIMIZED_BOTH);       
         jsonReader = new JsonReader();
         jsonWriter = new JsonWriter();
         lineDrawer = new LineDrawer(this);
@@ -208,11 +206,7 @@ public class MainWindow extends javax.swing.JFrame implements ServerObserver {
 
     public void setQRCodeLabel(Icon icon) {
         QRCode.setIcon(icon);
-    }
-
-    public Server getServer() {
-        return server;
-    }
+    }  
 
     public ArrayList<ModerationCard> getModerationCards() {
         return this.moderationCards;

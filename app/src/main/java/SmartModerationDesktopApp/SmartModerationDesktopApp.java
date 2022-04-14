@@ -1,6 +1,9 @@
 package SmartModerationDesktopApp;
 
 import SmartModerationDesktopApp.MainWindow.MainWindow;
+import SmartModerationDesktopApp.Server.Server;
+import SmartModerationDesktopApp.Utilities.JsonReader;
+import SmartModerationDesktopApp.Utilities.JsonWriter;
 import SmartModerationDesktopApp.Utilities.QRCodeGenerator;
 import com.google.zxing.WriterException;
 import java.awt.GraphicsDevice;
@@ -12,8 +15,11 @@ public class SmartModerationDesktopApp {
 
     public static void main(String[] args) {
         MainWindow mainWindow = new MainWindow();
-        mainWindow.getServer().initObserver(mainWindow);
+        Server server = new Server();
+        server.initObserver(mainWindow);
         QRCodeGenerator qrCodeGenerator = new QRCodeGenerator();
+        JsonReader jsonReader = new JsonReader();
+        JsonWriter jsonWriter = new JsonWriter();
         try {
             for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
                 if ("Nimbus".equals(info.getName())) {
@@ -31,7 +37,7 @@ public class SmartModerationDesktopApp {
             mainWindow.setVisible(true);
             try {
                 try {
-                    mainWindow.setQRCodeLabel(qrCodeGenerator.createLoginQRCode(mainWindow));
+                    mainWindow.setQRCodeLabel(qrCodeGenerator.stringToQRCodeToIcon(jsonWriter.getLoginInformationJson(server)));
                 } catch (WriterException ex) {
                     Logger.getLogger(MainWindow.class.getName()).log(Level.SEVERE, null, ex);
                 }
@@ -39,6 +45,6 @@ public class SmartModerationDesktopApp {
                 Logger.getLogger(MainWindow.class.getName()).log(Level.SEVERE, null, ex);
             }
         });
-        mainWindow.getServer().createServer();
+        server.createServer();
     }
 }
