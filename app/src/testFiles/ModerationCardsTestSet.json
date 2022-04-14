@@ -4,16 +4,16 @@
             "cardId": 1164845262799520113,
             "content": "testetst",
             "backgroundColor": "#673AB7",
-            "fontColor": "#FFFFFF"
+            "fontColor": "#FFC107"
         }, {
             "cardId": 6599522553032296570,
             "content": "test",
             "backgroundColor": "#673AB7",
-            "fontColor": "#FFFFFF"
+            "fontColor": "#FFC107"
         }, {
             "cardId": 8716934582346075052,
             "content": "logintest",
             "backgroundColor": "#FFC107",
-            "fontColor": "#FFFFFF"
+            "fontColor": "#673AB7"
         }]
 }
