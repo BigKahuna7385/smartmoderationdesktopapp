@@ -12,17 +12,19 @@ public class ModerationCardsController {
 
     private final ArrayList<ModerationCard> moderationCards;
 
-
-    private ModerationCardFactory moderationCardFactory;
     private final JsonModerationCardParser jsonModerationCardParser;
     private final JsonWriter jsonWriter;
+    private ModerationCardFactory moderationCardFactory;
+    private boolean cardsInitialized;
 
     private long meetingId;
 
     public ModerationCardsController() {
         moderationCards = new ArrayList<>();
         jsonModerationCardParser = new JsonModerationCardParser();
-        jsonWriter = new JsonWriter();       
+        jsonWriter = new JsonWriter();
+        cardsInitialized = false;
+        startCachingService();
     }
 
     public ArrayList<ModerationCard> getModerationCards() {
@@ -38,6 +40,7 @@ public class ModerationCardsController {
             moderationCardFactory.setFanout(moderationCard);
             MainWindow.getInstance().getContentPane().add(moderationCard);
         }
+        cardsInitialized = true;
     }
 
     public void setMeetingId(long meetingId) {
@@ -48,7 +51,7 @@ public class ModerationCardsController {
         try {
             System.out.println("Try to put new moderation card.");
             System.out.println("Message: " + message);
-            ModerationCard moderationCard = jsonModerationCardParser.parseSingleModerationCardJson(message);     
+            ModerationCard moderationCard = jsonModerationCardParser.parseSingleModerationCardJson(message);
             moderationCards.add(moderationCard);
             MainWindow.getInstance().getContentPane().add(moderationCard);
             moderationCardFactory.setFanout(moderationCard);
@@ -87,4 +90,20 @@ public class ModerationCardsController {
         jsonWriter.saveMeetingStatus(meetingId, moderationCards);
     }
 
+    private void startCachingService() {
+        Runnable chachingRunnable = () -> {
+            while (true) {
+                try {
+                    Thread.sleep(1000);
+                    if (cardsInitialized) {
+                        saveMeetingStatus();
+                    }
+                } catch (InterruptedException ex) {
+                    Logger.getLogger(ModerationCardsController.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
+        };
+        Thread chachingService = new Thread(chachingRunnable);
+        chachingService.start();
+    }
 }
