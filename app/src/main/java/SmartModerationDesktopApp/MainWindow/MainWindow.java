@@ -7,16 +7,12 @@ import SmartModerationDesktopApp.Utilities.LineDrawer;
 import SmartModerationDesktopApp.Server.LoginController;
 import SmartModerationDesktopApp.Tutorial.Tutorial;
 import java.awt.GraphicsEnvironment;
-import java.awt.event.ActionEvent;
 import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javafx.event.EventHandler;
-import javafx.scene.control.Alert;
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import org.json.simple.parser.ParseException;
-import javafx.scene.control.Alert.AlertType;
 import javax.swing.JOptionPane;
 
 public class MainWindow extends javax.swing.JFrame implements ServerObserver {
