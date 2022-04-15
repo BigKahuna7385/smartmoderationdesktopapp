@@ -2,21 +2,21 @@
     "meetingId": 2145752493690473242,
     "moderationCards": [{
             "cardId": 1164845262799520113,
+            "author": "Test_Author",
             "content": "testetst",
             "backgroundColor": "#673AB7",
-            "fontColor": "#FFFFFF",
-            "author:":"Test_Author"
+            "fontColor": "#FFFFFF"
         }, {
             "cardId": 6599522553032296570,
+            "author": "Test_Author",
             "content": "test",
             "backgroundColor": "#673AB7",
-            "fontColor": "#FFFFFF",
-            "author:":"Test_Author"
+            "fontColor": "#FFFFFF"
         }, {
             "cardId": 8716934582346075052,
+            "author": "Test_Author",
             "content": "logintest",
             "backgroundColor": "#FFC107",
-            "fontColor": "#FFFFFF",
-            "author:":"Test_Author"
+            "fontColor": "#FFFFFF"
         }]
 }
