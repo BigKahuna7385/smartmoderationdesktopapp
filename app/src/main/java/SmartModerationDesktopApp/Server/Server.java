@@ -64,14 +64,14 @@ public final class Server implements ServerObservable {
                     InputStream ios = t.getRequestBody();
                     int i;
                     switch (requestMethod) {
-                        case "POST":
+                        case "PUT":
                             while ((i = ios.read()) != -1) {
                                 sb.append((char) i);
                             }
                             System.out.println("Update Moderation Card JSON: " + sb.toString());
                             updateModerationCard(sb.toString());
                             break;
-                        case "PUT":
+                        case "POST":
                             while ((i = ios.read()) != -1) {
                                 sb.append((char) i);
                             }
