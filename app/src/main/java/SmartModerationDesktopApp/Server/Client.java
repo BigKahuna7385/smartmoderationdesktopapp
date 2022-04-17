@@ -17,6 +17,7 @@ public class Client implements ClientObservable {
         this.loginInformation = loginInformation;
     }
 
+
     public void getModerationCards() throws IOException {
         OkHttpClient client = new OkHttpClient().newBuilder()
                 .build();
@@ -56,5 +57,29 @@ public class Client implements ClientObservable {
     @Override
     public void getModerationCardsJsonString(String moderationCardJson) {
         clientObserver.getModerationCardsJsonString(moderationCardJson);
+
+    }
+
+    public boolean deleteModerationCard(long cardId) {
+        OkHttpClient client = new OkHttpClient().newBuilder()
+                .build();
+
+        Request request = new Request.Builder()
+                .url("http://" + loginInformation.getAndroidIpAddress() + ":" + loginInformation.getAndroidPort() + "/moderationcard/" + cardId)
+                .method("DELETE", null)
+                .build();
+
+        System.out.println("Request URL: " + request.url());
+
+        try {
+            System.out.println("Moderation card deletion");
+            Response response = client.newCall(request).execute();
+            System.out.println("Response: " + response.body().string());
+            return response.code() < 500;
+        } catch (ConnectException ex) {
+        } catch (IOException ex) {
+            Logger.getLogger(Client.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return false;
     }
 }

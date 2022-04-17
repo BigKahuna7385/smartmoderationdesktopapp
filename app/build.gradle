@@ -37,4 +37,3 @@ jar {
         attributes 'Main-Class': 'SmartModerationDesktopApp.SmartModerationDesktopApp'
     }
 }
-

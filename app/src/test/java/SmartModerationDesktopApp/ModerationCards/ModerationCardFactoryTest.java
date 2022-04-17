@@ -18,9 +18,9 @@ public class ModerationCardFactoryTest {
     @BeforeEach
     public void setUp() throws IOException {
         moderationCards = new ArrayList<>();
-        ModerationCard moderationCard1 = new ModerationCard(new ModerationCardData(2624659524793748349L, 1234567890l, "content", "#E91E63", "#FFFFFF"));
-        ModerationCard moderationCard2 = new ModerationCard(new ModerationCardData(2760337309490495595L, 1234567890l, "content", "#E91E64", "#FFFFFF"));
-        ModerationCard moderationCard3 = new ModerationCard(new ModerationCardData(3239753487134706863L, 1234567890l, "content", "#E91E65", "#FFFFFF"));
+        ModerationCard moderationCard1 = new ModerationCard(new ModerationCardData(2624659524793748349L, 1234567890l, "content", "#E91E63", "#FFFFFF", "Test_Author"));
+        ModerationCard moderationCard2 = new ModerationCard(new ModerationCardData(2760337309490495595L, 1234567890l, "content", "#E91E64", "#FFFFFF", "Test_Author"));
+        ModerationCard moderationCard3 = new ModerationCard(new ModerationCardData(3239753487134706863L, 1234567890l, "content", "#E91E65", "#FFFFFF", "Test_Author"));
         moderationCards.add(moderationCard1);
         moderationCards.add(moderationCard2);
         moderationCards.add(moderationCard3);

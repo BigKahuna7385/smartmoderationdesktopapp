@@ -30,7 +30,7 @@ public class JsonWriterTest {
         long meetingId = 1234567890l;        
         long cardId = 9191919191919191l;        
         ArrayList<ModerationCard> moderationCards = new ArrayList<>();
-        moderationCards.add(new ModerationCard(new ModerationCardData(cardId, meetingId, "Test Content", "#673AB7", "#FFFFFF")));
+        moderationCards.add(new ModerationCard(new ModerationCardData(cardId, meetingId, "Test Content", "#673AB7", "#FFFFFF", "Test_Author")));
         jsonWriter.saveMeetingStatus(meetingId, moderationCards);
         BufferedReader br = new BufferedReader(new FileReader(new File("./cache/" + meetingId + ".json")));
         assertNotNull(br);
