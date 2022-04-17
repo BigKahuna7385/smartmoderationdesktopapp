@@ -47,12 +47,12 @@ public final class Server implements ServerObservable {
                             }
                             System.out.println("Login POST");
                             clientLoggedIn = true;
+                            sendResponse(t);
                             login(sb.toString());
                             break;
                         default:
                             throw new AssertionError();
                     }
-                    sendResponse(t);
                 }
             });
 

@@ -10,6 +10,6 @@ public class JsonLoginParser {
         JSONParser jsonParser = new JSONParser();
         JSONObject jsonObject = (JSONObject) jsonParser.parse(loginInformationJson);
         long port = (long) jsonObject.get("port");
-        return new LoginInformation((long) jsonObject.get("meetingId"), (String) jsonObject.get("ipAddress"), Integer.toString((int) port));
+        return new LoginInformation((long) jsonObject.get("meetingId"), (String) jsonObject.get("ipAddress"), (int) port);
     }
 }

@@ -1,6 +1,7 @@
 package SmartModerationDesktopApp.MainWindow;
 
 import SmartModerationDesktopApp.ModerationCards.ModerationCardsController;
+import SmartModerationDesktopApp.Observer.ClientObserver;
 import SmartModerationDesktopApp.Observer.ServerObserver;
 import SmartModerationDesktopApp.Server.Client;
 import SmartModerationDesktopApp.Utilities.LineDrawer;
@@ -15,7 +16,7 @@ import javax.swing.ImageIcon;
 import org.json.simple.parser.ParseException;
 import javax.swing.JOptionPane;
 
-public class MainWindow extends javax.swing.JFrame implements ServerObserver {
+public class MainWindow extends javax.swing.JFrame implements ServerObserver, ClientObserver {
 
     private final LineDrawer lineDrawer;
     private final LoginController loginController;
@@ -109,20 +110,23 @@ public class MainWindow extends javax.swing.JFrame implements ServerObserver {
         tutorial.setVisible(true);
     }//GEN-LAST:event_quickGuideActionPerformed
 
+
+    private void initializeModerationCards(String moderationCardsJson) throws IOException {
+        moderationCardsController.initializeModerationCards(moderationCardsJson);
+        revalidate();
+        repaint();
+    };
+
     private void formWindowClosing(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowClosing
         moderationCardsController.saveMeetingStatus();
     }//GEN-LAST:event_formWindowClosing
 
-    private void initializeModerationCards() throws IOException {
-        moderationCardsController.initializeModerationCards(client.getModerationCards());
-        revalidate();
-        repaint();
-    }
-
-    private void readLoginInformation(String loginInformation) throws ParseException {
+    private void readLoginInformation(String loginInformation) throws ParseException, IOException {
         loginController.readLoginInformation(loginInformation);
         setMeetingId(loginController.getMeetingId());
         client = new Client(loginController.getLoginInformation());
+        client.initObserver(this);
+        client.getModerationCards();
     }
 
     @Override
@@ -132,8 +136,7 @@ public class MainWindow extends javax.swing.JFrame implements ServerObserver {
             readLoginInformation(message);
             QRCode.setVisible(false);
             QRCodeLabel.setVisible(false);
-            quickGuide.setVisible(false);
-            initializeModerationCards();
+            quickGuide.setVisible(false);            
         } catch (ParseException | IOException ex) {
             JOptionPane.showMessageDialog(this, "No connection to Android host device.");
             QRCode.setVisible(true);
@@ -200,4 +203,12 @@ public class MainWindow extends javax.swing.JFrame implements ServerObserver {
     private javax.swing.JButton quickGuide;
     // End of variables declaration//GEN-END:variables
 
+    @Override
+    public void getModerationCardsJsonString(String moderationCardJson) {
+        try {
+            initializeModerationCards(moderationCardJson);
+        } catch (IOException ex) {
+            Logger.getLogger(MainWindow.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
 }

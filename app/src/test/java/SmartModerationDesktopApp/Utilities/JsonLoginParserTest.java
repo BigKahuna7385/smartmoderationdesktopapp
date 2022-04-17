@@ -28,6 +28,6 @@ public class JsonLoginParserTest {
         assertNotNull(loginInformation);
         assertEquals(loginInformation.getAndroidIpAddress(), "127.0.0.1");
         assertEquals(loginInformation.getMeetingId(), 3570151905752727837l);
-        assertEquals(loginInformation.getAndroidPort(), "8000");
+        assertEquals(loginInformation.getAndroidPort(), 8000);
     }
 }
