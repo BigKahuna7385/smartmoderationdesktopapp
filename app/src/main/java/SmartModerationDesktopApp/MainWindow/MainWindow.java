@@ -115,6 +115,7 @@ public class MainWindow extends javax.swing.JFrame implements ServerObserver, Cl
         moderationCardsController.initializeModerationCards(moderationCardsJson);
         revalidate();
         repaint();
+    };
 
     private void formWindowClosing(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowClosing
         moderationCardsController.saveMeetingStatus();
