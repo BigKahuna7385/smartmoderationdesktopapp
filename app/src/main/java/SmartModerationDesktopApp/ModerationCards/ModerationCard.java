@@ -51,6 +51,7 @@ public class ModerationCard extends javax.swing.JPanel {
         jPopupMenu.add(menuItemDelete);
 
         setBackground(new java.awt.Color(153, 153, 255));
+        setBorder(new javax.swing.border.SoftBevelBorder(javax.swing.border.BevelBorder.RAISED));
         setToolTipText("Click to drag card");
         setAlignmentX(0.0F);
         setAlignmentY(0.0F);
@@ -74,11 +75,6 @@ public class ModerationCard extends javax.swing.JPanel {
         jScrollPane.setBorder(null);
         jScrollPane.setInheritsPopupMenu(true);
         jScrollPane.setOpaque(false);
-        jScrollPane.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mousePressed(java.awt.event.MouseEvent evt) {
-                jScrollPaneMousePressed(evt);
-            }
-        });
 
         moderationCardTextBody.setEditable(false);
         moderationCardTextBody.setBorder(null);
@@ -88,6 +84,11 @@ public class ModerationCard extends javax.swing.JPanel {
         moderationCardTextBody.setInheritsPopupMenu(true);
         moderationCardTextBody.setMargin(new java.awt.Insets(0, 0, 0, 0));
         moderationCardTextBody.setOpaque(false);
+        moderationCardTextBody.addMouseMotionListener(new java.awt.event.MouseMotionAdapter() {
+            public void mouseDragged(java.awt.event.MouseEvent evt) {
+                moderationCardTextBodyMouseDragged(evt);
+            }
+        });
         moderationCardTextBody.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mousePressed(java.awt.event.MouseEvent evt) {
                 moderationCardTextBodyMousePressed(evt);
@@ -105,7 +106,7 @@ public class ModerationCard extends javax.swing.JPanel {
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addContainerGap(163, Short.MAX_VALUE)
+                .addContainerGap(157, Short.MAX_VALUE)
                 .addComponent(authorLabel))
             .addComponent(jScrollPane)
         );
@@ -114,7 +115,7 @@ public class ModerationCard extends javax.swing.JPanel {
             .addGroup(layout.createSequentialGroup()
                 .addComponent(authorLabel)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane, javax.swing.GroupLayout.DEFAULT_SIZE, 178, Short.MAX_VALUE))
+                .addComponent(jScrollPane, javax.swing.GroupLayout.DEFAULT_SIZE, 172, Short.MAX_VALUE))
         );
 
         getAccessibleContext().setAccessibleName("Moderation Card");
@@ -140,18 +141,19 @@ public class ModerationCard extends javax.swing.JPanel {
         MainWindow.getInstance().sendDeleteModerationCard(moderationCardData.getCardId());
     }//GEN-LAST:event_menuItemDeleteActionPerformed
 
-    private void jScrollPaneMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jScrollPaneMousePressed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_jScrollPaneMousePressed
-
     private void moderationCardTextBodyMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_moderationCardTextBodyMousePressed
-        cardClicked(evt);
+        cardClicked(evt);       
     }//GEN-LAST:event_moderationCardTextBodyMousePressed
+
+    private void moderationCardTextBodyMouseDragged(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_moderationCardTextBodyMouseDragged
+        cardDragged(evt);
+    }//GEN-LAST:event_moderationCardTextBodyMouseDragged
 
     private void cardClicked(java.awt.event.MouseEvent evt) {
         pressed = evt;
         setCursor(new java.awt.Cursor(java.awt.Cursor.MOVE_CURSOR));
         MainWindow.getInstance().getModerationCardsController().sortZOrder(this);
+        System.out.println("Mouse clicked");
     }
 
     private void cardDragged(java.awt.event.MouseEvent evt) {
