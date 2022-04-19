@@ -9,6 +9,7 @@ import java.io.*;
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.net.NetworkInterface;
+import java.net.ServerSocket;
 import java.net.SocketException;
 import java.util.Enumeration;
 import java.util.UUID;
@@ -17,7 +18,7 @@ import java.util.logging.Logger;
 
 public final class Server implements ServerObservable {
 
-    private final static int PORT = 8080;
+    private static int port;
     private final String apiKey;
     private final InetAddress ipAddress;
     private ServerObserver observer;
@@ -25,13 +26,20 @@ public final class Server implements ServerObservable {
 
     public Server() {
         apiKey = UUID.randomUUID().toString();
-        System.out.println("apiKey:" + apiKey);
+        System.out.println("apiKey: " + apiKey);
         ipAddress = getIpAddress();
+        try {
+            getFreePort();
+        } catch (IOException ex) {
+            System.out.println("Could not get free port.");
+            Logger.getLogger(Server.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 
     public void createServer() {
+        System.out.println("Starting Server at: " + getIpAddressString() + ":" + port);
         try {
-            HttpServer server = HttpServer.create(new InetSocketAddress(8080), 0);
+            HttpServer server = HttpServer.create(new InetSocketAddress(port), 0);
 
             server.createContext("/login", (HttpExchange t) -> {
                 StringBuilder sb = new StringBuilder();
@@ -121,11 +129,19 @@ public final class Server implements ServerObservable {
     }
 
     private void sendResponse(HttpExchange t) throws IOException {
-        String response = "OK";
-        t.sendResponseHeaders(200, response.length());
-        try ( OutputStream os = t.getResponseBody()) {
-            os.write(response.getBytes());
-        }
+        Thread thread = new Thread(
+                () -> {
+                    try {
+                        String response = "OK";
+                        t.sendResponseHeaders(200, response.length());
+                        try ( OutputStream os = t.getResponseBody()) {
+                            os.write(response.getBytes());
+                        }
+                    } catch (IOException ex) {
+                        Logger.getLogger(Server.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                });
+        thread.start();
     }
 
     public InetAddress getIpAddress() {
@@ -138,7 +154,7 @@ public final class Server implements ServerObservable {
                 while (ee.hasMoreElements()) {
                     InetAddress ia = (InetAddress) ee.nextElement();
                     if (ia.getHostAddress().contains("192.168.") || ia.getHostAddress().contains("172.")) {
-                        System.out.println(ia.getHostAddress());
+                        System.out.println("IP-Address: " + ia.getHostAddress());
                         return ia;
                     }
                 }
@@ -156,9 +172,22 @@ public final class Server implements ServerObservable {
         }
         return ipAddress.getHostAddress();
     }
+    
+        private int getFreePort() throws IOException {
+        port = 0;
+        try ( ServerSocket socket = new ServerSocket(0)) {
+            socket.setReuseAddress(true);
+            port = socket.getLocalPort();
+        } catch (IOException ignored) {
+        }
+        if (port > 0) {
+            return port;
+        }
+        throw new RuntimeException("Could not find a free port");
+    }
 
-    public static int getPORT() {
-        return PORT;
+    public int getPORT() {
+        return port;
     }
 
     public String getApiKey() {
