@@ -5,7 +5,6 @@
     <Property name="defaultCloseOperation" type="int" value="3"/>
     <Property name="title" type="java.lang.String" value="Smart Moderation DesktopApp"/>
     <Property name="autoRequestFocus" type="boolean" value="false"/>
-    <Property name="resizable" type="boolean" value="false"/>
     <Property name="size" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
       <Dimension value="[1920, 1080]"/>
     </Property>
@@ -39,14 +38,14 @@
                   <Component id="QRCodeLabel" alignment="2" min="-2" pref="400" max="-2" attributes="0"/>
                   <Component id="quickGuide" alignment="2" min="-2" max="-2" attributes="0"/>
               </Group>
-              <EmptySpace min="-2" pref="760" max="-2" attributes="0"/>
+              <EmptySpace pref="760" max="32767" attributes="0"/>
           </Group>
       </Group>
     </DimensionLayout>
     <DimensionLayout dim="1">
       <Group type="103" groupAlignment="0" attributes="0">
           <Group type="102" alignment="0" attributes="0">
-              <EmptySpace min="-2" pref="240" max="-2" attributes="0"/>
+              <EmptySpace pref="240" max="32767" attributes="0"/>
               <Component id="QRCodeLabel" min="-2" pref="16" max="-2" attributes="0"/>
               <EmptySpace min="-2" max="-2" attributes="0"/>
               <Component id="QRCode" min="-2" pref="400" max="-2" attributes="0"/>
