@@ -40,7 +40,7 @@ public final class Server implements ServerObservable {
         System.out.println("Starting Server at: " + getIpAddressString() + ":" + port);
         try {
             HttpServer server = HttpServer.create(new InetSocketAddress(port), 0);
-
+            System.out.println(server.getAddress().getHostName() + ":" + server.getAddress().getPort());
             server.createContext("/login", (HttpExchange t) -> {
                 StringBuilder sb = new StringBuilder();
                 String requestMethod = t.getRequestMethod();
@@ -146,6 +146,7 @@ public final class Server implements ServerObservable {
 
     public InetAddress getIpAddress() {
         Enumeration en;
+        NetworkInterface linkLokalInterface = null;
         try {
             en = NetworkInterface.getNetworkInterfaces();
             while (en.hasMoreElements()) {
@@ -153,9 +154,9 @@ public final class Server implements ServerObservable {
                 Enumeration ee = ni.getInetAddresses();
                 while (ee.hasMoreElements()) {
                     InetAddress ia = (InetAddress) ee.nextElement();
-                    if (ia.getHostAddress().contains("192.168.") || ia.getHostAddress().contains("172.")) {
-                        System.out.println("IP-Address: " + ia.getHostAddress());
-                        return ia;
+                    if (ia.isLinkLocalAddress()) {
+                        linkLokalInterface = ni;
+                        break;
                     }
                 }
             }
@@ -163,6 +164,19 @@ public final class Server implements ServerObservable {
             Logger.getLogger(Server.class
                     .getName()).log(Level.SEVERE, null, ex);
         }
+        
+        if (linkLokalInterface == null) {
+            return null;
+        }
+
+        Enumeration ee = linkLokalInterface.getInetAddresses();
+        while (ee.hasMoreElements()) {
+            InetAddress ia = (InetAddress) ee.nextElement();
+            if (ia.isSiteLocalAddress()) {
+                return ia;
+            }
+        }
+
         return null;
     }
 
@@ -172,8 +186,8 @@ public final class Server implements ServerObservable {
         }
         return ipAddress.getHostAddress();
     }
-    
-        private int getFreePort() throws IOException {
+
+    private int getFreePort() throws IOException {
         port = 0;
         try ( ServerSocket socket = new ServerSocket(0)) {
             socket.setReuseAddress(true);
