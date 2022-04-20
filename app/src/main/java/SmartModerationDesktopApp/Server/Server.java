@@ -40,7 +40,6 @@ public final class Server implements ServerObservable {
         System.out.println("Starting Server at: " + getIpAddressString() + ":" + port);
         try {
             HttpServer server = HttpServer.create(new InetSocketAddress(port), 0);
-            System.out.println(server.getAddress().getHostName() + ":" + server.getAddress().getPort());
             server.createContext("/login", (HttpExchange t) -> {
                 StringBuilder sb = new StringBuilder();
                 String requestMethod = t.getRequestMethod();
