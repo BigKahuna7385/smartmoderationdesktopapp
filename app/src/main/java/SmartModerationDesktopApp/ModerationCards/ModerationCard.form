@@ -29,6 +29,11 @@
     <Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
       <Color blue="ff" green="99" red="99" type="rgb"/>
     </Property>
+    <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
+      <Border info="org.netbeans.modules.form.compat2.border.SoftBevelBorderInfo">
+        <BevelBorder/>
+      </Border>
+    </Property>
     <Property name="toolTipText" type="java.lang.String" value="Click to drag card"/>
     <Property name="alignmentX" type="float" value="0.0"/>
     <Property name="alignmentY" type="float" value="0.0"/>
@@ -66,7 +71,7 @@
     <DimensionLayout dim="0">
       <Group type="103" groupAlignment="0" attributes="0">
           <Group type="102" alignment="0" attributes="0">
-              <EmptySpace pref="163" max="32767" attributes="0"/>
+              <EmptySpace pref="157" max="32767" attributes="0"/>
               <Component id="authorLabel" min="-2" max="-2" attributes="0"/>
           </Group>
           <Component id="jScrollPane" alignment="0" max="32767" attributes="0"/>
@@ -77,7 +82,7 @@
           <Group type="102" attributes="0">
               <Component id="authorLabel" min="-2" max="-2" attributes="0"/>
               <EmptySpace max="-2" attributes="0"/>
-              <Component id="jScrollPane" pref="178" max="32767" attributes="0"/>
+              <Component id="jScrollPane" pref="172" max="32767" attributes="0"/>
           </Group>
       </Group>
     </DimensionLayout>
@@ -116,7 +121,7 @@
           </Properties>
           <Events>
             <EventHandler event="mouseDragged" listener="java.awt.event.MouseMotionListener" parameters="java.awt.event.MouseEvent" handler="moderationCardTextBodyMouseDragged"/>
-            <EventHandler event="mouseClicked" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="moderationCardTextBodyMouseClicked"/>
+            <EventHandler event="mousePressed" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="moderationCardTextBodyMousePressed"/>
             <EventHandler event="mouseReleased" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="moderationCardTextBodyMouseReleased"/>
           </Events>
         </Component>

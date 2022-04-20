@@ -196,7 +196,10 @@ public class MainWindow extends javax.swing.JFrame implements ServerObserver, Cl
         setIconImage(icon.getImage());
     }
 
-
+    public ModerationCardsController getModerationCardsController() {
+        return moderationCardsController;
+    }    
+   
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel QRCode;
     private javax.swing.JLabel QRCodeLabel;

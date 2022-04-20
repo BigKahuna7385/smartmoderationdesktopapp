@@ -39,6 +39,7 @@ public class ModerationCardsController {
         for (ModerationCard moderationCard : moderationCards) {
             moderationCardFactory.setFanout(moderationCard);
             MainWindow.getInstance().getContentPane().add(moderationCard);
+            MainWindow.getInstance().getContentPane().setComponentZOrder(moderationCard, 0);
         }
         cardsInitialized = true;
     }
@@ -105,5 +106,9 @@ public class ModerationCardsController {
         };
         Thread chachingService = new Thread(chachingRunnable);
         chachingService.start();
+    }
+
+    public void sortZOrder(ModerationCard topModerationCard) {
+        MainWindow.getInstance().getContentPane().setComponentZOrder(topModerationCard, 0);
     }
 }
