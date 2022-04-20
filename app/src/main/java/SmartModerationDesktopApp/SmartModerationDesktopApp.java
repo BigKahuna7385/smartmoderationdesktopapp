@@ -13,7 +13,6 @@ import java.util.logging.Logger;
 public class SmartModerationDesktopApp {
 
     public static void main(String[] args) {
-
         QRCodeGenerator qrCodeGenerator = new QRCodeGenerator();
         JsonWriter jsonWriter = new JsonWriter();
         MainWindow mainWindow = MainWindow.getInstance();
@@ -44,7 +43,7 @@ public class SmartModerationDesktopApp {
                 }
             } catch (UnsupportedEncodingException ex) {
                 Logger.getLogger(MainWindow.class.getName()).log(Level.SEVERE, null, ex);
-            }         
+            }
         });
 
         server.createServer();

@@ -294,7 +294,8 @@ public class ModerationCard extends javax.swing.JPanel {
     }
 
     private void setCardContent(ModerationCardData moderationCardData) {
-        authorLabel.setText(moderationCardData.getAuthor().substring(0, 2).toUpperCase());
+        int authorLength = moderationCardData.getAuthor().length() >= 2 ? 2 : moderationCardData.getAuthor().length();
+        authorLabel.setText(moderationCardData.getAuthor().substring(0, authorLength).toUpperCase());
         authorLabel.setToolTipText(moderationCardData.getAuthor());
         moderationCardTextBody.setText(moderationCardData.getContent());
     }

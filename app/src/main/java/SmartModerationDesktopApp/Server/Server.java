@@ -6,11 +6,14 @@ import com.sun.net.httpserver.Headers;
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpServer;
 import java.io.*;
+import java.net.Inet4Address;
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
+import java.net.InterfaceAddress;
 import java.net.NetworkInterface;
 import java.net.ServerSocket;
 import java.net.SocketException;
+import java.util.Collections;
 import java.util.Enumeration;
 import java.util.UUID;
 import java.util.logging.Level;
@@ -144,38 +147,18 @@ public final class Server implements ServerObservable {
     }
 
     public InetAddress getIpAddress() {
-        Enumeration en;
-        NetworkInterface linkLokalInterface = null;
         try {
-            en = NetworkInterface.getNetworkInterfaces();
-            while (en.hasMoreElements()) {
-                NetworkInterface ni = (NetworkInterface) en.nextElement();
-                Enumeration ee = ni.getInetAddresses();
-                while (ee.hasMoreElements()) {
-                    InetAddress ia = (InetAddress) ee.nextElement();
-                    if (ia.isLinkLocalAddress()) {
-                        linkLokalInterface = ni;
-                        break;
+            for (NetworkInterface ni : Collections.list(NetworkInterface.getNetworkInterfaces())) {
+                if (!ni.isLoopback() && ni.isUp() && ni.getHardwareAddress() != null) {
+                    for (InterfaceAddress ia : ni.getInterfaceAddresses()) {
+                        if (ia.getBroadcast() != null) {  //If limited to IPV4
+                            return ia.getAddress();
+                        }
                     }
                 }
             }
-        } catch (SocketException ex) {
-            Logger.getLogger(Server.class
-                    .getName()).log(Level.SEVERE, null, ex);
+        } catch (SocketException e) {
         }
-        
-        if (linkLokalInterface == null) {
-            return null;
-        }
-
-        Enumeration ee = linkLokalInterface.getInetAddresses();
-        while (ee.hasMoreElements()) {
-            InetAddress ia = (InetAddress) ee.nextElement();
-            if (ia.isSiteLocalAddress()) {
-                return ia;
-            }
-        }
-
         return null;
     }
 
