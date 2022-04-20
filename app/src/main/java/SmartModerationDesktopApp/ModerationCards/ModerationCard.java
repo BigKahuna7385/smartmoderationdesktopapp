@@ -12,7 +12,7 @@ import javax.swing.text.StyleConstants;
 import javax.swing.text.StyledDocument;
 
 public class ModerationCard extends javax.swing.JPanel {
-    
+
     private final int MAGNETRANGE = 30;
     private final ModerationCardData moderationCardData;
     private final SnapDirectionChecker snapDirectionChecker;
@@ -21,7 +21,7 @@ public class ModerationCard extends javax.swing.JPanel {
     private ModerationCard magneticCard;
     private SnapDirections snapDirection;
     private ArrayList<ModerationCard> moderationCardList;
-    
+
     public ModerationCard(ModerationCardData moderationCardData) {
         initComponents();
         setLocation(0, 0);
@@ -29,7 +29,7 @@ public class ModerationCard extends javax.swing.JPanel {
         this.moderationCardData = moderationCardData;
         drawModerationCardData();
     }
-    
+
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
@@ -149,12 +149,12 @@ public class ModerationCard extends javax.swing.JPanel {
     private void menuItemDeleteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuItemDeleteActionPerformed
         MainWindow.getInstance().sendDeleteModerationCard(moderationCardData.getCardId());
     }//GEN-LAST:event_menuItemDeleteActionPerformed
-    
+
     private void cardClicked(java.awt.event.MouseEvent evt) {
         pressed = evt;
         setCursor(new java.awt.Cursor(java.awt.Cursor.MOVE_CURSOR));
     }
-    
+
     private void cardDragged(java.awt.event.MouseEvent evt) {
         Point location = getLocation();
         if (pressed == null) {
@@ -164,13 +164,13 @@ public class ModerationCard extends javax.swing.JPanel {
         int dY = evt.getY() - pressed.getY();
         int x = location.x + dX;
         int y = location.y + dY;
-        
+
         if (x < 0) {
             x = 0;
         } else if (x > MainWindow.getInstance().getWidth() - getPreferredSize().width) {
             x = MainWindow.getInstance().getWidth() - getPreferredSize().width;
         }
-        
+
         if (y < 0) {
             y = 0;
         } else if (y > MainWindow.getInstance().getHeight() - getPreferredSize().height) {
@@ -184,7 +184,7 @@ public class ModerationCard extends javax.swing.JPanel {
         }
         setLocation(x, y);
     }
-    
+
     private void cardReleased(java.awt.event.MouseEvent evt) {
         setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
         int x = getLocation().x;
@@ -211,7 +211,7 @@ public class ModerationCard extends javax.swing.JPanel {
         }
         MainWindow.getInstance().getLineDrawer().clearLine();
     }
-    
+
     private void isCardMagnetic() {
         distancedMagnet = false;
         magneticCard = null;
@@ -219,7 +219,7 @@ public class ModerationCard extends javax.swing.JPanel {
             snapDirectionChecker.setSnapDirectionBetween(this, moderationCard);
         }
     }
-    
+
     private boolean snapTo(ModerationCard cardMagnetic) {
         if (cardMagnetic == null) {
             magneticCard = null;
@@ -228,72 +228,73 @@ public class ModerationCard extends javax.swing.JPanel {
         magneticCard = cardMagnetic;
         return true;
     }
-    
+
     private void centerText() {
         StyledDocument doc = moderationCardTextBody.getStyledDocument();
         SimpleAttributeSet center = new SimpleAttributeSet();
         StyleConstants.setAlignment(center, StyleConstants.ALIGN_CENTER);
         doc.setParagraphAttributes(0, doc.getLength(), center, false);
     }
-    
+
     private void createOneColorBackground() {
         jScrollPane.getViewport().setOpaque(false);
         jScrollPane.setViewportBorder(null);
         moderationCardTextBody.setEditorKit(new MyEditorKit());
         moderationCardTextBody.setBackground(new Color(0, 0, 0, 0));
     }
-    
+
     public long getCardId() {
         return moderationCardData.getCardId();
     }
-    
+
     public String getColor() {
         return moderationCardData.getBackgroundColor();
     }
-    
+
     public void setModerationCardList(ArrayList<ModerationCard> moderationCardList) {
         this.moderationCardList = moderationCardList;
     }
-    
+
     public SnapDirections getSnapDirection() {
         return snapDirection;
     }
-    
+
     public boolean isDistancedMagnet() {
         return distancedMagnet;
     }
-    
+
     public int getMAGNETRANGE() {
         return MAGNETRANGE;
     }
-    
+
     public void setMagneticCard(ModerationCard magneticCard) {
         this.magneticCard = magneticCard;
     }
-    
+
     public ModerationCard getMagneticCard() {
         return magneticCard;
     }
-    
+
     public void setDistancedMagnet(boolean distancedMagnet) {
         this.distancedMagnet = distancedMagnet;
     }
-    
+
     public void setSnapDirection(SnapDirections snapDirection) {
         this.snapDirection = snapDirection;
     }
-    
+
     public String getContent() {
         return moderationCardData.getContent();
     }
-    
+
     public void updateProperties(ModerationCard moderationCard) {
         setCardContent(moderationCard.getModerationCardData());
         setBackground(moderationCard.getBackground());
     }
-    
+
     private void setCardContent(ModerationCardData moderationCardData) {
-        authorLabel.setText(moderationCardData.getAuthor().substring(0, 2).toUpperCase());
+        int authorLength = moderationCardData.getAuthor().length() >= 2 ? 2 : moderationCardData.getAuthor().length();
+        authorLabel.setText(moderationCardData.getAuthor().substring(0, authorLength).toUpperCase());
         authorLabel.setToolTipText(moderationCardData.getAuthor());
         moderationCardTextBody.setText(moderationCardData.getContent());
     }
@@ -309,11 +310,11 @@ public class ModerationCard extends javax.swing.JPanel {
     public JTextPane getModerationCardTextBody() {
         return moderationCardTextBody;
     }
-    
+
     public ModerationCardData getModerationCardData() {
         return moderationCardData;
-    }    
-    
+    }
+
     private void drawModerationCardData() {
         setBackground(Color.decode(moderationCardData.getBackgroundColor()));
         moderationCardTextBody.setDisabledTextColor(Color.decode(moderationCardData.getFontColor()));
