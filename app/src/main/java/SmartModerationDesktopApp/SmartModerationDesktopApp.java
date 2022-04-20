@@ -13,9 +13,6 @@ import java.util.logging.Logger;
 public class SmartModerationDesktopApp {
 
     public static void main(String[] args) {
-        ListInterfaces list = new ListInterfaces();
-        list.getHostAddresses();
-
         QRCodeGenerator qrCodeGenerator = new QRCodeGenerator();
         JsonWriter jsonWriter = new JsonWriter();
         MainWindow mainWindow = MainWindow.getInstance();
