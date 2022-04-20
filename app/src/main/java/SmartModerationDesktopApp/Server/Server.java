@@ -6,6 +6,7 @@ import com.sun.net.httpserver.Headers;
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpServer;
 import java.io.*;
+import java.net.Inet4Address;
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.net.NetworkInterface;
@@ -171,7 +172,7 @@ public final class Server implements ServerObservable {
         Enumeration ee = linkLokalInterface.getInetAddresses();
         while (ee.hasMoreElements()) {
             InetAddress ia = (InetAddress) ee.nextElement();
-            if (ia.isSiteLocalAddress()) {
+            if (ia instanceof Inet4Address) {
                 return ia;
             }
         }
