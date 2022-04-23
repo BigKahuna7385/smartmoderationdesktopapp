@@ -145,8 +145,8 @@ public class MainWindow extends javax.swing.JFrame implements ServerObserver, Cl
     }
 
     @Override
-    public void receivePutModerationCard(String message) {
-        moderationCardsController.putModerationCard(message);
+    public void receivePostModerationCard(String message) {
+        moderationCardsController.addModerationCard(message);
         revalidate();
         repaint();
     }

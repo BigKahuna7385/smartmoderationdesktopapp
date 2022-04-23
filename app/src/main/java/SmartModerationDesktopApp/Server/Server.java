@@ -43,6 +43,20 @@ public final class Server implements ServerObservable {
         System.out.println("Starting Server at: " + getIpAddressString() + ":" + port);
         try {
             HttpServer server = HttpServer.create(new InetSocketAddress(port), 0);
+            server.createContext("/", (HttpExchange t) -> {
+                StringBuilder sb = new StringBuilder();
+                String requestMethod = t.getRequestMethod();
+                System.out.println("Method: " + requestMethod);
+                if (checkAuthorization(t)) {
+                    switch (requestMethod) {
+                        case "GET":
+                            if(clientLoggedIn(t)) sendResponse(t);
+                            break;
+                        default:
+                            throw new AssertionError();
+                    }
+                }
+            });
             server.createContext("/login", (HttpExchange t) -> {
                 StringBuilder sb = new StringBuilder();
                 String requestMethod = t.getRequestMethod();
@@ -85,8 +99,8 @@ public final class Server implements ServerObservable {
                             while ((i = ios.read()) != -1) {
                                 sb.append((char) i);
                             }
-                            System.out.println("Put Moderation Card JSON: : " + sb.toString());
-                            putModerationCard(sb.toString());
+                            System.out.println("Post Moderation Card JSON: : " + sb.toString());
+                            postModerationCard(sb.toString());
                             break;
                         case "DELETE":
                             String cardId = t.getRequestURI().getQuery().substring("cardId=".length());
@@ -201,8 +215,8 @@ public final class Server implements ServerObservable {
     }
 
     @Override
-    public void putModerationCard(String message) {
-        this.observer.receivePutModerationCard(message);
+    public void postModerationCard(String message) {
+        this.observer.receivePostModerationCard(message);
     }
 
     @Override

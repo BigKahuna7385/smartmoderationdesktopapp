@@ -6,7 +6,7 @@ public interface ServerObservable {
 
     void login(String message);
 
-    void putModerationCard(String message);
+    void postModerationCard(String message);
 
     void deleteModerationCard(long cardId);
 
