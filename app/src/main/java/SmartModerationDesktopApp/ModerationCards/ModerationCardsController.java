@@ -48,7 +48,7 @@ public class ModerationCardsController {
         this.meetingId = meetingId;
     }
 
-    public void putModerationCard(String message) {
+    public void addModerationCard(String message) {
         try {
             System.out.println("Try to put new moderation card.");
             System.out.println("Message: " + message);
