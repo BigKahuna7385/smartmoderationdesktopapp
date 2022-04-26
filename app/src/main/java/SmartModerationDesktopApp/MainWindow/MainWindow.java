@@ -4,7 +4,6 @@ import SmartModerationDesktopApp.ModerationCards.ModerationCardsController;
 import SmartModerationDesktopApp.Observer.ClientObserver;
 import SmartModerationDesktopApp.Observer.ServerObserver;
 import SmartModerationDesktopApp.Server.Client;
-import SmartModerationDesktopApp.Utilities.LineDrawer;
 import SmartModerationDesktopApp.Server.LoginController;
 import SmartModerationDesktopApp.Tutorial.Tutorial;
 import java.awt.GraphicsEnvironment;
@@ -40,7 +39,7 @@ public class MainWindow extends javax.swing.JFrame implements ServerObserver, Cl
         return mainWindow;
     }
 
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings({"deprecation", "unchecked"})
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
@@ -108,12 +107,13 @@ public class MainWindow extends javax.swing.JFrame implements ServerObserver, Cl
         tutorial.setVisible(true);
     }//GEN-LAST:event_quickGuideActionPerformed
 
-
     private void initializeModerationCards(String moderationCardsJson) throws IOException {
         moderationCardsController.initializeModerationCards(moderationCardsJson);
         revalidate();
         repaint();
-    };
+    }
+
+    ;
 
     private void formWindowClosing(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowClosing
         moderationCardsController.saveMeetingStatus();
@@ -134,7 +134,7 @@ public class MainWindow extends javax.swing.JFrame implements ServerObserver, Cl
             readLoginInformation(message);
             QRCode.setVisible(false);
             QRCodeLabel.setVisible(false);
-            quickGuide.setVisible(false);            
+            quickGuide.setVisible(false);
         } catch (ParseException | IOException ex) {
             JOptionPane.showMessageDialog(this, "No connection to Android host device.");
             QRCode.setVisible(true);
@@ -196,8 +196,8 @@ public class MainWindow extends javax.swing.JFrame implements ServerObserver, Cl
 
     public ModerationCardsController getModerationCardsController() {
         return moderationCardsController;
-    }    
-   
+    }
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel QRCode;
     private javax.swing.JLabel QRCodeLabel;

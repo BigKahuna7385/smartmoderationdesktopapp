@@ -75,7 +75,7 @@ public class Client implements ClientObservable {
         System.out.println("Request URL: " + request.url());
 
         try {
-            System.out.println("Moderation card deletion");
+            System.out.println("Moderation card deletion call");
             Response response = client.newCall(request).execute();
             System.out.println("Response: " + response.body().string());
             return response.code() < 500;
