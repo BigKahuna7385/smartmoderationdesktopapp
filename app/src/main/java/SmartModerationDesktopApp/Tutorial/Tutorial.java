@@ -1,7 +1,6 @@
 package SmartModerationDesktopApp.Tutorial;
 
 import java.awt.GraphicsEnvironment;
-import javax.swing.Icon;
 import javax.swing.ImageIcon;
 
 public class Tutorial extends javax.swing.JFrame {
@@ -10,8 +9,7 @@ public class Tutorial extends javax.swing.JFrame {
 
     public Tutorial() {
         initComponents();
-        Icon tutorial = new ImageIcon(getClass().getClassLoader().getResource("tutorial.gif"));
-        tutorialGif.setIcon(tutorial);
+        tutorialGif.setIcon(new ImageIcon(getClass().getClassLoader().getResource("tutorial.gif")));
         setIcon();
         centerFrame();
     }

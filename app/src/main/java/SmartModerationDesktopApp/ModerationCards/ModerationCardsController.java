@@ -1,7 +1,7 @@
 package SmartModerationDesktopApp.ModerationCards;
 
-import SmartModerationDesktopApp.MainWindow.MainWindow;
 import SmartModerationDesktopApp.Utilities.JsonModerationCardParser;
+import SmartModerationDesktopApp.MainWindow.MainWindow;
 import SmartModerationDesktopApp.Utilities.JsonWriter;
 import java.util.ArrayList;
 import java.util.logging.Level;
@@ -98,7 +98,7 @@ public class ModerationCardsController {
                     Thread.sleep(1000);
                     if (cardsInitialized) {
                         saveMeetingStatus();
-                    }
+                    }                    
                 } catch (InterruptedException ex) {
                     Logger.getLogger(ModerationCardsController.class.getName()).log(Level.SEVERE, null, ex);
                 }

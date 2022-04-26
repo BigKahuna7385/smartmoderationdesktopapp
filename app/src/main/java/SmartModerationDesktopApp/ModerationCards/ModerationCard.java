@@ -142,7 +142,7 @@ public class ModerationCard extends javax.swing.JPanel {
     }//GEN-LAST:event_menuItemDeleteActionPerformed
 
     private void moderationCardTextBodyMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_moderationCardTextBodyMousePressed
-        cardClicked(evt);       
+        cardClicked(evt);
     }//GEN-LAST:event_moderationCardTextBodyMousePressed
 
     private void moderationCardTextBodyMouseDragged(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_moderationCardTextBodyMouseDragged
@@ -153,7 +153,8 @@ public class ModerationCard extends javax.swing.JPanel {
         pressed = evt;
         setCursor(new java.awt.Cursor(java.awt.Cursor.MOVE_CURSOR));
         MainWindow.getInstance().getModerationCardsController().sortZOrder(this);
-        System.out.println("Mouse clicked");
+        MainWindow.getInstance().revalidate();
+        MainWindow.getInstance().repaint();
     }
 
     private void cardDragged(java.awt.event.MouseEvent evt) {

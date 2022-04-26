@@ -1,6 +1,5 @@
-package SmartModerationDesktopApp.Utilities;
+package SmartModerationDesktopApp.MainWindow;
 
-import SmartModerationDesktopApp.MainWindow.MainWindow;
 import SmartModerationDesktopApp.ModerationCards.ModerationCard;
 import java.awt.BasicStroke;
 import java.awt.Graphics2D;
