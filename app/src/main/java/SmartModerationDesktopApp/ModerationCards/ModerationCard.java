@@ -24,7 +24,7 @@ public class ModerationCard extends javax.swing.JPanel {
 
     public ModerationCard(ModerationCardData moderationCardData) {
         initComponents();
-        setLocation(0, 0);       
+        setLocation(0, 0);
         snapDirectionChecker = new SnapDirectionChecker();
         this.moderationCardData = moderationCardData;
         drawModerationCardData();
@@ -198,7 +198,7 @@ public class ModerationCard extends javax.swing.JPanel {
                     x = magneticCard.getX() + magneticCard.getWidth() + distance;
                     break;
                 case EAST:
-                    x = magneticCard.getX()  - getWidth() - distance;
+                    x = magneticCard.getX() - getWidth() - distance;
                     break;
                 case SOUTH:
                     y = magneticCard.getY() - getHeight() - distance;
@@ -320,6 +320,7 @@ public class ModerationCard extends javax.swing.JPanel {
     private void drawModerationCardData() {
         setBackground(Color.decode(moderationCardData.getBackgroundColor()));
         moderationCardTextBody.setDisabledTextColor(Color.decode(moderationCardData.getFontColor()));
+        authorLabel.setForeground(Color.decode(moderationCardData.getFontColor()));
         createOneColorBackground();
         setCardContent(moderationCardData);
         centerText();
