@@ -24,7 +24,7 @@ public class ModerationCard extends javax.swing.JPanel {
 
     public ModerationCard(ModerationCardData moderationCardData) {
         initComponents();
-        setLocation(0, 0);
+        setLocation(0, 0);       
         snapDirectionChecker = new SnapDirectionChecker();
         this.moderationCardData = moderationCardData;
         drawModerationCardData();
@@ -195,16 +195,16 @@ public class ModerationCard extends javax.swing.JPanel {
             int distance = isDistancedMagnet() ? MAGNETRANGE : 0;
             switch (snapDirection) {
                 case WEST:
-                    x = magneticCard.getLocation().x + magneticCard.getBounds().width + distance;
+                    x = magneticCard.getX() + magneticCard.getWidth() + distance;
                     break;
                 case EAST:
-                    x = magneticCard.getLocation().x - getBounds().width - distance;
+                    x = magneticCard.getX()  - getWidth() - distance;
                     break;
                 case SOUTH:
-                    y = magneticCard.getLocation().y - getBounds().height - distance;
+                    y = magneticCard.getY() - getHeight() - distance;
                     break;
                 case NORTH:
-                    y = magneticCard.getLocation().y + magneticCard.getBounds().height + distance;
+                    y = magneticCard.getY() + magneticCard.getHeight() + distance;
                     break;
                 default:
                     throw new AssertionError();
