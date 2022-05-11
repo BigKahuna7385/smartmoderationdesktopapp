@@ -46,11 +46,11 @@ public class LineDrawer {
                 break;
             case SOUTH:
                 startPoint.setLocation(0, magneticCard.getY() - distance - MainWindow.getInstance().getLocation().y);
-                endPoint.setLocation(MainWindow.getInstance().getContentPane().getMaximumSize().width, magneticCard.getY() - distance - MainWindow.getInstance().getY());
+                endPoint.setLocation(MainWindow.getInstance().getContentPane().getMaximumSize().width, magneticCard.getY() - distance + MainWindow.getInstance().getInsets().top);
                 break;
             case NORTH:
                 startPoint.setLocation(0, magneticCard.getY() + magneticCard.getHeight() + distance - MainWindow.getInstance().getLocation().y);
-                endPoint.setLocation(MainWindow.getInstance().getContentPane().getMaximumSize().width, magneticCard.getY() + magneticCard.getHeight() + distance - MainWindow.getInstance().getY());
+                endPoint.setLocation(MainWindow.getInstance().getContentPane().getMaximumSize().width, magneticCard.getY() + magneticCard.getHeight() + distance + MainWindow.getInstance().getInsets().top);
                 break;
         }
     }
