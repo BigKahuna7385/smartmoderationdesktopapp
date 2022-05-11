@@ -54,6 +54,7 @@ public class JsonModerationCardParser {
         String fontColor = (String) jsonObject.get("fontColor");
         long meetingId = (long) jsonObject.get("meetingId");
         String author = (String) jsonObject.get("author");
+        System.out.println("ModerationCardParsed: " + content + " | " + backgroundColor + " | " + fontColor + " | " + meetingId + " | " + author);
         return new ModerationCard(new ModerationCardData(cardId, meetingId, content, backgroundColor, fontColor, author));
     }
 
