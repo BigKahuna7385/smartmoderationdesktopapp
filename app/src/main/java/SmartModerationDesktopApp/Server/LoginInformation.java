@@ -3,10 +3,10 @@ package SmartModerationDesktopApp.Server;
 public class LoginInformation {
 
     private final long meetingId;
-    private final String androidPort;
+    private final int androidPort;
     private final String androidIpAddress;
 
-    public LoginInformation(long meetingId, String androidIpAddress, String androidPort) {
+    public LoginInformation(long meetingId, String androidIpAddress, int androidPort) {
         this.meetingId = meetingId;
         this.androidPort = androidPort;
         this.androidIpAddress = androidIpAddress;
@@ -16,7 +16,7 @@ public class LoginInformation {
         return meetingId;
     }
 
-    public String getAndroidPort() {
+    public int getAndroidPort() {
         return androidPort;
     }
 

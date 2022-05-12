@@ -22,8 +22,8 @@ public class SnapDirectionCheckerTest {
     @BeforeAll
     public static void setUp() {
         snapDirectionChecker = new SnapDirectionChecker();
-        moderationCardMoving = new ModerationCard(new ModerationCardData(1234567890l, 1234567890l, "This card is to the left", "#E91E63", "#FFFFFF"));
-        moderationCardMagnetic = new ModerationCard(new ModerationCardData(1234567890l, 1234567890l, "This card is in the middle", "#E91E63", "#FFFFFF"));
+        moderationCardMoving = new ModerationCard(new ModerationCardData(1234567890l, 1234567890l, "This card is to the left", "#E91E63", "#FFFFFF", "Test_Author"));
+        moderationCardMagnetic = new ModerationCard(new ModerationCardData(1234567890l, 1234567890l, "This card is in the middle", "#E91E63", "#FFFFFF", "Test_Author"));
         MAGNETICDISTANCE = moderationCardMoving.getMAGNETRANGE();
         width = moderationCardMoving.getPreferredSize().width;
         height = moderationCardMoving.getPreferredSize().height;

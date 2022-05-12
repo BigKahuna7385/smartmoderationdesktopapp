@@ -16,7 +16,7 @@ import org.json.simple.parser.ParseException;
 public class JsonModerationCardParser {
 
     public ArrayList<ModerationCard> parseModerationCardJson(String inputJson) {
-        ArrayList<ModerationCard> moderationCardList = new ArrayList();    
+        ArrayList<ModerationCard> moderationCardList = new ArrayList();
         if (inputJson == null) {
             return moderationCardList;
         }
@@ -33,7 +33,8 @@ public class JsonModerationCardParser {
                 String content = (String) jsonObject.get("content");
                 String backgroundColor = (String) jsonObject.get("backgroundColor");
                 String fontColor = (String) jsonObject.get("fontColor");
-                moderationCardList.add(new ModerationCard(new ModerationCardData(cardId, meetingId, content, backgroundColor, fontColor)));
+                String author = (String) jsonObject.get("author");
+                moderationCardList.add(new ModerationCard(new ModerationCardData(cardId, meetingId, content, backgroundColor, fontColor, author)));
             }
         } catch (ParseException e) {
         }
@@ -52,7 +53,9 @@ public class JsonModerationCardParser {
         String backgroundColor = (String) jsonObject.get("backgroundColor");
         String fontColor = (String) jsonObject.get("fontColor");
         long meetingId = (long) jsonObject.get("meetingId");
-        return new ModerationCard(new ModerationCardData(cardId, meetingId, content, backgroundColor, fontColor));
+        String author = (String) jsonObject.get("author");
+        System.out.println("ModerationCardParsed: " + content + " | " + backgroundColor + " | " + fontColor + " | " + meetingId + " | " + author);
+        return new ModerationCard(new ModerationCardData(cardId, meetingId, content, backgroundColor, fontColor, author));
     }
 
     public HashMap<Long, Point> parseCacheJson(File inputJson) {

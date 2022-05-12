@@ -1,6 +1,5 @@
-package SmartModerationDesktopApp.Utilities;
+package SmartModerationDesktopApp.MainWindow;
 
-import SmartModerationDesktopApp.MainWindow.MainWindow;
 import SmartModerationDesktopApp.ModerationCards.ModerationCard;
 import java.awt.BasicStroke;
 import java.awt.Graphics2D;
@@ -13,7 +12,7 @@ public class LineDrawer {
     private boolean isLineDrawn;
     private boolean hasLineDistance;
 
-    public LineDrawer() {    
+    public LineDrawer() {
         isLineDrawn = false;
         hasLineDistance = false;
         startPoint = new Point();
@@ -35,23 +34,23 @@ public class LineDrawer {
     }
 
     public void setStartAndEndPoint(ModerationCard movingCard, ModerationCard magneticCard) {
-        int distance = hasLineDistance ? magneticCard.getMAGNETRANGE() : 0;
+        int distance = (hasLineDistance ? magneticCard.getMAGNETRANGE() : 0);
         switch (movingCard.getSnapDirection()) {
             case EAST:
-                startPoint.setLocation(magneticCard.getBounds().x - distance, 0);
-                endPoint.setLocation(magneticCard.getBounds().x - distance, MainWindow.getInstance().getContentPane().getMaximumSize().height);
+                startPoint.setLocation(magneticCard.getX() - distance, 0);
+                endPoint.setLocation(magneticCard.getX() - distance, MainWindow.getInstance().getContentPane().getMaximumSize().height);
                 break;
             case WEST:
-                startPoint.setLocation(magneticCard.getBounds().x + magneticCard.getBounds().width + distance, 0);
-                endPoint.setLocation(magneticCard.getBounds().x + magneticCard.getBounds().width + distance, MainWindow.getInstance().getContentPane().getMaximumSize().height);
+                startPoint.setLocation(magneticCard.getX() + magneticCard.getWidth() + distance, 0);
+                endPoint.setLocation(magneticCard.getX() + magneticCard.getWidth() + distance, MainWindow.getInstance().getContentPane().getMaximumSize().height);
                 break;
             case SOUTH:
-                startPoint.setLocation(0, magneticCard.getBounds().y - distance);
-                endPoint.setLocation(MainWindow.getInstance().getContentPane().getMaximumSize().width, magneticCard.getBounds().y - distance);
+                startPoint.setLocation(0, magneticCard.getY() - distance - MainWindow.getInstance().getLocation().y);
+                endPoint.setLocation(MainWindow.getInstance().getContentPane().getMaximumSize().width, magneticCard.getY() - distance + MainWindow.getInstance().getInsets().top);
                 break;
             case NORTH:
-                startPoint.setLocation(0, magneticCard.getBounds().y + magneticCard.getBounds().height + distance);
-                endPoint.setLocation(MainWindow.getInstance().getContentPane().getMaximumSize().width, magneticCard.getBounds().y + magneticCard.getBounds().height + distance);
+                startPoint.setLocation(0, magneticCard.getY() + magneticCard.getHeight() + distance - MainWindow.getInstance().getLocation().y);
+                endPoint.setLocation(MainWindow.getInstance().getContentPane().getMaximumSize().width, magneticCard.getY() + magneticCard.getHeight() + distance + MainWindow.getInstance().getInsets().top);
                 break;
         }
     }

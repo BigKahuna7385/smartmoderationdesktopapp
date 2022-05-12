@@ -5,5 +5,5 @@ public enum SnapDirections {
     EAST,
     SOUTH,
     WEST,
-    NONE;
+    NONE
 }

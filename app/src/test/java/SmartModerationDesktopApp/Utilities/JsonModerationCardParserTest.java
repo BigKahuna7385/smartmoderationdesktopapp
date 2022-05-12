@@ -22,13 +22,16 @@ public class JsonModerationCardParserTest {
 
     @BeforeAll
     public static void setUp() {
-        jsonModerationCardParser = new JsonModerationCardParser();       
+        jsonModerationCardParser = new JsonModerationCardParser();
     }
 
     @Test
     public void parseSingleModerationCardJsonTest() throws FileNotFoundException, ParseException {
         BufferedReader br = new BufferedReader(new FileReader(new File("./src/test/resources/SingleModerationCardTestSet.json")));
-        ModerationCard moderationCard = jsonModerationCardParser.parseSingleModerationCardJson(br.lines().collect(Collectors.joining()));
+        String json = br.lines().collect(Collectors.joining());
+        System.out.println("Test Json: " + json);
+        assertNotNull(json);
+        ModerationCard moderationCard = jsonModerationCardParser.parseSingleModerationCardJson(json);
         assertNotNull(moderationCard);
         assertEquals(moderationCard.getContent(), "logintest");
         assertEquals(moderationCard.getColor(), "#FFC107");
@@ -51,8 +54,8 @@ public class JsonModerationCardParserTest {
 
         assertEquals(moderationCards.get(2).getContent(), "logintest");
         assertEquals(moderationCards.get(2).getColor(), "#FFC107");
-        assertEquals(moderationCards.get(2).getCardId(), 8716934582346075052L);      
-     
+        assertEquals(moderationCards.get(2).getCardId(), 8716934582346075052L);
+
     }
 
     @Test

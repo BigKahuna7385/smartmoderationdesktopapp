@@ -1,9 +1,9 @@
 package SmartModerationDesktopApp.MainWindow;
 
 import SmartModerationDesktopApp.ModerationCards.ModerationCardsController;
+import SmartModerationDesktopApp.Observer.ClientObserver;
 import SmartModerationDesktopApp.Observer.ServerObserver;
 import SmartModerationDesktopApp.Server.Client;
-import SmartModerationDesktopApp.Utilities.LineDrawer;
 import SmartModerationDesktopApp.Server.LoginController;
 import SmartModerationDesktopApp.Tutorial.Tutorial;
 import java.awt.GraphicsEnvironment;
@@ -13,8 +13,9 @@ import java.util.logging.Logger;
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import org.json.simple.parser.ParseException;
+import javax.swing.JOptionPane;
 
-public class MainWindow extends javax.swing.JFrame implements ServerObserver {
+public class MainWindow extends javax.swing.JFrame implements ServerObserver, ClientObserver {
 
     private final LineDrawer lineDrawer;
     private final LoginController loginController;
@@ -38,21 +39,23 @@ public class MainWindow extends javax.swing.JFrame implements ServerObserver {
         return mainWindow;
     }
 
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings({"deprecation", "unchecked"})
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
         QRCode = new javax.swing.JLabel();
         QRCodeLabel = new javax.swing.JLabel();
-        saveButton = new javax.swing.JButton();
         quickGuide = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Smart Moderation DesktopApp");
         setAutoRequestFocus(false);
-        setPreferredSize(new java.awt.Dimension(1920, 1080));
-        setResizable(false);
         setSize(new java.awt.Dimension(1920, 1080));
+        addWindowListener(new java.awt.event.WindowAdapter() {
+            public void windowClosing(java.awt.event.WindowEvent evt) {
+                formWindowClosing(evt);
+            }
+        });
 
         QRCode.setToolTipText("Scan QRCode to start session");
         QRCode.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
@@ -61,13 +64,6 @@ public class MainWindow extends javax.swing.JFrame implements ServerObserver {
         QRCodeLabel.setText("Scan QR-code to start session");
         QRCodeLabel.setFocusable(false);
         QRCodeLabel.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-
-        saveButton.setText("Save");
-        saveButton.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                saveButtonActionPerformed(evt);
-            }
-        });
 
         quickGuide.setLabel("Login Quick Guide");
         quickGuide.addActionListener(new java.awt.event.ActionListener() {
@@ -80,31 +76,24 @@ public class MainWindow extends javax.swing.JFrame implements ServerObserver {
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addContainerGap(775, Short.MAX_VALUE)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                        .addComponent(saveButton, javax.swing.GroupLayout.PREFERRED_SIZE, 125, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(20, 20, 20))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.CENTER)
-                            .addComponent(QRCode, javax.swing.GroupLayout.PREFERRED_SIZE, 400, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(QRCodeLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 400, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(quickGuide))
-                        .addGap(751, 751, 751))))
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                .addContainerGap(766, Short.MAX_VALUE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.CENTER)
+                    .addComponent(QRCode, javax.swing.GroupLayout.PREFERRED_SIZE, 400, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(QRCodeLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 400, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(quickGuide))
+                .addContainerGap(760, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGap(20, 20, 20)
-                .addComponent(saveButton, javax.swing.GroupLayout.PREFERRED_SIZE, 53, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 90, Short.MAX_VALUE)
-                .addComponent(QRCodeLabel)
+                .addContainerGap(240, Short.MAX_VALUE)
+                .addComponent(QRCodeLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 16, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(QRCode, javax.swing.GroupLayout.PREFERRED_SIZE, 400, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(30, 30, 30)
-                .addComponent(quickGuide)
-                .addContainerGap(219, Short.MAX_VALUE))
+                .addComponent(quickGuide, javax.swing.GroupLayout.PREFERRED_SIZE, 22, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(142, Short.MAX_VALUE))
         );
 
         quickGuide.getAccessibleContext().setAccessibleDescription("");
@@ -113,25 +102,27 @@ public class MainWindow extends javax.swing.JFrame implements ServerObserver {
         setLocationRelativeTo(null);
     }// </editor-fold>//GEN-END:initComponents
 
-    private void saveButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_saveButtonActionPerformed
-        moderationCardsController.saveMeetingStatus();
-    }//GEN-LAST:event_saveButtonActionPerformed
-
     private void quickGuideActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_quickGuideActionPerformed
         Tutorial tutorial = Tutorial.getInstance();
         tutorial.setVisible(true);
     }//GEN-LAST:event_quickGuideActionPerformed
 
-    private void initializeModerationCards() throws IOException {
-        moderationCardsController.initializeModerationCards(client.getModerationCards());
+    private void initializeModerationCards(String moderationCardsJson) throws IOException {
+        moderationCardsController.initializeModerationCards(moderationCardsJson);
         revalidate();
         repaint();
     }
 
-    private void readLoginInformation(String loginInformation) throws ParseException {
+    private void formWindowClosing(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowClosing
+        moderationCardsController.saveMeetingStatus();
+    }//GEN-LAST:event_formWindowClosing
+
+    private void readLoginInformation(String loginInformation) throws ParseException, IOException {
         loginController.readLoginInformation(loginInformation);
         setMeetingId(loginController.getMeetingId());
         client = new Client(loginController.getLoginInformation());
+        client.initObserver(this);
+        client.getModerationCards();
     }
 
     @Override
@@ -142,15 +133,18 @@ public class MainWindow extends javax.swing.JFrame implements ServerObserver {
             QRCode.setVisible(false);
             QRCodeLabel.setVisible(false);
             quickGuide.setVisible(false);
-            initializeModerationCards();
         } catch (ParseException | IOException ex) {
+            JOptionPane.showMessageDialog(this, "No connection to Android host device.");
+            QRCode.setVisible(true);
+            QRCodeLabel.setVisible(true);
+            quickGuide.setVisible(true);
             Logger.getLogger(MainWindow.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 
     @Override
-    public void receivePutModerationCard(String message) {
-        moderationCardsController.putModerationCard(message);
+    public void receivePostModerationCard(String message) {
+        moderationCardsController.addModerationCard(message);
         revalidate();
         repaint();
     }
@@ -165,6 +159,14 @@ public class MainWindow extends javax.swing.JFrame implements ServerObserver {
     @Override
     public void receiveUpdateModerationCard(String message) {
         moderationCardsController.updateModerationCard(message);
+        revalidate();
+        repaint();
+    }
+
+    public void sendDeleteModerationCard(long cardId) {
+        if (client.deleteModerationCard(cardId)) {
+            moderationCardsController.deleteModerationCard(cardId);
+        }
         revalidate();
         repaint();
     }
@@ -190,11 +192,22 @@ public class MainWindow extends javax.swing.JFrame implements ServerObserver {
         setIconImage(icon.getImage());
     }
 
+    public ModerationCardsController getModerationCardsController() {
+        return moderationCardsController;
+    }
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel QRCode;
     private javax.swing.JLabel QRCodeLabel;
     private javax.swing.JButton quickGuide;
-    private javax.swing.JButton saveButton;
     // End of variables declaration//GEN-END:variables
 
+    @Override
+    public void getModerationCardsJsonString(String moderationCardJson) {
+        try {
+            initializeModerationCards(moderationCardJson);
+        } catch (IOException ex) {
+            Logger.getLogger(MainWindow.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
 }

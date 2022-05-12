@@ -8,7 +8,6 @@ import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 import javax.swing.JTextPane;
 import javax.swing.text.SimpleAttributeSet;
-import javax.swing.text.Style;
 import javax.swing.text.StyleConstants;
 import javax.swing.text.StyledDocument;
 
@@ -35,11 +34,28 @@ public class ModerationCard extends javax.swing.JPanel {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        jPopupMenu = new javax.swing.JPopupMenu();
+        menuItemDelete = new javax.swing.JMenuItem();
         jScrollPane = new javax.swing.JScrollPane();
         moderationCardTextBody = new javax.swing.JTextPane();
+        authorLabel = new javax.swing.JLabel();
+
+        menuItemDelete.setBackground(new java.awt.Color(255, 0, 0));
+        menuItemDelete.setForeground(new java.awt.Color(255, 0, 51));
+        menuItemDelete.setText("delete");
+        menuItemDelete.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                menuItemDeleteActionPerformed(evt);
+            }
+        });
+        jPopupMenu.add(menuItemDelete);
 
         setBackground(new java.awt.Color(153, 153, 255));
+        setBorder(new javax.swing.border.SoftBevelBorder(javax.swing.border.BevelBorder.RAISED));
         setToolTipText("Click to drag card");
+        setAlignmentX(0.0F);
+        setAlignmentY(0.0F);
+        setComponentPopupMenu(jPopupMenu);
         setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
         setPreferredSize(new java.awt.Dimension(200, 200));
         addMouseMotionListener(new java.awt.event.MouseMotionAdapter() {
@@ -57,6 +73,7 @@ public class ModerationCard extends javax.swing.JPanel {
         });
 
         jScrollPane.setBorder(null);
+        jScrollPane.setInheritsPopupMenu(true);
         jScrollPane.setOpaque(false);
 
         moderationCardTextBody.setEditable(false);
@@ -64,6 +81,8 @@ public class ModerationCard extends javax.swing.JPanel {
         moderationCardTextBody.setFont(new java.awt.Font("Segoe UI", 0, 24)); // NOI18N
         moderationCardTextBody.setEnabled(false);
         moderationCardTextBody.setFocusable(false);
+        moderationCardTextBody.setInheritsPopupMenu(true);
+        moderationCardTextBody.setMargin(new java.awt.Insets(0, 0, 0, 0));
         moderationCardTextBody.setOpaque(false);
         moderationCardTextBody.addMouseMotionListener(new java.awt.event.MouseMotionAdapter() {
             public void mouseDragged(java.awt.event.MouseEvent evt) {
@@ -71,8 +90,8 @@ public class ModerationCard extends javax.swing.JPanel {
             }
         });
         moderationCardTextBody.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                moderationCardTextBodyMouseClicked(evt);
+            public void mousePressed(java.awt.event.MouseEvent evt) {
+                moderationCardTextBodyMousePressed(evt);
             }
             public void mouseReleased(java.awt.event.MouseEvent evt) {
                 moderationCardTextBodyMouseReleased(evt);
@@ -80,21 +99,23 @@ public class ModerationCard extends javax.swing.JPanel {
         });
         jScrollPane.setViewportView(moderationCardTextBody);
 
+        authorLabel.setText("jLabel1");
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jScrollPane, javax.swing.GroupLayout.DEFAULT_SIZE, 388, Short.MAX_VALUE)
-                .addContainerGap())
+                .addContainerGap(157, Short.MAX_VALUE)
+                .addComponent(authorLabel))
+            .addComponent(jScrollPane)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jScrollPane, javax.swing.GroupLayout.DEFAULT_SIZE, 287, Short.MAX_VALUE)
-                .addContainerGap())
+            .addGroup(layout.createSequentialGroup()
+                .addComponent(authorLabel)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jScrollPane, javax.swing.GroupLayout.DEFAULT_SIZE, 172, Short.MAX_VALUE))
         );
 
         getAccessibleContext().setAccessibleName("Moderation Card");
@@ -112,21 +133,28 @@ public class ModerationCard extends javax.swing.JPanel {
         cardReleased(evt);
     }//GEN-LAST:event_formMouseReleased
 
-    private void moderationCardTextBodyMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_moderationCardTextBodyMouseClicked
+    private void moderationCardTextBodyMouseReleased(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_moderationCardTextBodyMouseReleased
+        cardReleased(evt);
+    }//GEN-LAST:event_moderationCardTextBodyMouseReleased
+
+    private void menuItemDeleteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuItemDeleteActionPerformed
+        MainWindow.getInstance().sendDeleteModerationCard(moderationCardData.getCardId());
+    }//GEN-LAST:event_menuItemDeleteActionPerformed
+
+    private void moderationCardTextBodyMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_moderationCardTextBodyMousePressed
         cardClicked(evt);
-    }//GEN-LAST:event_moderationCardTextBodyMouseClicked
+    }//GEN-LAST:event_moderationCardTextBodyMousePressed
 
     private void moderationCardTextBodyMouseDragged(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_moderationCardTextBodyMouseDragged
         cardDragged(evt);
     }//GEN-LAST:event_moderationCardTextBodyMouseDragged
 
-    private void moderationCardTextBodyMouseReleased(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_moderationCardTextBodyMouseReleased
-        cardReleased(evt);
-    }//GEN-LAST:event_moderationCardTextBodyMouseReleased
-
     private void cardClicked(java.awt.event.MouseEvent evt) {
         pressed = evt;
         setCursor(new java.awt.Cursor(java.awt.Cursor.MOVE_CURSOR));
+        MainWindow.getInstance().getModerationCardsController().sortZOrder(this);
+        MainWindow.getInstance().revalidate();
+        MainWindow.getInstance().repaint();
     }
 
     private void cardDragged(java.awt.event.MouseEvent evt) {
@@ -167,16 +195,16 @@ public class ModerationCard extends javax.swing.JPanel {
             int distance = isDistancedMagnet() ? MAGNETRANGE : 0;
             switch (snapDirection) {
                 case WEST:
-                    x = magneticCard.getLocation().x + magneticCard.getBounds().width + distance;
+                    x = magneticCard.getX() + magneticCard.getWidth() + distance;
                     break;
                 case EAST:
-                    x = magneticCard.getLocation().x - getBounds().width - distance;
+                    x = magneticCard.getX() - getWidth() - distance;
                     break;
                 case SOUTH:
-                    y = magneticCard.getLocation().y - getBounds().height - distance;
+                    y = magneticCard.getY() - getHeight() - distance;
                     break;
                 case NORTH:
-                    y = magneticCard.getLocation().y + magneticCard.getBounds().height + distance;
+                    y = magneticCard.getY() + magneticCard.getHeight() + distance;
                     break;
                 default:
                     throw new AssertionError();
@@ -262,16 +290,22 @@ public class ModerationCard extends javax.swing.JPanel {
     }
 
     public void updateProperties(ModerationCard moderationCard) {
-        setCardContent(moderationCard.getContent());
+        setCardContent(moderationCard.getModerationCardData());
         setBackground(moderationCard.getBackground());
     }
 
-    private void setCardContent(String content) {
-        moderationCardTextBody.setText(content);
+    private void setCardContent(ModerationCardData moderationCardData) {
+        int authorLength = moderationCardData.getAuthor().length() >= 2 ? 2 : moderationCardData.getAuthor().length();
+        authorLabel.setText(moderationCardData.getAuthor().substring(0, authorLength).toUpperCase());
+        authorLabel.setToolTipText(moderationCardData.getAuthor());
+        moderationCardTextBody.setText(moderationCardData.getContent());
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JLabel authorLabel;
+    private javax.swing.JPopupMenu jPopupMenu;
     private javax.swing.JScrollPane jScrollPane;
+    private javax.swing.JMenuItem menuItemDelete;
     private javax.swing.JTextPane moderationCardTextBody;
     // End of variables declaration//GEN-END:variables
 
@@ -279,11 +313,16 @@ public class ModerationCard extends javax.swing.JPanel {
         return moderationCardTextBody;
     }
 
+    public ModerationCardData getModerationCardData() {
+        return moderationCardData;
+    }
+
     private void drawModerationCardData() {
         setBackground(Color.decode(moderationCardData.getBackgroundColor()));
         moderationCardTextBody.setDisabledTextColor(Color.decode(moderationCardData.getFontColor()));
+        authorLabel.setForeground(Color.decode(moderationCardData.getFontColor()));
         createOneColorBackground();
-        setCardContent(moderationCardData.getContent());
+        setCardContent(moderationCardData);
         centerText();
     }
 }

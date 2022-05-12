@@ -8,16 +8,18 @@ import com.sun.net.httpserver.HttpServer;
 import java.io.*;
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
+import java.net.InterfaceAddress;
 import java.net.NetworkInterface;
+import java.net.ServerSocket;
 import java.net.SocketException;
-import java.util.Enumeration;
+import java.util.Collections;
 import java.util.UUID;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public final class Server implements ServerObservable {
 
-    private final static int PORT = 8080;
+    private static int port;
     private final String apiKey;
     private final InetAddress ipAddress;
     private ServerObserver observer;
@@ -25,14 +27,34 @@ public final class Server implements ServerObservable {
 
     public Server() {
         apiKey = UUID.randomUUID().toString();
-        System.out.println("apiKey:" + apiKey);
+        System.out.println("apiKey: " + apiKey);
         ipAddress = getIpAddress();
+        try {
+            getFreePort();
+        } catch (IOException ex) {
+            System.out.println("Could not get free port.");
+            Logger.getLogger(Server.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 
     public void createServer() {
+        System.out.println("Starting Server at: " + getIpAddressString() + ":" + port);
         try {
-            HttpServer server = HttpServer.create(new InetSocketAddress(8080), 0);
-
+            HttpServer server = HttpServer.create(new InetSocketAddress(port), 0);
+            server.createContext("/", (HttpExchange t) -> {
+                StringBuilder sb = new StringBuilder();
+                String requestMethod = t.getRequestMethod();
+                System.out.println("Method: " + requestMethod);
+                if (checkAuthorization(t)) {
+                    switch (requestMethod) {
+                        case "GET":
+                            if(clientLoggedIn(t)) sendResponse(t);
+                            break;
+                        default:
+                            throw new AssertionError();
+                    }
+                }
+            });
             server.createContext("/login", (HttpExchange t) -> {
                 StringBuilder sb = new StringBuilder();
                 String requestMethod = t.getRequestMethod();
@@ -47,12 +69,12 @@ public final class Server implements ServerObservable {
                             }
                             System.out.println("Login POST");
                             clientLoggedIn = true;
+                            sendResponse(t);
                             login(sb.toString());
                             break;
                         default:
                             throw new AssertionError();
                     }
-                    sendResponse(t);
                 }
             });
 
@@ -64,19 +86,19 @@ public final class Server implements ServerObservable {
                     InputStream ios = t.getRequestBody();
                     int i;
                     switch (requestMethod) {
-                        case "POST":
+                        case "PUT":
                             while ((i = ios.read()) != -1) {
                                 sb.append((char) i);
                             }
                             System.out.println("Update Moderation Card JSON: " + sb.toString());
                             updateModerationCard(sb.toString());
                             break;
-                        case "PUT":
+                        case "POST":
                             while ((i = ios.read()) != -1) {
                                 sb.append((char) i);
                             }
-                            System.out.println("Put Moderation Card JSON: : " + sb.toString());
-                            putModerationCard(sb.toString());
+                            System.out.println("Post Moderation Card JSON: : " + sb.toString());
+                            postModerationCard(sb.toString());
                             break;
                         case "DELETE":
                             String cardId = t.getRequestURI().getQuery().substring("cardId=".length());
@@ -121,31 +143,33 @@ public final class Server implements ServerObservable {
     }
 
     private void sendResponse(HttpExchange t) throws IOException {
-        String response = "OK";
-        t.sendResponseHeaders(200, response.length());
-        try ( OutputStream os = t.getResponseBody()) {
-            os.write(response.getBytes());
-        }
+        Thread thread = new Thread(
+                () -> {
+                    try {
+                        String response = "OK";
+                        t.sendResponseHeaders(200, response.length());
+                        try ( OutputStream os = t.getResponseBody()) {
+                            os.write(response.getBytes());
+                        }
+                    } catch (IOException ex) {
+                        Logger.getLogger(Server.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                });
+        thread.start();
     }
 
     public InetAddress getIpAddress() {
-        Enumeration en;
         try {
-            en = NetworkInterface.getNetworkInterfaces();
-            while (en.hasMoreElements()) {
-                NetworkInterface ni = (NetworkInterface) en.nextElement();
-                Enumeration ee = ni.getInetAddresses();
-                while (ee.hasMoreElements()) {
-                    InetAddress ia = (InetAddress) ee.nextElement();
-                    if (ia.getHostAddress().contains("192.168.") || ia.getHostAddress().contains("172.")) {
-                        System.out.println(ia.getHostAddress());
-                        return ia;
+            for (NetworkInterface ni : Collections.list(NetworkInterface.getNetworkInterfaces())) {
+                if (!ni.isLoopback() && ni.isUp() && ni.getHardwareAddress() != null) {
+                    for (InterfaceAddress ia : ni.getInterfaceAddresses()) {
+                        if (ia.getBroadcast() != null) {  //If limited to IPV4
+                            return ia.getAddress();
+                        }
                     }
                 }
             }
-        } catch (SocketException ex) {
-            Logger.getLogger(Server.class
-                    .getName()).log(Level.SEVERE, null, ex);
+        } catch (SocketException e) {
         }
         return null;
     }
@@ -157,8 +181,21 @@ public final class Server implements ServerObservable {
         return ipAddress.getHostAddress();
     }
 
-    public static int getPORT() {
-        return PORT;
+    private int getFreePort() throws IOException {
+        port = 0;
+        try ( ServerSocket socket = new ServerSocket(0)) {
+            socket.setReuseAddress(true);
+            port = socket.getLocalPort();
+        } catch (IOException ignored) {
+        }
+        if (port > 0) {
+            return port;
+        }
+        throw new RuntimeException("Could not find a free port");
+    }
+
+    public int getPORT() {
+        return port;
     }
 
     public String getApiKey() {
@@ -176,8 +213,8 @@ public final class Server implements ServerObservable {
     }
 
     @Override
-    public void putModerationCard(String message) {
-        this.observer.receivePutModerationCard(message);
+    public void postModerationCard(String message) {
+        this.observer.receivePostModerationCard(message);
     }
 
     @Override
