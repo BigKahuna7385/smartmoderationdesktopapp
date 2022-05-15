@@ -1,0 +1,233 @@
+{
+	"info": {
+		"_postman_id": "0ce5fe74-1465-4d40-a0c5-29001a2d967f",
+		"name": "SmartModeration",
+		"description": "SmartModeration is a project from students of the DHBW Karlsruhe.\n\n[https://github.com/MobMonRob/SmartModeration2](https://github.com/MobMonRob/SmartModeration2)\n\n[https://github.com/BigKahuna7385/smartmoderationdesktopapp](https://github.com/BigKahuna7385/smartmoderationdesktopapp)",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Desktop-Api",
+			"item": [
+				{
+					"name": "Login Call",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "3323f6fc-6311-4d5c-84ab-236bb1e5963f",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"meetingId\": 3570151905752727837,\r\n    \"ipAddress\": \"127.0.0.1\",\r\n    \"port\": 8000\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "127.0.0.1:8080/login",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8080",
+							"path": [
+								"login"
+							],
+							"query": [
+								{
+									"key": "IpAddress",
+									"value": "192.168.0.1",
+									"disabled": true
+								}
+							]
+						},
+						"description": "This is the call to log into the SmartModeration Desktop-App.\n\nIt needs the correct IP-Address, Port and Bearer Token which are provided by the QR-Code."
+					},
+					"response": []
+				},
+				{
+					"name": "Put Moderation Card",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "2463e3f0-d1c3-4b32-879c-71d8facae8e5",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"cardId\": 8716934582346075052,\r\n    \"meetingId\": 2145752493690473242,\r\n    \"content\": \"logintest\",\r\n    \"backgroundColor\": \"#FFC107\",\r\n    \"fontColor\": \"#FFFFFF\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "127.0.0.1:8080/moderationcards",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8080",
+							"path": [
+								"moderationcards"
+							]
+						},
+						"description": "With this call a new moderation card is put into the desktop-app."
+					},
+					"response": []
+				},
+				{
+					"name": "Post Moderation Card",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "Test",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"cardId\": 2624659524793748350,\r\n    \"content\": \"Was solls, dann ist's halt so...\",\r\n    \"color\": \"#E91E63\",\r\n    \"meetingId\": 3570151905752727837\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "127.0.0.1:8080/moderationcard",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8080",
+							"path": [
+								"moderationcard"
+							]
+						},
+						"description": "A post-call changes a already sent moderation card."
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Moderation Card",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "4e8e67ec-cd02-4f3a-9759-a32f360a6a2b",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "127.0.0.1:8080/moderationcards?cardId=2624659524793748350",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8080",
+							"path": [
+								"moderationcards"
+							],
+							"query": [
+								{
+									"key": "cardId",
+									"value": "2624659524793748350"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"description": "This is the description of the API for sending requests to the SmartModeration Desktop-App."
+		},
+		{
+			"name": "Android-Api",
+			"item": [
+				{
+					"name": "Delete Single Moderation Card",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "192.168.0.32:8765/moderationcard/207132639634014313",
+							"host": [
+								"192",
+								"168",
+								"0",
+								"32"
+							],
+							"port": "8765",
+							"path": [
+								"moderationcard",
+								"207132639634014313"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Moderation Cards",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "192.168.0.32:8765/moderationcards",
+							"host": [
+								"192",
+								"168",
+								"0",
+								"32"
+							],
+							"port": "8765",
+							"path": [
+								"moderationcards"
+							]
+						},
+						"description": "Call to get all current moderation cards from the Android app."
+					},
+					"response": []
+				}
+			],
+			"description": "This a list of requests which can be sent to the SmartModeration Android-App. The list is not comprehensive and needs to be appended."
+		}
+	]
+}
